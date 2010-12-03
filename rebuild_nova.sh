@@ -19,13 +19,14 @@ SRCFILE="nova-$NOVAVER~bzr$BUILD.tar.gz"
 RPMSRC="$RPMSANDBOX/SOURCES/$SRCFILE"
 TARBALLURL="http://nova.openstack.org/tarballs/$SRCFILE"
 
+NOVASPECORIG="openstack-nova.spec"
 NOVASPEC="$RPMSANDBOX/SPECS/openstack-nova.spec"
 
 if [ ! -f "$RPMSRC" ]; then
 	wget -O "$RPMSRC" "$TARBALLURL"
 fi
 
-perl -pi -e "s/bzr(\d+)/bzr$BUILD/" "$NOVASPEC"
+cat $NOVASPECORIG | perl -pi -e "s/bzr(\d+)/bzr$BUILD/" > $NOVASPEC
 rm -f "$RPMSANDBOX/RPMS/*/*bzr$BUILD*.rpm"
 rpmbuild -bb $NOVASPEC
 

@@ -275,6 +275,9 @@ install -p -D -m 644 nova/virt/interfaces.template %{buildroot}%{_datarootdir}/n
 find %{buildroot}%{_sharedstatedir}/nova/CA -name .gitignore -delete
 find %{buildroot}%{_sharedstatedir}/nova/CA -name .placeholder -delete
 
+# Ugly hack for nova-manage
+cd %{buildroot}%{python_sitelib} && ln -s ../../../../../var/lib/nova/CA CA
+
 %clean
 rm -rf %{buildroot}
 
@@ -350,6 +353,7 @@ fi
 %{_datarootdir}/nova
 %defattr(-,nova,nobody,-)
 %{_sharedstatedir}/nova
+%{python_sitelib}/CA
 
 %files -n python-nova
 %defattr(-,root,root,-)
