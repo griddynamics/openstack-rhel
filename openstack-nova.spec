@@ -21,6 +21,9 @@ Source11:         %{name}-objectstore.init
 Source13:         %{name}-scheduler.init
 Source15:         %{name}-volume.init
 Source20:         %{name}-sudoers
+
+Patch0:           openstack-nova-openssl-relaxed-policy.patch
+
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:        noarch
@@ -215,6 +218,8 @@ This package contains documentation files for %{name}.
 
 %prep
 %setup -q -n nova-%{version}
+
+%patch0 -p1
 
 %build
 %{__python} setup.py build
