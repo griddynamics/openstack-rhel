@@ -1,6 +1,7 @@
 #!/bin/sh
 
-CC_ADDR="10.211.55.18" # let's make it hard-coded for today
+NETDEV=eth0
+CC_ADDR=`ip addr show dev $NETDEV|grep 'inet '|perl -pi -e 's/^.*inet ([0-9\.]+).*$/$1/'`
 DB_NAME="nova"
 DB_USER="nova"
 DB_PASS="nova"
