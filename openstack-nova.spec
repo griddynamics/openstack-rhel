@@ -23,6 +23,7 @@ Source15:         %{name}-volume.init
 Source20:         %{name}-sudoers
 
 Patch0:           openstack-nova-openssl-relaxed-policy.patch
+Patch1:           openstack-nova-rhel-config-paths.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -220,6 +221,7 @@ This package contains documentation files for %{name}.
 %setup -q -n nova-%{version}
 
 %patch0 -p1
+%patch1 -p1
 
 %build
 %{__python} setup.py build

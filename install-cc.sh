@@ -63,8 +63,8 @@ echo "Nova-scheduler:"
 tail -n 5 /var/log/nova/nova-scheduler.log
 
 # Configuring Cloud Controller
-nova-manage user admin cloud
-nova-manage project create prj1 cloud
+nova-manage user admin admin
+nova-manage project create prj1 admin
 nova-manage network create 192.168.0.0/16 24 512
 nova-manage project zip admin cloud creds/nova.zip
 
