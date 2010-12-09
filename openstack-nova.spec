@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.1
-Release:          bzr435
+Release:          bzr453
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -21,6 +21,7 @@ Source11:         %{name}-objectstore.init
 Source13:         %{name}-scheduler.init
 Source15:         %{name}-volume.init
 Source20:         %{name}-sudoers
+Source21:         %{name}-polkit.pkla
 
 Patch0:           openstack-nova-openssl-relaxed-policy.patch
 Patch1:           openstack-nova-rhel-config-paths.patch
@@ -72,8 +73,8 @@ Requires:         python-redis
 Requires:         python-routes
 Requires:         python-sqlalchemy >= 0.6
 Requires:         python-tornado
-Requires:         python-twisted-core
-Requires:         python-twisted-web
+Requires:         python-twisted-core >= 10.1.0
+Requires:         python-twisted-web >= 10.1.0
 Requires:         python-webob = 0.9.8
 
 %description -n   python-nova
@@ -282,8 +283,11 @@ install -p -D -m 644 nova/virt/interfaces.template %{buildroot}%{_datarootdir}/n
 find %{buildroot}%{_sharedstatedir}/nova/CA -name .gitignore -delete
 find %{buildroot}%{_sharedstatedir}/nova/CA -name .placeholder -delete
 
-# Ugly hack for nova-manage
-cd %{buildroot}%{python_sitelib} && ln -s ../../../../../var/lib/nova/CA CA
+# Ugly hack for nova-manage - not needed anymore since we have correct paths?
+#cd %{buildroot}%{python_sitelib} && ln -s ../../../../../var/lib/nova/CA CA
+
+install -d -m 755 %{buildroot}%{_sysconfdir}/polkit-1/localauthority/50-local.d
+install -p -D -m 644 %{SOURCE21} %{buildroot}%{_sysconfdir}/polkit-1/localauthority/50-local.d/50-openstack-nova.pkla
 
 %clean
 rm -rf %{buildroot}
@@ -360,7 +364,6 @@ fi
 %{_datarootdir}/nova
 %defattr(-,nova,nobody,-)
 %{_sharedstatedir}/nova
-%{python_sitelib}/CA
 
 %files -n python-nova
 %defattr(-,root,root,-)
@@ -375,6 +378,7 @@ fi
 
 %files compute
 %defattr(-,root,root,-)
+%{_sysconfdir}/polkit-1/localauthority/50-local.d/50-openstack-nova.pkla
 %{_bindir}/nova-compute
 %{_bindir}/nova-debug
 %{_initrddir}/%{name}-compute
@@ -412,6 +416,10 @@ fi
 %endif
 
 %changelog
+* Thu Dec 09 2010 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-bzr453
+- Added dependency >= 10.1.0 for twisted-core and twisted-web - 8.2.0 from RHEL6
+  is not ok for use with nova-objectstore
+
 * Wed Dec 01 2010 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-bzr435
 - Moved config files to separate package openstack-nova-cc-config for easy
   package-based deployment
