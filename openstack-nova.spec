@@ -299,6 +299,11 @@ useradd -r -g nova -d %{_sharedstatedir}/nova -s /sbin/nologin \
 -c "OpenStack Nova Daemons" nova
 exit 0
 
+%post
+if ! fgrep '#includedir /etc/sudoers.d' /etc/sudoers 2>&1 >/dev/null; then
+        echo '#includedir /etc/sudoers.d' >> /etc/sudoers
+fi
+
 %post api
 /sbin/chkconfig --add openstack-nova-api
 
@@ -416,6 +421,10 @@ fi
 %endif
 
 %changelog
+* Thu Dec 09 2010 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-bzr454
+- Added postscript to openstac-nova package to add inclution of files to
+  /etc/sudoers
+
 * Thu Dec 09 2010 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-bzr453
 - Added dependency >= 10.1.0 for twisted-core and twisted-web - 8.2.0 from RHEL6
   is not ok for use with nova-objectstore
