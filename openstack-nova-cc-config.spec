@@ -1,11 +1,12 @@
 Name:             openstack-nova-cc-config
 Version:          2011.1
-Release:          4
+Release:          5
 Summary:          OpenStack Compute (nova) - Cloud Controller config
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
+Source0:          %{name}.conf
 Source1:          %{name}-api.conf
 Source3:          %{name}-compute.conf
 Source5:          %{name}-dhcpbridge.conf
@@ -37,6 +38,7 @@ rm -rf %{buildroot}
 install -d -m 755 %{buildroot}%{_sysconfdir}/nova
 
 # Install config files
+install -p -D -m 644 %{SOURCE0} %{buildroot}%{_sysconfdir}/nova/nova.conf
 install -p -D -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/nova/nova-api.conf
 install -p -D -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/nova/nova-compute.conf
 install -p -D -m 644 %{SOURCE5} %{buildroot}%{_sysconfdir}/nova/nova-dhcpbridge.conf
@@ -51,6 +53,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
+%config(noreplace) %{_sysconfdir}/nova/nova.conf
 %config(noreplace) %{_sysconfdir}/nova/nova-api.conf
 %config(noreplace) %{_sysconfdir}/nova/nova-compute.conf
 %config(noreplace) %{_sysconfdir}/nova/nova-dhcpbridge.conf
@@ -61,6 +64,9 @@ rm -rf %{buildroot}
 %config(noreplace) %{_sysconfdir}/nova/nova-volume.conf
 
 %changelog
+* Wed Dec 08 2010 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-5
+- Added /etc/nova/nova.conf
+
 * Wed Dec 01 2010 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-4
 - Added missed --cc_host parameter
 

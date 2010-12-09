@@ -32,11 +32,11 @@ rm -f grant.sql
 yum install -y euca2ools openstack-nova-api openstack-nova-compute openstack-nova-instancemonitor openstack-nova-network openstack-nova-objectstore openstack-nova-scheduler openstack-nova-volume unzip libvirt
 
 # Switching Nova to MySQL db rather than default SQLite
-perl -pi -e "s,sql_connection=.*$,sql_connection=mysql://$DB_USER:$DB_PASS\@$CC_ADDR/$DB_NAME," /etc/nova/nova-*.conf
-perl -pi -e "s,s3_host=.*$,s3_host=$CC_ADDR," /etc/nova/nova-*.conf
-perl -pi -e "s,cc_host=.*$,cc_host=$CC_ADDR," /etc/nova/nova-*.conf
-perl -pi -e "s,rabbit_host=.*$,rabbit_host=$CC_ADDR," /etc/nova/nova-*.conf
-perl -pi -e "s,ec2_url=.*$,ec2_url=http://$CC_ADDR:8773/services/Cloud," /etc/nova/nova-*.conf
+perl -pi -e "s,sql_connection=.*$,sql_connection=mysql://$DB_USER:$DB_PASS\@$CC_ADDR/$DB_NAME," /etc/nova/nova*.conf
+perl -pi -e "s,s3_host=.*$,s3_host=$CC_ADDR," /etc/nova/nova*.conf
+perl -pi -e "s,cc_host=.*$,cc_host=$CC_ADDR," /etc/nova/nova*.conf
+perl -pi -e "s,rabbit_host=.*$,rabbit_host=$CC_ADDR," /etc/nova/nova*.conf
+perl -pi -e "s,ec2_url=.*$,ec2_url=http://$CC_ADDR:8773/services/Cloud," /etc/nova/nova*.conf
 
 perl -pi -e "s,fixed_range=.*$,fixed_range=192.168.2.64/26," /etc/nova/nova-{manage,network}.conf
 perl -pi -e "s,network_size=.*$,network_size=8," /etc/nova/nova-{manage,network}.conf
