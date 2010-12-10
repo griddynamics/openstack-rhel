@@ -1,7 +1,7 @@
 #!/bin/sh
 
 VM="RHEL6_node"
-SNAPID="aa30ecb7-34e2-41a2-b50e-40edfc701daa" # run 'ssh mac prlctl snapshot-list RHEL6_node' to get it
+SNAPID="2774479e-dcb2-4786-90c0-fc15121b235e" # run 'ssh mac prlctl snapshot-list RHEL6_node' to get it
 
 ssh mac prlctl stop $VM --kill
 ssh mac prlctl snapshot-switch $VM -i $SNAPID
