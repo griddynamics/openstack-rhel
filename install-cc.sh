@@ -29,9 +29,13 @@ mysql -uroot -p$DB_PASS mysql < grant.sql
 rm -f grant.sql
 
 # Nova installation
-yum install -y euca2ools openstack-nova-api openstack-nova-compute openstack-nova-instancemonitor openstack-nova-network openstack-nova-objectstore openstack-nova-scheduler openstack-nova-volume unzip libvirt
+yum install -y euca2ools openstack-nova-api openstack-nova-compute openstack-nova-instancemonitor openstack-nova-network openstack-nova-objectstore openstack-nova-scheduler openstack-nova-volume unzip libvirt qemu-kvm qemu-kvm-tools
 
+modprobe kvm
+modprobe kvm-intel
+sleep 2
 service libvirtd start
+
 
 # Switching Nova to MySQL db rather than default SQLite
 perl -pi -e "s,sql_connection=.*$,sql_connection=mysql://$DB_USER:$DB_PASS\@$CC_ADDR/$DB_NAME," /etc/nova/nova*.conf

@@ -19,7 +19,7 @@ unzip nova_creds.zip
 source novarc
 
 cd $CDIR
-#tar zxf images.tgz
+tar zxf images.tgz
 
 euca-bundle-image -i images/aki-lucid/image -p kernel --kernel true
 euca-bundle-image -i images/ari-lucid/image -p ramdisk --ramdisk true
@@ -35,8 +35,9 @@ cd $TMPDIR || exit -1
 euca-add-keypair mykey > mykey.priv
 chmod 600 mykey.priv
 
-euca-run-instances $AMI_MACHINE --kernel $AMI_KERNEL --ramdisk $AMI_RAMDISK -k mykey
-euca-describe-instances
-sleep 2
-euca-describe-instances
+euca-run-instances $AMI_MACHINE --kernel $AMI_KERNEL --ramdisk $AMI_RAMDISK -k mykey -t m1.tiny
+#euca-describe-instances
+#sleep 2
+#euca-describe-instances
 cat /var/log/nova/nova-compute.log
+echo $TMPDIR/novarc
