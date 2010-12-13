@@ -24,4 +24,4 @@ echo "GRANT ALL PRIVILEGES ON $DB_NAME.* TO root IDENTIFIED BY '$DB_PASS';" | my
 
 for service in api compute objectstore scheduler network; do service openstack-nova-$service start; done
 
-#rm -fr images
+rm -fr images
