@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.1
-Release:          bzr453
+Release:          bzr460
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -56,6 +56,7 @@ toolkit (the same as Python itself) for code and user documentation.
 Summary:          Nova Python libraries
 Group:            Applications/System
 
+Requires:         vconfig
 Requires:         PyXML
 Requires:         curl
 Requires:         m2crypto
@@ -421,6 +422,9 @@ fi
 %endif
 
 %changelog
+* Tue Dec 14 2010 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-bzr460
+- Added vconfig as a dep for python-nova
+
 * Thu Dec 09 2010 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-bzr454
 - Added postscript to openstac-nova package to add inclution of files to
   /etc/sudoers
