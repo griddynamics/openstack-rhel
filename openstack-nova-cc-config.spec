@@ -1,6 +1,6 @@
 Name:             openstack-nova-cc-config
 Version:          2011.1
-Release:          8
+Release:          9
 Summary:          OpenStack Compute (nova) - Cloud Controller config
 
 Group:            Development/Languages
@@ -82,6 +82,9 @@ rm -rf %{buildroot}
 %config(noreplace) %{_sysconfdir}/nova/nova-volume.conf
 
 %changelog
+* Tue Dec 14 2010 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-9
+- --dhcpbridge=/usr/bin/nova-dhcpbridge
+
 * Tue Dec 14 2010 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-8
 - --instances_path=/var/lib/nova/instances
 
