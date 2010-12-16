@@ -36,8 +36,18 @@ euca-add-keypair mykey > mykey.priv
 chmod 600 mykey.priv
 
 euca-run-instances $AMI_MACHINE --kernel $AMI_KERNEL --ramdisk $AMI_RAMDISK -k mykey -t m1.tiny
+euca-run-instances $AMI_MACHINE --kernel $AMI_KERNEL --ramdisk $AMI_RAMDISK -k mykey -t m1.tiny
+euca-run-instances $AMI_MACHINE --kernel $AMI_KERNEL --ramdisk $AMI_RAMDISK -k mykey -t m1.tiny
+euca-run-instances $AMI_MACHINE --kernel $AMI_KERNEL --ramdisk $AMI_RAMDISK -k mykey -t m1.tiny
 #euca-describe-instances
-#sleep 2
-#euca-describe-instances
-cat /var/log/nova/nova-compute.log
-echo $TMPDIR/novarc
+sleep 2
+euca-describe-instances
+sleep 5
+euca-describe-instances
+
+#cat /var/log/nova/nova-compute.log
+
+echo "MACHINE: $AMI_MACHINE"
+echo "KERNEL : $AMI_KERNEL"
+echo "RAMDISK: $AMI_RAMDISK"
+echo "source $TMPDIR/novarc"
