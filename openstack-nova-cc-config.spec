@@ -1,6 +1,6 @@
 Name:             openstack-nova-cc-config
 Version:          2011.1
-Release:          9
+Release:          10
 Summary:          OpenStack Compute (nova) - Cloud Controller config
 
 Group:            Development/Languages
@@ -21,6 +21,7 @@ BuildArch:        noarch
 
 BuildRequires:    perl
 
+Conflicts:        openstack-nova-compute-config = %{version}
 Requires:         openstack-nova = %{version}
 Provides:         openstack-nova-config = %{version}
 
@@ -82,6 +83,9 @@ rm -rf %{buildroot}
 %config(noreplace) %{_sysconfdir}/nova/nova-volume.conf
 
 %changelog
+* Thu Dec 16 2010 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-10
+- Added Conflicts for openstack-nova-compute-config package
+
 * Tue Dec 14 2010 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-9
 - --dhcpbridge=/usr/bin/nova-dhcpbridge
 
