@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.1
-Release:          bzr460
+Release:          bzr464
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -65,7 +65,7 @@ Requires:         python-anyjson >= 0.2.4
 Requires:         python-IPy >= 0.70
 Requires:         python-boto >= 1.9b
 Requires:         python-carrot >= 0.10.5
-Requires:         python-daemon >= 1.5.5
+Requires:         python-daemon = 1.5.5
 Requires:         python-eventlet >= 0.9.12
 Requires:         python-gflags >= 1.3
 Requires:         python-lockfile = 0.8
@@ -422,6 +422,9 @@ fi
 %endif
 
 %changelog
+* Tue Dec 14 2010 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-bzr464
+- Changed dependency for python-daemon to = 1.5.5
+
 * Tue Dec 14 2010 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-bzr460
 - Added vconfig as a dep for python-nova
 
