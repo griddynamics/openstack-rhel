@@ -1,4 +1,4 @@
-%global with_doc 1
+%global with_doc 0
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -6,20 +6,16 @@
 
 Name:             openstack-nova
 Version:          2011.1
-Release:          bzr464
+Release:          bzr553
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
 Source0:          http://nova.openstack.org/tarballs/nova-%{version}~%{release}.tar.gz
-Source2:          %{name}-api.init
-Source4:          %{name}-compute.init
+Source1:          %{name}-upstart.conf
+Source2:          %{name}.init
 Source6:          %{name}.logrotate
-Source9:          %{name}-network.init
-Source11:         %{name}-objectstore.init
-Source13:         %{name}-scheduler.init
-Source15:         %{name}-volume.init
 Source20:         %{name}-sudoers
 Source21:         %{name}-polkit.pkla
 
@@ -35,6 +31,7 @@ BuildRequires:    python-setuptools
 Requires:         python-nova = %{version}-%{release}
 Requires:         openstack-nova-config = %{version}
 Requires:         sudo
+Requires:         upstart
 
 Requires(post):   chkconfig
 Requires(postun): initscripts
@@ -108,6 +105,7 @@ Requires:         %{name} = %{version}-%{release}
 Requires:         libvirt-python
 Requires:         libxml2-python
 Requires:         rabbitmq-server
+Requires:         python-cheetah
 
 %description      compute
 Nova is a cloud computing fabric controller (the main part of an IaaS system)
@@ -252,13 +250,14 @@ install -d -m 755 %{buildroot}%{_sharedstatedir}/nova/tmp
 install -d -m 755 %{buildroot}%{_localstatedir}/log/nova
 cp -rp CA %{buildroot}%{_sharedstatedir}/nova
 
-# Install init files
-install -p -D -m 755 %{SOURCE2} %{buildroot}%{_initrddir}/%{name}-api
-install -p -D -m 755 %{SOURCE4} %{buildroot}%{_initrddir}/%{name}-compute
-install -p -D -m 755 %{SOURCE9} %{buildroot}%{_initrddir}/%{name}-network
-install -p -D -m 755 %{SOURCE11} %{buildroot}%{_initrddir}/%{name}-objectstore
-install -p -D -m 755 %{SOURCE13} %{buildroot}%{_initrddir}/%{name}-scheduler
-install -p -D -m 755 %{SOURCE15} %{buildroot}%{_initrddir}/%{name}-volume
+# Install upstart configs & initscripts wrappers
+for service in api compute instancemonitor network objectstore scheduler volume; do
+	install -p -D -m 755 %{SOURCE1} %{buildroot}%{_sysconfdir}/init/%{name}-$service.conf
+	perl -pi -e "s/SUB/$service/g" %{buildroot}%{_sysconfdir}/init/%{name}-$service.conf
+
+	install -p -D -m 755 %{SOURCE2} %{buildroot}%{_initrddir}/%{name}-$service
+	perl -pi -e "s/SUB/$service/g" %{buildroot}%{_initrddir}/%{name}-$service	
+done
 
 # Install sudoers
 install -p -D -m 440 %{SOURCE20} %{buildroot}%{_sysconfdir}/sudoers.d/%{name}
@@ -272,12 +271,7 @@ install -d -m 755 %{buildroot}%{_localstatedir}/run/nova
 # Install template files
 install -p -D -m 644 nova/auth/novarc.template %{buildroot}%{_datarootdir}/nova/novarc.template
 install -p -D -m 644 nova/cloudpipe/client.ovpn.template %{buildroot}%{_datarootdir}/nova/client.ovpn.template
-install -p -D -m 644 nova/virt/libvirt.qemu.xml.template %{buildroot}%{_datarootdir}/nova/libvirt.qemu.xml.template
-install -p -D -m 644 nova/virt/libvirt.xen.xml.template %{buildroot}%{_datarootdir}/nova/libvirt.xen.xml.template
-install -p -D -m 644 nova/virt/libvirt.uml.xml.template %{buildroot}%{_datarootdir}/nova/libvirt.uml.xml.template
-install -p -D -m 644 nova/virt/libvirt.rescue.qemu.xml.template %{buildroot}%{_datarootdir}/nova/libvirt.rescue.qemu.xml.template
-install -p -D -m 644 nova/virt/libvirt.rescue.xen.xml.template %{buildroot}%{_datarootdir}/nova/libvirt.rescue.xen.xml.template
-install -p -D -m 644 nova/virt/libvirt.rescue.uml.xml.template %{buildroot}%{_datarootdir}/nova/libvirt.rescue.uml.xml.template
+install -p -D -m 644 nova/virt/libvirt.xml.template %{buildroot}%{_datarootdir}/nova/libvirt.xml.template
 install -p -D -m 644 nova/virt/interfaces.template %{buildroot}%{_datarootdir}/nova/interfaces.template
 
 # Clean CA directory
@@ -381,39 +375,49 @@ fi
 %defattr(-,root,root,-)
 %{_initrddir}/%{name}-api
 %{_bindir}/nova-api
+%{_sysconfdir}/init/%{name}-api.conf
 
 %files compute
 %defattr(-,root,root,-)
 %{_sysconfdir}/polkit-1/localauthority/50-local.d/50-openstack-nova.pkla
 %{_bindir}/nova-compute
 %{_bindir}/nova-debug
+%{_bindir}/nova-logspool
+%{_bindir}/nova-spoolsentry
 %{_initrddir}/%{name}-compute
+%{_sysconfdir}/init/%{name}-compute.conf
 
 %files instancemonitor
 %defattr(-,root,root,-)
 %{_bindir}/nova-instancemonitor
+%{_initrddir}/%{name}-instancemonitor
+%{_sysconfdir}/init/%{name}-instancemonitor.conf
 
 %files network
 %defattr(-,root,root,-)
 %{_bindir}/nova-network
 %{_bindir}/nova-dhcpbridge
 %{_initrddir}/%{name}-network
+%{_sysconfdir}/init/%{name}-network.conf
 
 %files objectstore
 %defattr(-,root,root,-)
 %{_bindir}/nova-import-canonical-imagestore
 %{_bindir}/nova-objectstore
 %{_initrddir}/%{name}-objectstore
+%{_sysconfdir}/init/%{name}-objectstore.conf
 
 %files scheduler
 %defattr(-,root,root,-)
 %{_bindir}/nova-scheduler
 %{_initrddir}/%{name}-scheduler
+%{_sysconfdir}/init/%{name}-scheduler.conf
 
 %files volume
 %defattr(-,root,root,-)
 %{_bindir}/nova-volume
 %{_initrddir}/%{name}-volume
+%{_sysconfdir}/init/%{name}-volume.conf
 
 %if 0%{?with_doc}
 %files doc
@@ -422,6 +426,20 @@ fi
 %endif
 
 %changelog
+* Wed Jan 12 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-bzr553
+- Added dep on python-cheetah from standard RHEL distro
+- Temporary disabled build of -doc package to speed up testing env
+
+* Wed Jan 12 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-bzr552
+- Fixed bug with upstart configs
+
+* Wed Jan 12 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-bzr551
+- Moved initscripts to upstart
+
+* Sat Jan 01 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-bzr509
+- Updated config patch
+- Removed templates
+
 * Tue Dec 14 2010 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-bzr464
 - Changed dependency for python-daemon to = 1.5.5
 

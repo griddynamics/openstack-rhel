@@ -28,7 +28,8 @@ fi
 
 cat $NOVASPECORIG | perl -pi -e "s/bzr(\d+)/bzr$BUILD/" > $NOVASPEC
 rm -f "$RPMSANDBOX/RPMS/*/*bzr$BUILD*.rpm"
-rpmbuild -bb $NOVASPEC
+rpmbuild -bb $NOVASPEC || exit -1
+rpmbuild -bs $NOVASPEC || exit -1
 rm -f $NOVASPEC
 
 if [ -f "$RPMSANDBOX/RPMS/noarch/openstack-nova-$NOVAVER-bzr$BUILD.noarch.rpm" ]; then

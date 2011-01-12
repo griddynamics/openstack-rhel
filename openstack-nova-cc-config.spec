@@ -1,6 +1,6 @@
 Name:             openstack-nova-cc-config
 Version:          2011.1
-Release:          10
+Release:          11
 Summary:          OpenStack Compute (nova) - Cloud Controller config
 
 Group:            Development/Languages
@@ -43,46 +43,18 @@ install -d -m 755 %{buildroot}%{_sysconfdir}/nova
 # Install config files
 install -p -D -m 644 %{SOURCE0} %{buildroot}%{_sysconfdir}/nova/nova.conf
 
-install -p -D -m 644 %{SOURCE0} %{buildroot}%{_sysconfdir}/nova/nova-api.conf
-perl -pi -e 's,/var/log/nova/nova.log,/var/log/nova/nova-api.log,' %{buildroot}%{_sysconfdir}/nova/nova-api.conf
-
-install -p -D -m 644 %{SOURCE0} %{buildroot}%{_sysconfdir}/nova/nova-compute.conf
-perl -pi -e 's,/var/log/nova/nova.log,/var/log/nova/nova-compute.log,' %{buildroot}%{_sysconfdir}/nova/nova-compute.conf
-
-install -p -D -m 644 %{SOURCE0} %{buildroot}%{_sysconfdir}/nova/nova-dhcpbridge.conf
-perl -pi -e 's,/var/log/nova/nova.log,/var/log/nova/nova-dhcpbridge.log,' %{buildroot}%{_sysconfdir}/nova/nova-dhcpbridge.conf
-
-install -p -D -m 644 %{SOURCE0} %{buildroot}%{_sysconfdir}/nova/nova-manage.conf
-perl -pi -e 's,/var/log/nova/nova.log,/var/log/nova/nova-manage.log,' %{buildroot}%{_sysconfdir}/nova/nova-manage.conf
-
-install -p -D -m 644 %{SOURCE0} %{buildroot}%{_sysconfdir}/nova/nova-network.conf
-perl -pi -e 's,/var/log/nova/nova.log,/var/log/nova/nova-network.log,' %{buildroot}%{_sysconfdir}/nova/nova-network.conf
-
-install -p -D -m 644 %{SOURCE0} %{buildroot}%{_sysconfdir}/nova/nova-objectstore.conf
-perl -pi -e 's,/var/log/nova/nova.log,/var/log/nova/nova-objectstore.log,' %{buildroot}%{_sysconfdir}/nova/nova-objectstore.conf
-
-install -p -D -m 644 %{SOURCE0} %{buildroot}%{_sysconfdir}/nova/nova-scheduler.conf
-perl -pi -e 's,/var/log/nova/nova.log,/var/log/nova/nova-scheduler.log,' %{buildroot}%{_sysconfdir}/nova/nova-scheduler.conf
-
-install -p -D -m 644 %{SOURCE0} %{buildroot}%{_sysconfdir}/nova/nova-volume.conf
-perl -pi -e 's,/var/log/nova/nova.log,/var/log/nova/nova-volume.log,' %{buildroot}%{_sysconfdir}/nova/nova-volume.conf
-
 %clean
 rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
 %config(noreplace) %{_sysconfdir}/nova/nova.conf
-%config(noreplace) %{_sysconfdir}/nova/nova-api.conf
-%config(noreplace) %{_sysconfdir}/nova/nova-compute.conf
-%config(noreplace) %{_sysconfdir}/nova/nova-dhcpbridge.conf
-%config(noreplace) %{_sysconfdir}/nova/nova-manage.conf
-%config(noreplace) %{_sysconfdir}/nova/nova-network.conf
-%config(noreplace) %{_sysconfdir}/nova/nova-objectstore.conf
-%config(noreplace) %{_sysconfdir}/nova/nova-scheduler.conf
-%config(noreplace) %{_sysconfdir}/nova/nova-volume.conf
 
 %changelog
+* Mon Jan 11 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-11
+- Changed --logfile to --logdir
+- Moved all config files to one /etc/nova/nova.conf
+
 * Thu Dec 16 2010 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-10
 - Added Conflicts for openstack-nova-compute-config package
 
