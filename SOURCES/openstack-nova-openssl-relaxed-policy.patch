@@ -1,0 +1,12 @@
+diff -Naur nova-2011.1.orig/CA/openssl.cnf.tmpl nova-2011.1/CA/openssl.cnf.tmpl
+--- nova-2011.1.orig/CA/openssl.cnf.tmpl	2010-12-03 01:19:28.000000000 -0800
++++ nova-2011.1/CA/openssl.cnf.tmpl	2010-12-06 17:57:41.569095521 -0800
+@@ -42,7 +42,7 @@
+ 
+ [ policy_match ]
+ countryName		= match
+-stateOrProvinceName	= match
++stateOrProvinceName	= supplied
+ organizationName	= optional
+ organizationalUnitName	= optional
+ commonName		= supplied

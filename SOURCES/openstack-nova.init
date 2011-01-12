@@ -1,0 +1,25 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          openstack-nova-SUB
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Stop:      0 1 6
+# Short-Description: OpenStack Nova SUB service
+# Description:       OpenStack Nova SUB service
+### END INIT INFO
+
+# openstack-nova-SUB: nova SUB server
+#
+# chkconfig: - 20 80
+# description: OpenStack Nova SUB service
+
+case "$1" in
+    start|stop|restart|status)
+        /sbin/$1 openstack-nova-SUB
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart}"
+        exit 2
+esac
+exit $?

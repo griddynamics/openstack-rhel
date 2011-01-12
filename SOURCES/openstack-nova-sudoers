@@ -1,0 +1,34 @@
+Defaults:nova !requiretty
+
+Cmnd_Alias NOVACMDS = /bin/chmod /var/lib/nova/tmp/*/root/.ssh, \
+                      /bin/chown /var/lib/nova/tmp/*/root/.ssh, \
+                      /bin/chown,                               \
+                      /bin/chmod,                               \
+                      /sbin/ifconfig,                           \
+                      /sbin/ip,                                 \
+                      /sbin/iptables,                           \
+                      /sbin/kpartx,                             \
+                      /sbin/losetup,                            \
+                      /sbin/lvcreate,                           \
+                      /sbin/lvremove,                           \
+                      /bin/mkdir,                               \
+                      /bin/mount,                               \
+                      /sbin/pvcreate,                           \
+                      /usr/bin/tee,                             \
+                      /sbin/tune2fs,                            \
+                      /bin/umount,                              \
+                      /sbin/vgcreate,                           \
+                      /usr/bin/virsh,                           \
+                      /usr/sbin/brctl,                          \
+                      /usr/sbin/vblade-persist,                 \
+                      /sbin/pvcreate,                           \
+                      /sbin/aoe-discover,                       \
+                      /sbin/vgcreate,                           \
+                      /sbin/lvremove,                           \
+                      /sbin/lvrcreate,                          \
+                      /bin/aoe-stat,                            \
+                      /bin/kill,                                \
+                      /sbin/vconfig,                            \
+                      /usr/sbin/dnsmasq
+
+nova ALL = (root) NOPASSWD: SETENV: NOVACMDS
