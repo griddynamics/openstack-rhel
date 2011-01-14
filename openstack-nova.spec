@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.1
-Release:          bzr553
+Release:          bzr565
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -27,6 +27,7 @@ BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:        noarch
 BuildRequires:    python-devel
 BuildRequires:    python-setuptools
+BuildRequires:    python-netaddr
 
 Requires:         python-nova = %{version}-%{release}
 Requires:         openstack-nova-config = %{version}
@@ -74,6 +75,7 @@ Requires:         python-tornado
 Requires:         python-twisted-core >= 10.1.0
 Requires:         python-twisted-web >= 10.1.0
 Requires:         python-webob = 0.9.8
+Requires:         python-netaddr
 
 %description -n   python-nova
 Nova is a cloud computing fabric controller (the main part of an IaaS system)
@@ -426,6 +428,9 @@ fi
 %endif
 
 %changelog
+* Fri Jan 14 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-bzr565
+- Added build and runtime dep on python-netaddr
+
 * Wed Jan 12 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-bzr553
 - Added dep on python-cheetah from standard RHEL distro
 - Temporary disabled build of -doc package to speed up testing env
