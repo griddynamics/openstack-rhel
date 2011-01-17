@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.1
-Release:          bzr565
+Release:          bzr569
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -15,7 +15,7 @@ URL:              http://openstack.org/projects/compute/
 Source0:          http://nova.openstack.org/tarballs/nova-%{version}~%{release}.tar.gz
 Source1:          %{name}-upstart.conf
 Source2:          %{name}.init
-Source6:          %{name}.logrotate
+#Source6:          %{name}.logrotate
 Source20:         %{name}-sudoers
 Source21:         %{name}-polkit.pkla
 
@@ -265,7 +265,7 @@ done
 install -p -D -m 440 %{SOURCE20} %{buildroot}%{_sysconfdir}/sudoers.d/%{name}
 
 # Install logrotate
-install -p -D -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
+#install -p -D -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
 
 # Install pid directory
 install -d -m 755 %{buildroot}%{_localstatedir}/run/nova
@@ -358,7 +358,7 @@ fi
 %files
 %defattr(-,root,root,-)
 %doc README
-%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
+#%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %config(noreplace) %{_sysconfdir}/sudoers.d/%{name}
 %dir %attr(0755, nova, root) %{_localstatedir}/log/nova
 %dir %attr(0755, nova, root) %{_localstatedir}/run/nova
@@ -428,6 +428,9 @@ fi
 %endif
 
 %changelog
+* Mon Jan 17 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-bzr569
+- Temporary commented logrotate script
+
 * Fri Jan 14 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-bzr565
 - Added build and runtime dep on python-netaddr
 
