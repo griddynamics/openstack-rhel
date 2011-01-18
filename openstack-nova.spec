@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.1
-Release:          bzr569
+Release:          bzr572
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -15,6 +15,7 @@ URL:              http://openstack.org/projects/compute/
 Source0:          http://nova.openstack.org/tarballs/nova-%{version}~%{release}.tar.gz
 Source1:          %{name}-upstart.conf
 Source2:          %{name}.init
+Source3:          %{name}-api.conf
 #Source6:          %{name}.logrotate
 Source20:         %{name}-sudoers
 Source21:         %{name}-polkit.pkla
@@ -90,6 +91,8 @@ Summary:          A nova api server
 Group:            Applications/System
 
 Requires:         %{name} = %{version}-%{release}
+Requires:         python-paste
+Requires:         python-paste-deploy
 
 %description      api
 Nova is a cloud computing fabric controller (the main part of an IaaS system)
@@ -286,6 +289,9 @@ find %{buildroot}%{_sharedstatedir}/nova/CA -name .placeholder -delete
 install -d -m 755 %{buildroot}%{_sysconfdir}/polkit-1/localauthority/50-local.d
 install -p -D -m 644 %{SOURCE21} %{buildroot}%{_sysconfdir}/polkit-1/localauthority/50-local.d/50-openstack-nova.pkla
 
+# Install configuration file for nova-api service
+install -p -D -m 440 %{SOURCE3} %{buildroot}%{_sysconfdir}/nova/nova-api.conf
+
 %clean
 rm -rf %{buildroot}
 
@@ -378,6 +384,8 @@ fi
 %{_initrddir}/%{name}-api
 %{_bindir}/nova-api
 %{_sysconfdir}/init/%{name}-api.conf
+%defattr(-,nova,nobody,-)
+%config(noreplace) %{_sysconfdir}/nova/nova-api.conf
 
 %files compute
 %defattr(-,root,root,-)
@@ -428,6 +436,11 @@ fi
 %endif
 
 %changelog
+* Tue Jan 18 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-bzr572
+- Added /etc/nova/nova-api.conf
+- Reworked openstack-nova-rhel-paths.patch
+- Added dependencies for openstack-nova-api for paste & paste-deploy modules
+
 * Mon Jan 17 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-bzr569
 - Temporary commented logrotate script
 

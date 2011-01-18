@@ -1,104 +1,26 @@
 diff -Naur nova-2011.1.orig/bin/nova-api nova-2011.1/bin/nova-api
---- nova-2011.1.orig/bin/nova-api	2011-01-09 23:23:23.000000000 +0300
-+++ nova-2011.1/bin/nova-api	2011-01-09 23:49:22.368130038 +0300
-@@ -48,7 +48,7 @@
- 
+--- nova-2011.1.orig/bin/nova-api	2011-01-17 22:22:52.000000000 +0300
++++ nova-2011.1/bin/nova-api	2011-01-18 13:33:47.387946635 +0300
+@@ -79,8 +79,8 @@
  
  if __name__ == '__main__':
--    utils.default_flagfile()
-+    utils.default_flagfile('/etc/nova/nova.conf')
      FLAGS(sys.argv)
-     server = wsgi.Server()
-     server.start(api.API('os'), FLAGS.osapi_port, host=FLAGS.osapi_host)
-diff -Naur nova-2011.1.orig/bin/nova-compute nova-2011.1/bin/nova-compute
---- nova-2011.1.orig/bin/nova-compute	2011-01-09 23:23:23.000000000 +0300
-+++ nova-2011.1/bin/nova-compute	2011-01-09 23:51:15.794154861 +0300
-@@ -40,6 +40,6 @@
- from nova import utils
- 
- if __name__ == '__main__':
--    utils.default_flagfile()
-+    utils.default_flagfile('/etc/nova/nova.conf')
-     service.serve()
-     service.wait()
-diff -Naur nova-2011.1.orig/bin/nova-import-canonical-imagestore nova-2011.1/bin/nova-import-canonical-imagestore
---- nova-2011.1.orig/bin/nova-import-canonical-imagestore	2011-01-09 23:23:23.000000000 +0300
-+++ nova-2011.1/bin/nova-import-canonical-imagestore	2011-01-09 23:49:36.014108326 +0300
-@@ -90,7 +90,7 @@
- 
- def main():
-     """Main entry point."""
--    utils.default_flagfile()
-+    utils.default_flagfile('/etc/nova/nova.conf')
-     argv = FLAGS(sys.argv)
-     images = get_images()
- 
-diff -Naur nova-2011.1.orig/bin/nova-instancemonitor nova-2011.1/bin/nova-instancemonitor
---- nova-2011.1.orig/bin/nova-instancemonitor	2011-01-09 23:23:23.000000000 +0300
-+++ nova-2011.1/bin/nova-instancemonitor	2011-01-09 23:49:58.417114107 +0300
-@@ -48,7 +48,7 @@
+-    conf = wsgi.paste_config_file('nova-api.conf')
++    conf = wsgi.paste_config_file('/etc/nova/nova-api.conf')
+     if conf:
+         run_app(conf)
+     else:
+-        LOG.error(_("No paste configuration found for: %s"), 'nova-api.conf')
++        LOG.error(_("No paste configuration found for: %s"), '/etc/nova/nova-api.conf')
+diff -Naur nova-2011.1.orig/nova/utils.py nova-2011.1/nova/utils.py
+--- nova-2011.1.orig/nova/utils.py	2011-01-17 22:22:52.000000000 +0300
++++ nova-2011.1/nova/utils.py	2011-01-18 13:34:06.894921472 +0300
+@@ -161,7 +161,7 @@
+     return os.path.abspath(nova.__file__).split('nova/__init__.pyc')[0]
  
  
- if __name__ == '__main__':
--    utils.default_flagfile()
-+    utils.default_flagfile('/etc/nova/nova.conf')
-     twistd.serve(__file__)
- 
- if __name__ == '__builtin__':
-diff -Naur nova-2011.1.orig/bin/nova-manage nova-2011.1/bin/nova-manage
---- nova-2011.1.orig/bin/nova-manage	2011-01-09 23:23:23.000000000 +0300
-+++ nova-2011.1/bin/nova-manage	2011-01-09 23:49:08.627130503 +0300
-@@ -553,7 +553,7 @@
- 
- def main():
-     """Parse options and call the appropriate class/method."""
--    utils.default_flagfile()
-+    utils.default_flagfile('/etc/nova/nova.conf')
-     argv = FLAGS(sys.argv)
- 
-     script_name = argv.pop(0)
-diff -Naur nova-2011.1.orig/bin/nova-network nova-2011.1/bin/nova-network
---- nova-2011.1.orig/bin/nova-network	2011-01-09 23:23:23.000000000 +0300
-+++ nova-2011.1/bin/nova-network	2011-01-09 23:50:10.711115974 +0300
-@@ -40,6 +40,6 @@
- from nova import utils
- 
- if __name__ == '__main__':
--    utils.default_flagfile()
-+    utils.default_flagfile('/etc/nova/nova.conf')
-     service.serve()
-     service.wait()
-diff -Naur nova-2011.1.orig/bin/nova-objectstore nova-2011.1/bin/nova-objectstore
---- nova-2011.1.orig/bin/nova-objectstore	2011-01-09 23:23:23.000000000 +0300
-+++ nova-2011.1/bin/nova-objectstore	2011-01-09 23:50:19.941117808 +0300
-@@ -45,7 +45,7 @@
- 
- 
- if __name__ == '__main__':
--    utils.default_flagfile()
-+    utils.default_flagfile('/etc/nova/nova.conf')
-     twistd.serve(__file__)
- 
- if __name__ == '__builtin__':
-diff -Naur nova-2011.1.orig/bin/nova-scheduler nova-2011.1/bin/nova-scheduler
---- nova-2011.1.orig/bin/nova-scheduler	2011-01-09 23:23:23.000000000 +0300
-+++ nova-2011.1/bin/nova-scheduler	2011-01-09 23:50:29.251120344 +0300
-@@ -40,6 +40,6 @@
- from nova import utils
- 
- if __name__ == '__main__':
--    utils.default_flagfile()
-+    utils.default_flagfile('/etc/nova/nova.conf')
-     service.serve()
-     service.wait()
-diff -Naur nova-2011.1.orig/bin/nova-volume nova-2011.1/bin/nova-volume
---- nova-2011.1.orig/bin/nova-volume	2011-01-09 23:23:23.000000000 +0300
-+++ nova-2011.1/bin/nova-volume	2011-01-09 23:50:36.026117459 +0300
-@@ -40,6 +40,6 @@
- from nova import utils
- 
- if __name__ == '__main__':
--    utils.default_flagfile()
-+    utils.default_flagfile('/etc/nova/nova.conf')
-     service.serve()
-     service.wait()
+-def default_flagfile(filename='nova.conf'):
++def default_flagfile(filename='/etc/nova/nova.conf'):
+     for arg in sys.argv:
+         if arg.find('flagfile') != -1:
+             break
