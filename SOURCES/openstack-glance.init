@@ -1,0 +1,92 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          openstack-glance
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Stop:      0 1 6
+# Short-Description: Nova api server
+# Description:       API server for nova.
+### END INIT INFO
+
+# openstack-glance: OpenStack Glance API server
+#
+# chkconfig: - 20 80
+# description: API server for OpenStack Glance.
+
+. /etc/rc.d/init.d/functions
+
+prog="OpenStack Glance API"
+name="glance"
+USER="glance"
+GROUP="nobody"
+FLAGFILE="/etc/nova/glance.conf"
+PIDFILE="/var/run/glance/glance.pid"
+LOGFILE="/var/log/glance.log"
+
+[ -e "/etc/sysconfig/openstack-$name" ] && . "/etc/sysconfig/openstack-$name"
+
+uid="$(getent passwd $USER | cut -f3 -d:)"
+gid="$(getent passwd $GROUP | cut -f4 -d:)"
+DAEMON_OPTIONS="--flagfile=$FLAGFILE --uid=$uid --gid=$gid --pidfile=$PIDFILE --logfile=$LOGFILE"
+OPTIONS="${OPTIONS} $DAEMON_OPTIONS"
+
+lockfile="/var/lock/subsys/openstack-glance"
+
+start() {
+    echo -n $"Starting $prog: "
+    /usr/bin/$name-api $OPTIONS && success || failure
+    retval=$?
+    [ $retval -eq 0 ] && touch $lockfile
+    echo ""
+    return $retval
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    killproc -p $PIDFILE /usr/bin/$name-api && success || failure
+    retval=$?
+    [ $retval -eq 0 ] && rm -f $lockfile
+    echo ""
+    return $retval
+}
+
+restart() {
+    stop
+    start
+}
+
+rh_status() {
+    status -p $PIDFILE "nova-$name"
+}
+
+rh_status_q() {
+    rh_status &> /dev/null
+}
+
+case "$1" in
+    start)
+        rh_status_q && exit 0
+        $1
+        ;;
+    stop)
+        rh_status_q || exit 0
+        $1
+        ;;
+    restart)
+        $1
+        ;;
+    reload)
+        ;;
+    status)
+        rh_status
+        ;;
+    condrestart|try-restart)
+        rh_status_q || exit 0
+        restart
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart}"
+        exit 2
+esac
+exit $?
