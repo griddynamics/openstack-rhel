@@ -1,10 +1,10 @@
 diff -Naur nova-2011.1.orig/bin/nova-api nova-2011.1/bin/nova-api
---- nova-2011.1.orig/bin/nova-api	2011-01-17 22:22:52.000000000 +0300
-+++ nova-2011.1/bin/nova-api	2011-01-18 13:33:47.387946635 +0300
-@@ -79,8 +79,8 @@
- 
- if __name__ == '__main__':
+--- nova-2011.1.orig/bin/nova-api	2011-01-21 19:30:29.000000000 +0300
++++ nova-2011.1/bin/nova-api	2011-01-21 19:47:48.125872225 +0300
+@@ -82,8 +82,8 @@
      FLAGS(sys.argv)
+     LOG.audit(_("Starting nova-api node (version %s)"),
+               version.version_string_with_vcs())
 -    conf = wsgi.paste_config_file('nova-api.conf')
 +    conf = wsgi.paste_config_file('/etc/nova/nova-api.conf')
      if conf:
@@ -13,8 +13,8 @@ diff -Naur nova-2011.1.orig/bin/nova-api nova-2011.1/bin/nova-api
 -        LOG.error(_("No paste configuration found for: %s"), 'nova-api.conf')
 +        LOG.error(_("No paste configuration found for: %s"), '/etc/nova/nova-api.conf')
 diff -Naur nova-2011.1.orig/nova/utils.py nova-2011.1/nova/utils.py
---- nova-2011.1.orig/nova/utils.py	2011-01-17 22:22:52.000000000 +0300
-+++ nova-2011.1/nova/utils.py	2011-01-18 13:34:06.894921472 +0300
+--- nova-2011.1.orig/nova/utils.py	2011-01-21 19:30:29.000000000 +0300
++++ nova-2011.1/nova/utils.py	2011-01-21 19:46:40.403785449 +0300
 @@ -161,7 +161,7 @@
      return os.path.abspath(nova.__file__).split('nova/__init__.pyc')[0]
  
