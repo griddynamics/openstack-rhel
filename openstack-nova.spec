@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.1
-Release:          bzr597
+Release:          bzr598
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -437,6 +437,10 @@ fi
 %endif
 
 %changelog
+* Fri Jan 21 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-bzr598
+- Updated to bzr598
+- Updated patch for rhel paths
+
 * Fri Jan 21 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-bzr597
 - Added dependency for python-glance
 
