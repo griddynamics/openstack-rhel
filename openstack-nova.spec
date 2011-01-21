@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.1
-Release:          bzr572
+Release:          bzr597
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -77,6 +77,7 @@ Requires:         python-twisted-core >= 10.1.0
 Requires:         python-twisted-web >= 10.1.0
 Requires:         python-webob = 0.9.8
 Requires:         python-netaddr
+Requires:         python-glance
 
 %description -n   python-nova
 Nova is a cloud computing fabric controller (the main part of an IaaS system)
@@ -436,6 +437,9 @@ fi
 %endif
 
 %changelog
+* Fri Jan 21 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-bzr597
+- Added dependency for python-glance
+
 * Tue Jan 18 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-bzr572
 - Added /etc/nova/nova-api.conf
 - Reworked openstack-nova-rhel-paths.patch
