@@ -1,6 +1,6 @@
 Name:             openstack-nova-cc-config
 Version:          2011.1
-Release:          11
+Release:          12
 Summary:          OpenStack Compute (nova) - Cloud Controller config
 
 Group:            Development/Languages
@@ -51,6 +51,9 @@ rm -rf %{buildroot}
 %config(noreplace) %{_sysconfdir}/nova/nova.conf
 
 %changelog
+* Fri Jan 21 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-12
+- Updated configs
+
 * Mon Jan 11 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-11
 - Changed --logfile to --logdir
 - Moved all config files to one /etc/nova/nova.conf
