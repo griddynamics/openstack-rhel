@@ -7,7 +7,7 @@
 
 Name:             openstack-%{prj}
 Version:          0.1.2
-Release:          1
+Release:          3
 Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages
@@ -114,7 +114,13 @@ install -d -m 755 %{buildroot}%{_sharedstatedir}/%{prj}/images
 install -p -D -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/nova/%{prj}.conf
 
 # Initscript
-install -p -D -m 644 %{SOURCE2} %{buildroot}%{_initrddir}/%{name}
+install -p -D -m 755 %{SOURCE2} %{buildroot}%{_initrddir}/%{name}
+
+# Install pid directory
+install -d -m 755 %{buildroot}%{_localstatedir}/run/%{prj}
+
+# Install log directory
+install -d -m 755 %{buildroot}%{_localstatedir}/log/%{prj}
 
 %clean
 rm -rf %{buildroot}
@@ -144,6 +150,8 @@ fi
 %defattr(-,%{prj},nobody,-)
 %config(noreplace) %{_sysconfdir}/nova/%{prj}.conf
 %dir %{_sharedstatedir}/%{prj}
+%dir %attr(0755, %{prj}, nobody) %{_localstatedir}/log/%{prj}
+%dir %attr(0755, %{prj}, nobody) %{_localstatedir}/run/%{prj}
 
 %files -n python-%{prj}
 %{python_sitelib}/%{prj}
@@ -156,5 +164,12 @@ fi
 %endif
 
 %changelog
+* Fri Jan 21 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 0.1.2-3
+- Added pid directory
+- Relocated log to /var/log/glance/glance.log
+
+* Fri Jan 21 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 0.1.2-2
+- Changed permissions on initscript
+
 * Thu Jan 20 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 0.1.2-1
 - Initial build
