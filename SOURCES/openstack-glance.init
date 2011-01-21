@@ -22,7 +22,7 @@ USER="glance"
 GROUP="nobody"
 FLAGFILE="/etc/nova/glance.conf"
 PIDFILE="/var/run/glance/glance.pid"
-LOGFILE="/var/log/glance.log"
+LOGFILE="/var/log/glance/glance.log"
 
 [ -e "/etc/sysconfig/openstack-$name" ] && . "/etc/sysconfig/openstack-$name"
 
