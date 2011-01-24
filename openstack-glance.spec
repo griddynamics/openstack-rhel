@@ -7,7 +7,7 @@
 
 Name:             openstack-%{prj}
 Version:          0.1.3
-Release:          1
+Release:          2
 Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages
@@ -30,18 +30,19 @@ Requires(pre):    shadow-utils
 Requires:         python-%{prj} = %{version}-%{release}
 
 %description
-The Glance project provides an image registration and discovery service (Parallax)
-and an image delivery service (Teller). These services are used in conjunction
-by Nova to deliver images from object stores, such as OpenStack's Swift service,
-to Nova's compute nodes.
+The Glance project provides services for discovering, registering, and
+retrieving virtual machine images. Glance has a RESTful API that allows
+querying of VM image metadata as well as retrieval of the actual image.
 
-This package contains the API server and reference implementation server.
+This package contains the API server and a reference implementation registry
+server, along with a client library.
 
 %package -n       python-%{prj}
 Summary:          Glance Python libraries
 Group:            Applications/System
 
 Requires:         python-anyjson
+Requires:         python-argparse
 Requires:         python-daemon = 1.5.5
 Requires:         python-eventlet >= 0.9.12
 Requires:         python-gflags >= 1.3
@@ -52,10 +53,9 @@ Requires:         python-sqlalchemy >= 0.6.3
 Requires:         python-webob
 
 %description -n   python-%{prj}
-The Glance project provides an image registration and discovery service (Parallax)
-and an image delivery service (Teller). These services are used in conjunction
-by Nova to deliver images from object stores, such as OpenStack's Swift service,
-to Nova's compute nodes.
+The Glance project provides services for discovering, registering, and
+retrieving virtual machine images. Glance has a RESTful API that allows
+querying of VM image metadata as well as retrieval of the actual image.
 
 This package contains the project's Python library.
 
@@ -76,12 +76,12 @@ BuildRequires:    python-sqlalchemy
 BuildRequires:    python-webob
 
 %description      doc
-The Glance project provides an image registration and discovery service (Parallax)
-and an image delivery service (Teller). These services are used in conjunction
-by Nova to deliver images from object stores, such as OpenStack's Swift service,
-to Nova's compute nodes.
+The Glance project provides services for discovering, registering, and
+retrieving virtual machine images. Glance has a RESTful API that allows
+querying of VM image metadata as well as retrieval of the actual image.
 
 This package contains documentation files for OpenStack Glance.
+
 %endif
 
 %prep
@@ -165,6 +165,10 @@ fi
 %endif
 
 %changelog
+* Mon Jan 24 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 0.1.3-2
+- Changed description (thanks to Jay Pipes)
+- Added python-argparse to deps, required by /usr/bin/glance-upload
+
 * Mon Jan 24 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 0.1.3-1
 - Release 0.1.3
 - Added glance-upload to openstack-glance package
