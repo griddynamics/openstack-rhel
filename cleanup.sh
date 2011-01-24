@@ -16,6 +16,7 @@ for n in $(virsh list|grep instance |perl -pi -e 's/^\s*(\d+).*$/$1/'); do virsh
 
 mysqladmin -uroot -p$PWD -f drop nova
 mysqladmin -uroot -p$PWD create nova
+nova-manage db sync
 rm -f /var/log/nova/nova*log*
 rm -fr /var/lib/nova/instances/* /var/lib/nova/images/*
 

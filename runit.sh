@@ -8,6 +8,7 @@ ADDR_PER_NETWORK=16
 
 TMPDIR=`mktemp -d`
 
+nova-manage db sync
 nova-manage user admin $USER
 nova-manage project create $PROJECT $USER
 nova-manage network create $NETWORK $NETWORKS_NUM $ADDR_PER_NETWORK
