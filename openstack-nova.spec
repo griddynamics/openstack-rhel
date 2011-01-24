@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.1
-Release:          bzr598
+Release:          bzr604
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -78,6 +78,7 @@ Requires:         python-twisted-web >= 10.1.0
 Requires:         python-webob = 0.9.8
 Requires:         python-netaddr
 Requires:         python-glance
+Requires:         python-sqlalchemy-migrate
 
 %description -n   python-nova
 Nova is a cloud computing fabric controller (the main part of an IaaS system)
@@ -437,6 +438,10 @@ fi
 %endif
 
 %changelog
+* Mon Jan 24 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-bzr604
+- Update to bzr604
+- Added dependency on python-sqlalchemy-migrate
+
 * Fri Jan 21 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-bzr598
 - Updated to bzr598
 - Updated patch for rhel paths
