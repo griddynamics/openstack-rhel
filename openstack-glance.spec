@@ -6,8 +6,8 @@
 %endif
 
 Name:             openstack-%{prj}
-Version:          0.1.2
-Release:          3
+Version:          0.1.3
+Release:          1
 Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages
@@ -146,6 +146,7 @@ fi
 %doc README
 %{_bindir}/%{prj}-api
 %{_bindir}/%{prj}-registry
+%{_bindir}/%{prj}-upload
 %{_initrddir}/%{name}
 %defattr(-,%{prj},nobody,-)
 %config(noreplace) %{_sysconfdir}/nova/%{prj}.conf
@@ -164,6 +165,10 @@ fi
 %endif
 
 %changelog
+* Mon Jan 24 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 0.1.3-1
+- Release 0.1.3
+- Added glance-upload to openstack-glance package
+
 * Fri Jan 21 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 0.1.2-3
 - Added pid directory
 - Relocated log to /var/log/glance/glance.log
