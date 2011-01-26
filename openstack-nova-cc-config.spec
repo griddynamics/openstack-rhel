@@ -1,6 +1,6 @@
 Name:             openstack-nova-cc-config
 Version:          2011.1
-Release:          12
+Release:          13
 Summary:          OpenStack Compute (nova) - Cloud Controller config
 
 Group:            Development/Languages
@@ -23,6 +23,8 @@ BuildRequires:    perl
 
 Conflicts:        openstack-nova-compute-config = %{version}
 Requires:         openstack-nova = %{version}
+Requires:         MySQL-python
+Requires:         mysql
 Provides:         openstack-nova-config = %{version}
 
 %description
@@ -51,6 +53,10 @@ rm -rf %{buildroot}
 %config(noreplace) %{_sysconfdir}/nova/nova.conf
 
 %changelog
+* Wed Jan 26 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-13
+- Added dependencies on MySQL-python and mysql - default DB for running Nova on
+  more than one host
+
 * Fri Jan 21 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-12
 - Updated configs
 
