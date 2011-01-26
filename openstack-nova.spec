@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.1
-Release:          bzr604
+Release:          bzr621
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -438,6 +438,9 @@ fi
 %endif
 
 %changelog
+* Wed Jan 26 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-bzr621
+- Updated to bzr621
+
 * Mon Jan 24 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-bzr604
 - Update to bzr604
 - Added dependency on python-sqlalchemy-migrate
