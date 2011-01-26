@@ -6,8 +6,8 @@
 %endif
 
 Name:             openstack-%{prj}
-Version:          0.1.3
-Release:          2
+Version:          0.1.4
+Release:          1
 Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages
@@ -165,6 +165,9 @@ fi
 %endif
 
 %changelog
+* Wed Jan 26 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 0.1.4-1
+- Release 0.1.4
+
 * Mon Jan 24 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 0.1.3-2
 - Changed description (thanks to Jay Pipes)
 - Added python-argparse to deps, required by /usr/bin/glance-upload
