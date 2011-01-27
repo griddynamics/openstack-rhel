@@ -6,17 +6,24 @@
 
 Name:             openstack-nova
 Version:          2011.1
-Release:          bzr621
+Release:          bzr629
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
 Source0:          http://nova.openstack.org/tarballs/nova-%{version}~%{release}.tar.gz
-Source1:          %{name}-upstart.conf
-Source2:          %{name}.init
 Source3:          %{name}-api.conf
 #Source6:          %{name}.logrotate
+
+# Initscripts
+Source11:         %{name}-api.init
+Source12:         %{name}-compute.init
+Source13:         %{name}-network.init
+Source14:         %{name}-objectstore.init
+Source15:         %{name}-scheduler.init
+Source16:         %{name}-volume.init
+
 Source20:         %{name}-sudoers
 Source21:         %{name}-polkit.pkla
 
@@ -31,9 +38,8 @@ BuildRequires:    python-setuptools
 BuildRequires:    python-netaddr
 
 Requires:         python-nova = %{version}-%{release}
-Requires:         openstack-nova-config = %{version}
+Requires:         %{name}-config = %{version}
 Requires:         sudo
-Requires:         upstart
 
 Requires(post):   chkconfig
 Requires(postun): initscripts
@@ -93,6 +99,7 @@ Summary:          A nova api server
 Group:            Applications/System
 
 Requires:         %{name} = %{version}-%{release}
+Requires:         start-stop-daemon
 Requires:         python-paste
 Requires:         python-paste-deploy
 
@@ -102,13 +109,14 @@ built to match the popular AWS EC2 and S3 APIs. It is written in Python, using
 the Tornado and Twisted frameworks, and relies on the standard AMQP messaging
 protocol, and the Redis KVS.
 
-This package contains the %{name} api server.
+This package contains the %{name} API Server.
 
 %package          compute
 Summary:          A nova compute server
 Group:            Applications/System
 
 Requires:         %{name} = %{version}-%{release}
+Requires:         start-stop-daemon
 Requires:         libvirt-python
 Requires:         libxml2-python
 Requires:         rabbitmq-server
@@ -120,13 +128,14 @@ built to match the popular AWS EC2 and S3 APIs. It is written in Python, using
 the Tornado and Twisted frameworks, and relies on the standard AMQP messaging
 protocol, and the Redis KVS.
 
-This package contains the %{name} compute server.
+This package contains the %{name} Compute Worker.
 
 %package          instancemonitor
 Summary:          A nova instancemonitor server
 Group:            Applications/System
 
 Requires:         %{name} = %{version}-%{release}
+Requires:         start-stop-daemon
 
 %description      instancemonitor
 Nova is a cloud computing fabric controller (the main part of an IaaS system)
@@ -141,6 +150,7 @@ Summary:          A nova network server
 Group:            Applications/System
 
 Requires:         %{name} = %{version}-%{release}
+Requires:         start-stop-daemon
 
 %description      network
 Nova is a cloud computing fabric controller (the main part of an IaaS system)
@@ -148,13 +158,14 @@ built to match the popular AWS EC2 and S3 APIs. It is written in Python, using
 the Tornado and Twisted frameworks, and relies on the standard AMQP messaging
 protocol, and the Redis KVS.
 
-This package contains the %{name} network server.
+This package contains the %{name} Network Controller.
 
 %package          objectstore
 Summary:          A nova objectstore server
 Group:            Applications/System
 
 Requires:         %{name} = %{version}-%{release}
+Requires:         start-stop-daemon
 
 %description      objectstore
 Nova is a cloud computing fabric controller (the main part of an IaaS system)
@@ -169,6 +180,7 @@ Summary:          A nova scheduler server
 Group:            Applications/System
 
 Requires:         %{name} = %{version}-%{release}
+Requires:         start-stop-daemon
 
 %description      scheduler
 Nova is a cloud computing fabric controller (the main part of an IaaS system)
@@ -176,13 +188,14 @@ built to match the popular AWS EC2 and S3 APIs. It is written in Python, using
 the Tornado and Twisted frameworks, and relies on the standard AMQP messaging
 protocol, and the Redis KVS.
 
-This package contains the %{name} scheduler server.
+This package contains the %{name} Scheduler.
 
 %package          volume
 Summary:          A nova volume server
 Group:            Applications/System
 
 Requires:         %{name} = %{version}-%{release}
+Requires:         start-stop-daemon
 
 %description      volume
 Nova is a cloud computing fabric controller (the main part of an IaaS system)
@@ -190,7 +203,7 @@ built to match the popular AWS EC2 and S3 APIs. It is written in Python, using
 the Tornado and Twisted frameworks, and relies on the standard AMQP messaging
 protocol, and the Redis KVS.
 
-This package contains the %{name} volume server.
+This package contains the %{name} Volume service.
 
 %if 0%{?with_doc}
 %package doc
@@ -257,14 +270,13 @@ install -d -m 755 %{buildroot}%{_sharedstatedir}/nova/tmp
 install -d -m 755 %{buildroot}%{_localstatedir}/log/nova
 cp -rp CA %{buildroot}%{_sharedstatedir}/nova
 
-# Install upstart configs & initscripts wrappers
-for service in api compute instancemonitor network objectstore scheduler volume; do
-	install -p -D -m 755 %{SOURCE1} %{buildroot}%{_sysconfdir}/init/%{name}-$service.conf
-	perl -pi -e "s/SUB/$service/g" %{buildroot}%{_sysconfdir}/init/%{name}-$service.conf
-
-	install -p -D -m 755 %{SOURCE2} %{buildroot}%{_initrddir}/%{name}-$service
-	perl -pi -e "s/SUB/$service/g" %{buildroot}%{_initrddir}/%{name}-$service	
-done
+# Install initscripts for Nova services
+install -p -D -m 755 %{SOURCE11} %{buildroot}%{_initrddir}/%{name}-api
+install -p -D -m 755 %{SOURCE12} %{buildroot}%{_initrddir}/%{name}-compute
+install -p -D -m 755 %{SOURCE13} %{buildroot}%{_initrddir}/%{name}-network
+install -p -D -m 755 %{SOURCE14} %{buildroot}%{_initrddir}/%{name}-objectstore
+install -p -D -m 755 %{SOURCE15} %{buildroot}%{_initrddir}/%{name}-scheduler
+install -p -D -m 755 %{SOURCE16} %{buildroot}%{_initrddir}/%{name}-volume
 
 # Install sudoers
 install -p -D -m 440 %{SOURCE20} %{buildroot}%{_sysconfdir}/sudoers.d/%{name}
@@ -289,7 +301,7 @@ find %{buildroot}%{_sharedstatedir}/nova/CA -name .placeholder -delete
 #cd %{buildroot}%{python_sitelib} && ln -s ../../../../../var/lib/nova/CA CA
 
 install -d -m 755 %{buildroot}%{_sysconfdir}/polkit-1/localauthority/50-local.d
-install -p -D -m 644 %{SOURCE21} %{buildroot}%{_sysconfdir}/polkit-1/localauthority/50-local.d/50-openstack-nova.pkla
+install -p -D -m 644 %{SOURCE21} %{buildroot}%{_sysconfdir}/polkit-1/localauthority/50-local.d/50-%{name}.pkla
 
 # Install configuration file for nova-api service
 install -p -D -m 440 %{SOURCE3} %{buildroot}%{_sysconfdir}/nova/nova-api.conf
@@ -310,57 +322,57 @@ if ! fgrep '#includedir /etc/sudoers.d' /etc/sudoers 2>&1 >/dev/null; then
 fi
 
 %post api
-/sbin/chkconfig --add openstack-nova-api
+/sbin/chkconfig --add %{name}-api
 
 %preun api
 if [ $1 = 0 ] ; then
-    /sbin/service openstack-nova-api stop >/dev/null 2>&1
-    /sbin/chkconfig --del openstack-nova-api
+    /sbin/service %{name}-api stop >/dev/null 2>&1
+    /sbin/chkconfig --del %{name}-api
 fi
 
 %post compute
-/sbin/chkconfig --add openstack-nova-compute
+/sbin/chkconfig --add %{name}-compute
 
 %preun compute
 if [ $1 = 0 ] ; then
-    /sbin/service openstack-nova-compute stop >/dev/null 2>&1
-    /sbin/chkconfig --del openstack-nova-compute
+    /sbin/service %{name}-compute stop >/dev/null 2>&1
+    /sbin/chkconfig --del %{name}-compute
 fi
 
 %post network
-/sbin/chkconfig --add openstack-nova-network
+/sbin/chkconfig --add %{name}-network
 
 %preun network
 if [ $1 = 0 ] ; then
-    /sbin/service openstack-nova-network stop >/dev/null 2>&1
-    /sbin/chkconfig --del openstack-nova-network
+    /sbin/service %{name}-network stop >/dev/null 2>&1
+    /sbin/chkconfig --del %{name}-network
 fi
 
 %post objectstore
-/sbin/chkconfig --add openstack-nova-objectstore
+/sbin/chkconfig --add %{name}-objectstore
 
 %preun objectstore
 if [ $1 = 0 ] ; then
-    /sbin/service openstack-nova-objectstore stop >/dev/null 2>&1
-    /sbin/chkconfig --del openstack-nova-objectstore
+    /sbin/service %{name}-objectstore stop >/dev/null 2>&1
+    /sbin/chkconfig --del %{name}-objectstore
 fi
 
 %post scheduler
-/sbin/chkconfig --add openstack-nova-scheduler
+/sbin/chkconfig --add %{name}-scheduler
 
 %preun scheduler
 if [ $1 = 0 ] ; then
-    /sbin/service openstack-nova-scheduler stop >/dev/null 2>&1
-    /sbin/chkconfig --del openstack-nova-scheduler
+    /sbin/service %{name}-scheduler stop >/dev/null 2>&1
+    /sbin/chkconfig --del %{name}-scheduler
 fi
 
 %post volume
-/sbin/chkconfig --add openstack-nova-volume
+/sbin/chkconfig --add %{name}-volume
 
 %preun volume
 if [ $1 = 0 ] ; then
-    /sbin/service openstack-nova-volume stop >/dev/null 2>&1
-    /sbin/chkconfig --del openstack-nova-volume
+    /sbin/service %{name}-volume stop >/dev/null 2>&1
+    /sbin/chkconfig --del %{name}-volume
 fi
 
 %files
@@ -385,7 +397,6 @@ fi
 %defattr(-,root,root,-)
 %{_initrddir}/%{name}-api
 %{_bindir}/nova-api
-%{_sysconfdir}/init/%{name}-api.conf
 %defattr(-,nova,nobody,-)
 %config(noreplace) %{_sysconfdir}/nova/nova-api.conf
 
@@ -397,39 +408,33 @@ fi
 %{_bindir}/nova-logspool
 %{_bindir}/nova-spoolsentry
 %{_initrddir}/%{name}-compute
-%{_sysconfdir}/init/%{name}-compute.conf
 
 %files instancemonitor
 %defattr(-,root,root,-)
 %{_bindir}/nova-instancemonitor
-%{_initrddir}/%{name}-instancemonitor
-%{_sysconfdir}/init/%{name}-instancemonitor.conf
+#{_initrddir}/%{name}-instancemonitor
 
 %files network
 %defattr(-,root,root,-)
 %{_bindir}/nova-network
 %{_bindir}/nova-dhcpbridge
 %{_initrddir}/%{name}-network
-%{_sysconfdir}/init/%{name}-network.conf
 
 %files objectstore
 %defattr(-,root,root,-)
 %{_bindir}/nova-import-canonical-imagestore
 %{_bindir}/nova-objectstore
 %{_initrddir}/%{name}-objectstore
-%{_sysconfdir}/init/%{name}-objectstore.conf
 
 %files scheduler
 %defattr(-,root,root,-)
 %{_bindir}/nova-scheduler
 %{_initrddir}/%{name}-scheduler
-%{_sysconfdir}/init/%{name}-scheduler.conf
 
 %files volume
 %defattr(-,root,root,-)
 %{_bindir}/nova-volume
 %{_initrddir}/%{name}-volume
-%{_sysconfdir}/init/%{name}-volume.conf
 
 %if 0%{?with_doc}
 %files doc
@@ -438,6 +443,13 @@ fi
 %endif
 
 %changelog
+* Thu Jan 27 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-bzr629
+- Update to bzr629
+- Refactored initscripts with start-stop-daemon since standard RHEL initscripts
+  does not support creation of pidfiles
+- Removed dependency on upstart
+- All daemons are once again running under user nova instead of root
+
 * Wed Jan 26 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-bzr621
 - Updated to bzr621
 
