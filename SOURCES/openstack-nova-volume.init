@@ -1,0 +1,114 @@
+#!/bin/bash
+#
+# nova-volume	OpenStack Nova Volume Worker
+#
+# chkconfig: 2345 20 81
+# description:	Volume Workers interact with iSCSI storage to manage    \
+#		LVM-based instance volumes. Specific functions include: \
+#		* Create Volumes                                        \
+#		* Delete Volumes                                        \
+#		* Establish Compute volumes
+#
+# config: /etc/nova/nova.conf
+# pidfile: /var/run/nova/nova-volume.pid
+
+### BEGIN INIT INFO
+# Provides: sshd
+# Required-Start: $local_fs $network $syslog
+# Required-Stop: $local_fs $syslog
+# Should-Start: $syslog
+# Should-Stop: $network $syslog
+# Default-Start: 3 4 5
+# Default-Stop: 0 2 1 6
+# Short-Description: OpenStack Nova Volume Worker
+# Description:	Volume Workers interact with iSCSI storage to manage
+#		LVM-based instance volumes. Specific functions include:
+#		* Create Volumes
+#		* Delete Volumes
+#		* Establish Compute volumes
+### END INIT INFO
+
+# Source function library.
+. /etc/init.d/functions
+
+prog="OpenStack Nova Volume Worker"
+suffix="volume"
+flgfile=/etc/nova/nova.conf
+logfile=/var/log/nova/nova-$suffix.log
+pidfile=/var/run/nova/nova-$suffix.pid
+lckfile=/var/lock/subsys/openstack-nova-$suffix
+binfile=/usr/bin/nova-$suffix
+
+start() {
+	if [ -f "$pidfile" ]; then
+		pid=`cat $pidfile`
+		checkpid $pid
+		r=$?
+		if [ "$r" -eq 0 ]; then
+			cmd=$(basename $binfile)
+			echo -n "$cmd is already running (pid $pid)"; passed
+			echo
+			exit 0
+		fi
+	fi
+	echo -n "Starting $prog: "
+	cd /var/lib/nova
+	/sbin/start-stop-daemon --start -b -c nova:nobody --make-pidfile --pidfile $pidfile  --exec /usr/bin/nova-$suffix -- --flagfile=$flgfile --logfile=$logfile --pidfile $pidfile
+	sleep 1
+	if [ -f "$pidfile" ]; then
+		checkpid `cat $pidfile`
+		r=$?
+		if [ "$r" -eq 0 ]; then
+			touch $lckfile
+			success
+		else
+			failure
+		fi
+	else
+		failure
+	fi
+	echo
+	return
+}	
+
+stop() {
+	echo -n "Stopping $prog: "
+	if [ -n "`pidofproc -p $pidfile $binfile`" ] ; then
+		killproc -p $pidfile $binfile
+	else
+		failure $"Stopping $prog"
+	fi
+	retval=$?
+	[ $retval -eq 0 ] && rm -f $lckfile
+	echo
+	return $retval
+}
+
+rh_status() {
+	status -p $pidfile $binfile
+}
+
+case "$1" in
+    start)
+	start
+	;;
+    stop)
+	stop
+	;;
+    status)
+	rh_status
+	retval=$?
+	if [ $retval -eq 3 -a -f $lckfile ] ; then
+		retval=2
+	fi
+	;;
+    restart)
+    	stop
+	start
+	;;
+    *)
+	echo "Usage: service openstack-nova-$suffix {start|stop|status|restart}"
+	exit 1
+	;;
+esac
+exit $?
