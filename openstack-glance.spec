@@ -6,7 +6,7 @@
 %endif
 
 Name:             openstack-%{prj}
-Version:          0.1.4
+Version:          0.1.5
 Release:          1
 Summary:          OpenStack Image Registry and Delivery Service
 
@@ -165,6 +165,9 @@ fi
 %endif
 
 %changelog
+* Thu Jan 27 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 0.1.5-1
+- Release 0.1.5
+
 * Wed Jan 26 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 0.1.4-1
 - Release 0.1.4
 
