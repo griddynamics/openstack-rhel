@@ -80,6 +80,11 @@ rh_status() {
 	status -p $pidfile $binfile
 }
 
+restart() {
+    	stop
+	start
+}
+
 case "$1" in
     start)
 	start
@@ -95,11 +100,15 @@ case "$1" in
 	fi
 	;;
     restart)
-    	stop
-	start
+	restart
+	;;
+    condrestart)
+	if [ -n "`pidofproc -p $pidfile $binfile`" ] ; then
+		restart
+	fi
 	;;
     *)
-	echo "Usage: service openstack-nova-$suffix {start|stop|status|restart}"
+	echo "Usage: service openstack-nova-$suffix {start|stop|status|restart|condrestart}"
 	exit 1
 	;;
 esac
