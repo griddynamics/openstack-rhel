@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.1
-Release:          bzr629
+Release:          bzr640
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -29,6 +29,7 @@ Source21:         %{name}-polkit.pkla
 
 Patch0:           openstack-nova-openssl-relaxed-policy.patch
 Patch1:           openstack-nova-rhel-config-paths.patch
+Patch2:           openstack-nova-logging.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -242,6 +243,7 @@ This package contains documentation files for %{name}.
 
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
 %{__python} setup.py build
@@ -321,6 +323,8 @@ if ! fgrep '#includedir /etc/sudoers.d' /etc/sudoers 2>&1 >/dev/null; then
         echo '#includedir /etc/sudoers.d' >> /etc/sudoers
 fi
 
+# api
+
 %post api
 /sbin/chkconfig --add %{name}-api
 
@@ -329,6 +333,13 @@ if [ $1 = 0 ] ; then
     /sbin/service %{name}-api stop >/dev/null 2>&1
     /sbin/chkconfig --del %{name}-api
 fi
+
+%postun api
+if [ $1 = 1 ] ; then
+    /sbin/service %{name}-api condrestart
+fi
+
+# compute
 
 %post compute
 /sbin/chkconfig --add %{name}-compute
@@ -339,6 +350,13 @@ if [ $1 = 0 ] ; then
     /sbin/chkconfig --del %{name}-compute
 fi
 
+%postun compute
+if [ $1 = 1 ] ; then
+    /sbin/service %{name}-compute condrestart
+fi
+
+# network
+
 %post network
 /sbin/chkconfig --add %{name}-network
 
@@ -347,6 +365,13 @@ if [ $1 = 0 ] ; then
     /sbin/service %{name}-network stop >/dev/null 2>&1
     /sbin/chkconfig --del %{name}-network
 fi
+
+%postun network
+if [ $1 = 1 ] ; then
+    /sbin/service %{name}-network condrestart
+fi
+
+# objectstore
 
 %post objectstore
 /sbin/chkconfig --add %{name}-objectstore
@@ -357,6 +382,13 @@ if [ $1 = 0 ] ; then
     /sbin/chkconfig --del %{name}-objectstore
 fi
 
+%postun objectstore
+if [ $1 = 1 ] ; then
+    /sbin/service %{name}-objectstore condrestart
+fi
+
+# scheduler
+
 %post scheduler
 /sbin/chkconfig --add %{name}-scheduler
 
@@ -366,6 +398,13 @@ if [ $1 = 0 ] ; then
     /sbin/chkconfig --del %{name}-scheduler
 fi
 
+%postun scheduler
+if [ $1 = 1 ] ; then
+    /sbin/service %{name}-scheduler condrestart
+fi
+
+# volume
+
 %post volume
 /sbin/chkconfig --add %{name}-volume
 
@@ -373,6 +412,11 @@ fi
 if [ $1 = 0 ] ; then
     /sbin/service %{name}-volume stop >/dev/null 2>&1
     /sbin/chkconfig --del %{name}-volume
+fi
+
+%postun volume
+if [ $1 = 1 ] ; then
+    /sbin/service %{name}-volume condrestart
 fi
 
 %files
@@ -443,6 +487,16 @@ fi
 %endif
 
 %changelog
+* Mon Jan 31 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-bzr640
+- Updated to bzr640
+
+* Mon Jan 31 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-bzr639
+- Added condrestart target to initscripts
+- Added condrestart on package upgrade
+
+* Mon Jan 31 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-bzr638
+- Added patch openstack-nova-logging.py - re-routing unhandled exceptions to logs
+
 * Thu Jan 27 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-bzr629
 - Update to bzr629
 - Refactored initscripts with start-stop-daemon since standard RHEL initscripts
