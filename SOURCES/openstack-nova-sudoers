@@ -1,34 +1,41 @@
 Defaults:nova !requiretty
 
-Cmnd_Alias NOVACMDS = /bin/chmod /var/lib/nova/tmp/*/root/.ssh, \
-                      /bin/chown /var/lib/nova/tmp/*/root/.ssh, \
-                      /bin/chown,                               \
+Cmnd_Alias NOVACMDS = /bin/aoe-stat,                            \
                       /bin/chmod,                               \
+                      /bin/chmod /var/lib/nova/tmp/*/root/.ssh, \
+                      /bin/chown,                               \
+                      /bin/chown /var/lib/nova/tmp/*/root/.ssh, \
+                      /bin/dd,                                  \
+                      /bin/kill,                                \
+                      /bin/mkdir,                               \
+                      /bin/mount,                               \
+                      /bin/umount,                              \
+                      /sbin/aoe-discover,                       \
                       /sbin/ifconfig,                           \
                       /sbin/ip,                                 \
+                      /sbin/ip6tables-restore,                  \
+                      /sbin/ip6tables-save,                     \
                       /sbin/iptables,                           \
+                      /sbin/iptables-restore,                   \
+                      /sbin/iptables-save,                      \
+                      /sbin/iscsiadm,                           \
                       /sbin/kpartx,                             \
                       /sbin/losetup,                            \
                       /sbin/lvcreate,                           \
+                      /sbin/lvdisplay,                          \
                       /sbin/lvremove,                           \
-                      /bin/mkdir,                               \
-                      /bin/mount,                               \
                       /sbin/pvcreate,                           \
-                      /usr/bin/tee,                             \
                       /sbin/tune2fs,                            \
-                      /bin/umount,                              \
+                      /sbin/vconfig,                            \
                       /sbin/vgcreate,                           \
+                      /sbin/vgs,                                \
+                      /usr/bin/socat,                           \
+                      /usr/bin/tee,                             \
                       /usr/bin/virsh,                           \
                       /usr/sbin/brctl,                          \
-                      /usr/sbin/vblade-persist,                 \
-                      /sbin/pvcreate,                           \
-                      /sbin/aoe-discover,                       \
-                      /sbin/vgcreate,                           \
-                      /sbin/lvremove,                           \
-                      /sbin/lvrcreate,                          \
-                      /bin/aoe-stat,                            \
-                      /bin/kill,                                \
-                      /sbin/vconfig,                            \
-                      /usr/sbin/dnsmasq
+                      /usr/sbin/dnsmasq,                        \
+                      /usr/sbin/radvd,                          \
+                      /usr/sbin/tgtadm,                         \
+                      /usr/sbin/vblade-persist
 
 nova ALL = (root) NOPASSWD: SETENV: NOVACMDS
