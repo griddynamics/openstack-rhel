@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.1
-Release:          bzr640
+Release:          bzr642
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -29,7 +29,6 @@ Source21:         %{name}-polkit.pkla
 
 Patch0:           openstack-nova-openssl-relaxed-policy.patch
 Patch1:           openstack-nova-rhel-config-paths.patch
-Patch2:           openstack-nova-logging.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -86,6 +85,14 @@ Requires:         python-webob = 0.9.8
 Requires:         python-netaddr
 Requires:         python-glance
 Requires:         python-sqlalchemy-migrate
+Requires:         radvd
+Requires:         iptables iptables-ipv6
+Requires:         iscsi-initiator-utils
+Requires:         scsi-target-utils
+Requires:         lvm2
+Requires:         socat
+Requires:         coreutils
+Requires:         libguestfs-mount
 
 %description -n   python-nova
 Nova is a cloud computing fabric controller (the main part of an IaaS system)
@@ -243,7 +250,6 @@ This package contains documentation files for %{name}.
 
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
 
 %build
 %{__python} setup.py build
@@ -487,6 +493,11 @@ fi
 %endif
 
 %changelog
+* Wed Feb 02 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-bzr642
+- Deleted patch from bzr638 rev because it was merged to trunk
+- Updated dependencies
+- Updated sudo configuration for nova user
+
 * Mon Jan 31 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-bzr640
 - Updated to bzr640
 
