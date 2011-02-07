@@ -1,5 +1,56 @@
-/var/log/nova/* {
+compress
+
+/var/log/nova/nova-api.log {
     daily
+    rotate 30
     missingok
     postrotate
+        /sbin/service openstack-nova-api condreload
+    endscript
 }
+
+/var/log/nova/nova-compute.log {
+    daily
+    rotate 30
+    missingok
+    postrotate
+        /sbin/service openstack-nova-compute condreload
+    endscript
+}
+
+/var/log/nova/nova-network.log {
+    daily
+    rotate 30
+    missingok
+    postrotate
+        /sbin/service openstack-nova-network condreload
+    endscript
+}
+
+/var/log/nova/nova-objectstore.log {
+    daily
+    rotate 30
+    missingok
+    postrotate
+        /sbin/service openstack-nova-objectstore condreload
+    endscript
+}
+
+/var/log/nova/nova-scheduler.log {
+    daily
+    rotate 30
+    missingok
+    postrotate
+        /sbin/service openstack-nova-scheduler condreload
+    endscript
+}
+
+/var/log/nova/nova-volume.log {
+    daily
+    rotate 30
+    missingok
+    postrotate
+        /sbin/service openstack-nova-volume condreload
+    endscript
+}
+
