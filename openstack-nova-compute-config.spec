@@ -1,6 +1,6 @@
 Name:             openstack-nova-compute-config
 Version:          2011.1
-Release:          4
+Release:          5
 Summary:          OpenStack Compute (nova) - Compute node configuration
 
 Group:            Development/Languages
@@ -43,6 +43,9 @@ rm -rf %{buildroot}
 %config(noreplace) %{_sysconfdir}/nova/nova.conf
 
 %changelog
+* Mon Feb 07 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-5
+- Added --state-path
+
 * Mon Feb 07 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-4
 - Bexar release
 
