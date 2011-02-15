@@ -1,0 +1,16 @@
+[openstack-nova]
+name=OpenStack Nova Compute
+baseurl=http://c0421263.cdn2.cloudfiles.rackspacecloud.com/nova/
+        http://yum.griddynamics.net/openstack-nova/
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OPENSTACK
+
+[openstack-nova-deps]
+name=OpenStack Nova Compute Dependencies
+baseurl=http://c0421263.cdn2.cloudfiles.rackspacecloud.com/deps
+        http://yum.griddynamics.net/openstack-nova-deps/
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OPENSTACK
+
