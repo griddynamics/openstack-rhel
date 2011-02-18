@@ -1,6 +1,6 @@
-diff -Naur ./bexar.orig//nova/utils.py ./bexar/nova/utils.py
---- ./bexar.orig//nova/utils.py	2011-02-18 14:46:14.000000000 +0300
-+++ ./bexar/nova/utils.py	2011-02-18 14:48:55.000000000 +0300
+diff -Naur nova-2011.1.orig/nova/utils.py nova-2011.1/nova/utils.py
+--- nova-2011.1.orig/nova/utils.py	2011-02-18 14:46:14.000000000 +0300
++++ nova-2011.1/nova/utils.py	2011-02-18 14:48:55.000000000 +0300
 @@ -25,7 +25,6 @@
  import json
  import os
@@ -17,9 +17,9 @@ diff -Naur ./bexar.orig//nova/utils.py ./bexar/nova/utils.py
  
  from nova import exception
  from nova.exception import ProcessExecutionError
-diff -Naur ./bexar.orig//nova/virt/disk.py ./bexar/nova/virt/disk.py
---- ./bexar.orig//nova/virt/disk.py	2011-02-18 14:46:14.000000000 +0300
-+++ ./bexar/nova/virt/disk.py	2011-02-18 15:07:27.000000000 +0300
+diff -Naur nova-2011.1.orig/nova/virt/disk.py nova-2011.1/nova/virt/disk.py
+--- nova-2011.1.orig/nova/virt/disk.py	2011-02-18 14:46:14.000000000 +0300
++++ nova-2011.1/nova/virt/disk.py	2011-02-18 15:07:27.000000000 +0300
 @@ -23,10 +23,8 @@
  """
  
