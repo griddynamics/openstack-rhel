@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.1
-Release:          3
+Release:          4
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -27,10 +27,11 @@ Source16:         %{name}-volume.init
 
 Source20:         %{name}-sudoers
 Source21:         %{name}-polkit.pkla
+Source22:         %{name}-rhel-ifc-template
 
-Patch0:           openstack-nova-openssl-relaxed-policy.patch
-Patch1:           openstack-nova-rhel-config-paths.patch
-Patch2:           openstack-nova-guestfs-image-injects.patch
+Patch0:           %{name}-openssl-relaxed-policy.patch
+Patch1:           %{name}-rhel-config-paths.patch
+Patch2:           %{name}-guestfs-image-injects.patch
 Patch3:           %{name}-bexar-libvirt.xml.template.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -307,6 +308,7 @@ install -p -D -m 644 nova/auth/novarc.template %{buildroot}%{_datarootdir}/nova/
 install -p -D -m 644 nova/cloudpipe/client.ovpn.template %{buildroot}%{_datarootdir}/nova/client.ovpn.template
 install -p -D -m 644 nova/virt/libvirt.xml.template %{buildroot}%{_datarootdir}/nova/libvirt.xml.template
 install -p -D -m 644 nova/virt/interfaces.template %{buildroot}%{_datarootdir}/nova/interfaces.template
+install -p -D -m 644 %{SOURCE22} %{buildroot}%{_datarootdir}/nova/interfaces.rhel.template
 
 # Clean CA directory
 find %{buildroot}%{_sharedstatedir}/nova/CA -name .gitignore -delete
@@ -503,6 +505,10 @@ fi
 %endif
 
 %changelog
+* Fri Feb 18 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-4
+- Added patch with network interface template for RHEL guest OS
+  (kudos to Ilya Alekseyev)
+
 * Fri Feb 18 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-3
 - Disabled SELinux for KVM images in libvirt.xml.template
 - Added patch for image injection (kudos to Ilya Alekseyev).
