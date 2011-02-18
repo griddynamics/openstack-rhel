@@ -1,0 +1,14 @@
+diff -Naur nova-2011.1.orig/nova/virt/interfaces.rhel.template nova-2011.1/nova/virt/interfaces.rhel.template
+--- nova-2011.1.orig/nova/virt/interfaces.rhel.template	1970-01-01 03:00:00.000000000 +0300
++++ nova-2011.1/nova/virt/interfaces.rhel.template	2011-02-18 18:16:12.000000000 +0300
+@@ -0,0 +1,10 @@
++DEVICE="eth0"
++NM_CONTROLLED="no"
++ONBOOT=yes
++TYPE=Ethernet
++BOOTPROTO=static
++IPADDR=%(address)s
++NETMASK=%(netmask)s
++BROADCAST=%(broadcast)s
++GATEWAY=%(gateway)s
++DNS1=%(dns)s

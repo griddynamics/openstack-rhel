@@ -31,6 +31,7 @@ Source21:         %{name}-polkit.pkla
 Patch0:           openstack-nova-openssl-relaxed-policy.patch
 Patch1:           openstack-nova-rhel-config-paths.patch
 Patch2:           openstack-nova-guestfs-image-injects.patch
+Patch3:		  openstack-nova-rhel-ifc-template.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -305,6 +306,7 @@ install -p -D -m 644 nova/auth/novarc.template %{buildroot}%{_datarootdir}/nova/
 install -p -D -m 644 nova/cloudpipe/client.ovpn.template %{buildroot}%{_datarootdir}/nova/client.ovpn.template
 install -p -D -m 644 nova/virt/libvirt.xml.template %{buildroot}%{_datarootdir}/nova/libvirt.xml.template
 install -p -D -m 644 nova/virt/interfaces.template %{buildroot}%{_datarootdir}/nova/interfaces.template
+install -p -D -m 644 nova/virt/interfaces.rhel.template %{buildroot}%{_datarootdir}/nova/interfaces.rhel.template
 
 # Clean CA directory
 find %{buildroot}%{_sharedstatedir}/nova/CA -name .gitignore -delete
@@ -501,6 +503,9 @@ fi
 %endif
 
 %changelog
+* Fri Feb 18 2011 Ilya Alekseyev <ialekseev@griddynamics.com> 2011.1-1
+- Added patch with network interface template for RHEL guest OS
+
 * Fri Feb 18 2011 Ilya Alekseyev <ialekseev@griddynamics.com> 2011.1-1
 - Added patch for image injection.
 - Updated dependencies
