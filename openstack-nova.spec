@@ -30,7 +30,7 @@ Source21:         %{name}-polkit.pkla
 
 Patch0:           openstack-nova-openssl-relaxed-policy.patch
 Patch1:           openstack-nova-rhel-config-paths.patch
-Patch2:           %{name}-bexar-guestfish.patch
+Patch2:           openstack-nova-guestfs-image-injects.patch
 Patch3:           %{name}-bexar-libvirt.xml.template.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -95,7 +95,7 @@ Requires:         scsi-target-utils
 Requires:         lvm2
 Requires:         socat
 Requires:         coreutils
-Requires:         guestfish
+Requires:         python-libguestfs
 
 %description -n   python-nova
 Nova is a cloud computing fabric controller (the main part of an IaaS system)
@@ -253,7 +253,7 @@ This package contains documentation files for %{name}.
 
 %patch0 -p1
 %patch1 -p1
-%patch2 -p0
+%patch2 -p1
 %patch3 -p1
 
 install %{SOURCE1} README.rhel6
@@ -503,12 +503,10 @@ fi
 %endif
 
 %changelog
-* Tue Feb 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-3
+* Fri Feb 18 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-3
 - Disabled SELinux for KVM images in libvirt.xml.template
-- Updated patch for guestfish
-
-* Fri Feb 11 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-2
-- Added guestfish support instead of missed Qemu
+- Added patch for image injection (kudos to Ilya Alekseyev).
+- Updated dependencies
 
 * Mon Feb 07 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-1
 - Bexar release
