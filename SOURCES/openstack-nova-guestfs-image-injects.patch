@@ -1,6 +1,6 @@
 diff -Naur nova-2011.1.orig/nova/utils.py nova-2011.1/nova/utils.py
 --- nova-2011.1.orig/nova/utils.py	2011-02-18 14:46:14.000000000 +0300
-+++ nova-2011.1/nova/utils.py	2011-02-18 14:48:55.000000000 +0300
++++ nova-2011.1/nova/utils.py	2011-02-24 16:44:12.000000000 +0300
 @@ -25,7 +25,6 @@
  import json
  import os
@@ -17,9 +17,18 @@ diff -Naur nova-2011.1.orig/nova/utils.py nova-2011.1/nova/utils.py
  
  from nova import exception
  from nova.exception import ProcessExecutionError
+@@ -161,7 +161,7 @@
+     return os.path.abspath(nova.__file__).split('nova/__init__.pyc')[0]
+ 
+ 
+-def default_flagfile(filename='nova.conf'):
++def default_flagfile(filename='/etc/nova/nova.conf'):
+     for arg in sys.argv:
+         if arg.find('flagfile') != -1:
+             break
 diff -Naur nova-2011.1.orig/nova/virt/disk.py nova-2011.1/nova/virt/disk.py
 --- nova-2011.1.orig/nova/virt/disk.py	2011-02-18 14:46:14.000000000 +0300
-+++ nova-2011.1/nova/virt/disk.py	2011-02-18 15:07:27.000000000 +0300
++++ nova-2011.1/nova/virt/disk.py	2011-02-24 16:42:24.000000000 +0300
 @@ -23,10 +23,8 @@
  """
  
@@ -32,7 +41,7 @@ diff -Naur nova-2011.1.orig/nova/virt/disk.py nova-2011.1/nova/virt/disk.py
  from nova import flags
  from nova import log as logging
  from nova import utils
-@@ -52,135 +50,26 @@
+@@ -52,135 +50,27 @@
  
  
  def inject_data(image, key=None, net=None, partition=None, nbd=False):
@@ -99,6 +108,7 @@ diff -Naur nova-2011.1.orig/nova/virt/disk.py nova-2011.1/nova/virt/disk.py
 +        g.mount(devices[0],"/")
 +        if key:
 +            LOG.debug(_("Injecting key..."))
++            g.mkdir_p("/root/.ssh/")
 +            path = "/root/.ssh/authorized_keys"
 +            g.write(path, key)
 +            g.chmod(0600, path)
