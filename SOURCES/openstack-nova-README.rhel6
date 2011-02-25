@@ -1,0 +1,4 @@
+Red Hat Enterprise Linux version 6 build differences:
+
+- iscsi support is limited due lack of ietadm command
+

@@ -1,4 +1,4 @@
-%global with_doc 0
+%global with_doc 1
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -6,15 +6,16 @@
 
 Name:             openstack-nova
 Version:          2011.1
-Release:          bzr642
+Release:          4
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-%{version}~%{release}.tar.gz
+Source0:          http://nova.openstack.org/tarballs/nova-%{version}.tar.gz
+Source1:          %{name}-README.rhel6
 Source3:          %{name}-api.conf
-#Source6:          %{name}.logrotate
+Source6:          %{name}.logrotate
 
 # Initscripts
 Source11:         %{name}-api.init
@@ -26,9 +27,12 @@ Source16:         %{name}-volume.init
 
 Source20:         %{name}-sudoers
 Source21:         %{name}-polkit.pkla
+Source22:         %{name}-rhel-ifc-template
 
-Patch0:           openstack-nova-openssl-relaxed-policy.patch
-Patch1:           openstack-nova-rhel-config-paths.patch
+Patch0:           %{name}-openssl-relaxed-policy.patch
+Patch1:           %{name}-rhel-config-paths.patch
+Patch2:           %{name}-guestfs-image-injects.patch
+Patch3:           %{name}-bexar-libvirt.xml.template.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -44,7 +48,7 @@ Requires:         sudo
 Requires(post):   chkconfig
 Requires(postun): initscripts
 Requires(preun):  chkconfig
-Requires(pre):    shadow-utils
+Requires(pre):    shadow-utils qemu-kvm
 
 %description
 Nova is a cloud computing fabric controller (the main part of an IaaS system)
@@ -71,7 +75,7 @@ Requires:         python-IPy >= 0.70
 Requires:         python-boto >= 1.9b
 Requires:         python-carrot >= 0.10.5
 Requires:         python-daemon = 1.5.5
-Requires:         python-eventlet >= 0.9.12
+Requires:         python-eventlet >= 0.9.12-1.1.el6
 Requires:         python-gflags >= 1.3
 Requires:         python-lockfile = 0.8
 Requires:         python-mox >= 0.5.0
@@ -92,7 +96,7 @@ Requires:         scsi-target-utils
 Requires:         lvm2
 Requires:         socat
 Requires:         coreutils
-Requires:         libguestfs-mount
+Requires:         python-libguestfs
 
 %description -n   python-nova
 Nova is a cloud computing fabric controller (the main part of an IaaS system)
@@ -224,7 +228,7 @@ BuildRequires:    python-nose
 BuildRequires:    python-IPy
 BuildRequires:    python-boto
 #BuildRequires:    python-carrot
-BuildRequires:    python-daemon
+#BuildRequires:    python-daemon
 BuildRequires:    python-eventlet
 BuildRequires:    python-gflags
 #BuildRequires:    python-mox
@@ -250,6 +254,10 @@ This package contains documentation files for %{name}.
 
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
+%patch3 -p1
+
+install %{SOURCE1} README.rhel6
 
 %build
 %{__python} setup.py build
@@ -290,7 +298,7 @@ install -p -D -m 755 %{SOURCE16} %{buildroot}%{_initrddir}/%{name}-volume
 install -p -D -m 440 %{SOURCE20} %{buildroot}%{_sysconfdir}/sudoers.d/%{name}
 
 # Install logrotate
-#install -p -D -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
+install -p -D -m 644 %{SOURCE6} %{buildroot}%{_sysconfdir}/logrotate.d/%{name}
 
 # Install pid directory
 install -d -m 755 %{buildroot}%{_localstatedir}/run/nova
@@ -300,6 +308,7 @@ install -p -D -m 644 nova/auth/novarc.template %{buildroot}%{_datarootdir}/nova/
 install -p -D -m 644 nova/cloudpipe/client.ovpn.template %{buildroot}%{_datarootdir}/nova/client.ovpn.template
 install -p -D -m 644 nova/virt/libvirt.xml.template %{buildroot}%{_datarootdir}/nova/libvirt.xml.template
 install -p -D -m 644 nova/virt/interfaces.template %{buildroot}%{_datarootdir}/nova/interfaces.template
+install -p -D -m 644 %{SOURCE22} %{buildroot}%{_datarootdir}/nova/interfaces.rhel.template
 
 # Clean CA directory
 find %{buildroot}%{_sharedstatedir}/nova/CA -name .gitignore -delete
@@ -314,13 +323,16 @@ install -p -D -m 644 %{SOURCE21} %{buildroot}%{_sysconfdir}/polkit-1/localauthor
 # Install configuration file for nova-api service
 install -p -D -m 440 %{SOURCE3} %{buildroot}%{_sysconfdir}/nova/nova-api.conf
 
+# Install README for RHEL build
+#install -p -D -m 644 %{SOURCE1} %{buildroot}%{_docdir}/README.rhel6
+
 %clean
 rm -rf %{buildroot}
 
 %pre
 getent group nova >/dev/null || groupadd -r nova
 getent passwd nova >/dev/null || \
-useradd -r -g nova -d %{_sharedstatedir}/nova -s /sbin/nologin \
+useradd -r -g nova -G nova,nobody,qemu -d %{_sharedstatedir}/nova -s /sbin/nologin \
 -c "OpenStack Nova Daemons" nova
 exit 0
 
@@ -427,8 +439,8 @@ fi
 
 %files
 %defattr(-,root,root,-)
-%doc README
-#%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
+%doc README README.rhel6
+%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %config(noreplace) %{_sysconfdir}/sudoers.d/%{name}
 %dir %attr(0755, nova, root) %{_localstatedir}/log/nova
 %dir %attr(0755, nova, root) %{_localstatedir}/run/nova
@@ -493,6 +505,18 @@ fi
 %endif
 
 %changelog
+* Fri Feb 18 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-4
+- Added patch with network interface template for RHEL guest OS
+  (kudos to Ilya Alekseyev)
+
+* Fri Feb 18 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-3
+- Disabled SELinux for KVM images in libvirt.xml.template
+- Added patch for image injection (kudos to Ilya Alekseyev).
+- Updated dependencies
+
+* Mon Feb 07 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-1
+- Bexar release
+
 * Wed Feb 02 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-bzr642
 - Deleted patch from bzr638 rev because it was merged to trunk
 - Updated dependencies

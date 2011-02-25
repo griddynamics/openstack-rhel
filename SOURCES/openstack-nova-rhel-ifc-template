@@ -1,0 +1,10 @@
+DEVICE="eth0"
+NM_CONTROLLED="no"
+ONBOOT=yes
+TYPE=Ethernet
+BOOTPROTO=static
+IPADDR=%(address)s
+NETMASK=%(netmask)s
+BROADCAST=%(broadcast)s
+GATEWAY=%(gateway)s
+DNS1=%(dns)s

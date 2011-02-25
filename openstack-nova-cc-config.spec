@@ -1,20 +1,12 @@
 Name:             openstack-nova-cc-config
 Version:          2011.1
-Release:          14
+Release:          16
 Summary:          OpenStack Compute (nova) - Cloud Controller config
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
 Source0:          %{name}.conf
-#Source1:          %{name}-api.conf
-#Source3:          %{name}-compute.conf
-#Source5:          %{name}-dhcpbridge.conf
-#Source7:          %{name}-manage.conf
-#Source8:          %{name}-network.conf
-#Source10:         %{name}-objectstore.conf
-#Source12:         %{name}-scheduler.conf
-#Source14:         %{name}-volume.conf
 BuildRoot:        %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:        noarch
@@ -53,6 +45,12 @@ rm -rf %{buildroot}
 %config(noreplace) %{_sysconfdir}/nova/nova.conf
 
 %changelog
+* Mon Feb 07 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-16
+- Added --state-path
+
+* Mon Feb 07 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-15
+- Bexar release
+
 * Wed Jan 26 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-14
 - Changed dep to mysql-server
 
