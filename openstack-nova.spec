@@ -505,6 +505,10 @@ fi
 %endif
 
 %changelog
+* Fri Feb 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-5
+- Merged updated guestfs patch from Ilya Alekseyev
+- Refactored guestfs patch - now it creates directory only if it does not exist
+
 * Fri Feb 18 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-4
 - Added patch with network interface template for RHEL guest OS
   (kudos to Ilya Alekseyev)
