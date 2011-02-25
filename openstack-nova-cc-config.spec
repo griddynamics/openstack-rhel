@@ -1,6 +1,6 @@
 Name:             openstack-nova-cc-config
 Version:          2011.1
-Release:          16
+Release:          17
 Summary:          OpenStack Compute (nova) - Cloud Controller config
 
 Group:            Development/Languages
@@ -45,6 +45,10 @@ rm -rf %{buildroot}
 %config(noreplace) %{_sysconfdir}/nova/nova.conf
 
 %changelog
+* Fri Feb 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-17
+- Switched back to nova.image.s3.S3ImageService instead of glance
+- Use of qcow2 images enabled by default
+
 * Mon Feb 07 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-16
 - Added --state-path
 
