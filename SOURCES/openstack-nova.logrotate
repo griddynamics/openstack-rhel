@@ -1,11 +1,29 @@
 compress
 
+/var/log/nova/nova-ajax-console-proxy.log {
+    daily
+    rotate 30
+    missingok
+    postrotate
+        /sbin/service openstack-nova-ajax-console-proxy condreload
+    endscript
+}
+
 /var/log/nova/nova-api.log {
     daily
     rotate 30
     missingok
     postrotate
         /sbin/service openstack-nova-api condreload
+    endscript
+}
+
+/var/log/nova/nova-direct-api.log {
+    daily
+    rotate 30
+    missingok
+    postrotate
+        /sbin/service openstack-nova-direct-api condreload
     endscript
 }
 
