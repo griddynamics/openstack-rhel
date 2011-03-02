@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.1.1
-Release:          4
+Release:          5
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -534,6 +534,9 @@ fi
 %endif
 
 %changelog
+* Wed Mar 02 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1.1-5
+- Changed logrotate script - it should not rotate empty logs
+
 * Wed Mar 02 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1.1-4
 - Updated logrotate script with nova-ajax-console-proxy and nova-direct-api
   logfiles
