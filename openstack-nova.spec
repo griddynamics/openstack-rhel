@@ -5,8 +5,8 @@
 %endif
 
 Name:             openstack-nova
-Version:          2011.1
-Release:          4
+Version:          2011.1.1
+Release:          5
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -14,7 +14,6 @@ License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
 Source0:          http://nova.openstack.org/tarballs/nova-%{version}.tar.gz
 Source1:          %{name}-README.rhel6
-Source3:          %{name}-api.conf
 Source6:          %{name}.logrotate
 
 # Initscripts
@@ -24,6 +23,8 @@ Source13:         %{name}-network.init
 Source14:         %{name}-objectstore.init
 Source15:         %{name}-scheduler.init
 Source16:         %{name}-volume.init
+Source17:         %{name}-direct-api.init
+Source18:         %{name}-ajax-console-proxy.init
 
 Source20:         %{name}-sudoers
 Source21:         %{name}-polkit.pkla
@@ -39,6 +40,7 @@ BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:        noarch
 BuildRequires:    python-devel
 BuildRequires:    python-setuptools
+BuildRequires:    python-distutils-extra >= 2.18
 BuildRequires:    python-netaddr
 
 Requires:         python-nova = %{version}-%{release}
@@ -107,7 +109,7 @@ protocol, and the Redis KVS.
 This package contains the %{name} Python library.
 
 %package          api
-Summary:          A nova api server
+Summary:          A nova API server
 Group:            Applications/System
 
 Requires:         %{name} = %{version}-%{release}
@@ -293,6 +295,8 @@ install -p -D -m 755 %{SOURCE13} %{buildroot}%{_initrddir}/%{name}-network
 install -p -D -m 755 %{SOURCE14} %{buildroot}%{_initrddir}/%{name}-objectstore
 install -p -D -m 755 %{SOURCE15} %{buildroot}%{_initrddir}/%{name}-scheduler
 install -p -D -m 755 %{SOURCE16} %{buildroot}%{_initrddir}/%{name}-volume
+install -p -D -m 755 %{SOURCE17} %{buildroot}%{_initrddir}/%{name}-direct-api
+install -p -D -m 755 %{SOURCE18} %{buildroot}%{_initrddir}/%{name}-ajax-console-proxy
 
 # Install sudoers
 install -p -D -m 440 %{SOURCE20} %{buildroot}%{_sysconfdir}/sudoers.d/%{name}
@@ -314,17 +318,25 @@ install -p -D -m 644 %{SOURCE22} %{buildroot}%{_datarootdir}/nova/interfaces.rhe
 find %{buildroot}%{_sharedstatedir}/nova/CA -name .gitignore -delete
 find %{buildroot}%{_sharedstatedir}/nova/CA -name .placeholder -delete
 
-# Ugly hack for nova-manage - not needed anymore since we have correct paths?
-#cd %{buildroot}%{python_sitelib} && ln -s ../../../../../var/lib/nova/CA CA
-
 install -d -m 755 %{buildroot}%{_sysconfdir}/polkit-1/localauthority/50-local.d
 install -p -D -m 644 %{SOURCE21} %{buildroot}%{_sysconfdir}/polkit-1/localauthority/50-local.d/50-%{name}.pkla
 
-# Install configuration file for nova-api service
-install -p -D -m 440 %{SOURCE3} %{buildroot}%{_sysconfdir}/nova/nova-api.conf
+# Fix for nova-api.conf misplacement
+install -d -m 750 %{buildroot}%{_sysconfdir}/nova
+mv %{buildroot}%{_sysconfdir}/nova-api.conf %{buildroot}%{_sysconfdir}/nova/nova-api.conf
 
-# Install README for RHEL build
-#install -p -D -m 644 %{SOURCE1} %{buildroot}%{_docdir}/README.rhel6
+# Install ajaxterm
+gzip --best -c tools/ajaxterm/ajaxterm.1 > tools/ajaxterm/ajaxterm.1.gz
+install -p -m 755 tools/ajaxterm/ajaxterm.1.gz %{buildroot}%{_mandir}/man1/ajaxterm.1*
+install -d -m 755 %{buildroot}%{python_sitelib}/tools
+install -m 644 tools/ajaxterm/{ajaxterm.css,ajaxterm.html,ajaxterm.js,qweb.py,sarissa.js,sarissa_dhtml.js} %{buildroot}%{python_sitelib}/tools
+install -m 755 tools/ajaxterm/ajaxterm.py %{buildroot}%{python_sitelib}/tools
+install -m 755 tools/euca-get-ajax-console %{buildroot}%{_bindir}
+
+# Remove unneeded in production stuff
+rm -fr %{buildroot}%{python_sitelib}/run_tests.*
+rm -f %{buildroot}%{_bindir}/nova-combined
+rm -f %{buildroot}/usr/share/doc/nova/README*
 
 %clean
 rm -rf %{buildroot}
@@ -345,31 +357,39 @@ fi
 
 %post api
 /sbin/chkconfig --add %{name}-api
+/sbin/chkconfig --add %{name}-direct-api
 
 %preun api
 if [ $1 = 0 ] ; then
     /sbin/service %{name}-api stop >/dev/null 2>&1
+    /sbin/service %{name}-direct-api stop >/dev/null 2>&1
     /sbin/chkconfig --del %{name}-api
+    /sbin/chkconfig --del %{name}-direct-api
 fi
 
 %postun api
 if [ $1 = 1 ] ; then
     /sbin/service %{name}-api condrestart
+    /sbin/service %{name}-direct-api condrestart
 fi
 
 # compute
 
 %post compute
+/sbin/chkconfig --add %{name}-ajax-console-proxy
 /sbin/chkconfig --add %{name}-compute
 
 %preun compute
 if [ $1 = 0 ] ; then
+    /sbin/service %{name}-ajax-console-proxy stop >/dev/null 2>&1
     /sbin/service %{name}-compute stop >/dev/null 2>&1
+    /sbin/chkconfig --del %{name}-ajax-console-proxy
     /sbin/chkconfig --del %{name}-compute
 fi
 
 %postun compute
 if [ $1 = 1 ] ; then
+    /sbin/service %{name}-ajax-console-proxy condrestart
     /sbin/service %{name}-compute condrestart
 fi
 
@@ -444,7 +464,12 @@ fi
 %config(noreplace) %{_sysconfdir}/sudoers.d/%{name}
 %dir %attr(0755, nova, root) %{_localstatedir}/log/nova
 %dir %attr(0755, nova, root) %{_localstatedir}/run/nova
+%{_bindir}/nova-console
+%{_bindir}/nova-debug
+%{_bindir}/nova-logspool
 %{_bindir}/nova-manage
+%{_bindir}/nova-spoolsentry
+%{_bindir}/stack
 %{_datarootdir}/nova
 %defattr(-,nova,nobody,-)
 %{_sharedstatedir}/nova
@@ -458,18 +483,22 @@ fi
 %files api
 %defattr(-,root,root,-)
 %{_initrddir}/%{name}-api
+%{_initrddir}/%{name}-direct-api
 %{_bindir}/nova-api
+%{_bindir}/nova-direct-api
 %defattr(-,nova,nobody,-)
 %config(noreplace) %{_sysconfdir}/nova/nova-api.conf
 
 %files compute
 %defattr(-,root,root,-)
 %{_sysconfdir}/polkit-1/localauthority/50-local.d/50-openstack-nova.pkla
+%{_bindir}/euca-get-ajax-console
+%{_bindir}/nova-ajax-console-proxy
 %{_bindir}/nova-compute
-%{_bindir}/nova-debug
-%{_bindir}/nova-logspool
-%{_bindir}/nova-spoolsentry
 %{_initrddir}/%{name}-compute
+%{_initrddir}/%{name}-ajax-console-proxy
+%{_mandir}/man1/ajaxterm.1*
+%{python_sitelib}/tools
 
 %files instancemonitor
 %defattr(-,root,root,-)
@@ -505,6 +534,27 @@ fi
 %endif
 
 %changelog
+* Wed Mar 02 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1.1-5
+- Changed logrotate script - it should not rotate empty logs
+
+* Wed Mar 02 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1.1-4
+- Updated logrotate script with nova-ajax-console-proxy and nova-direct-api
+  logfiles
+
+* Wed Mar 02 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1.1-3
+- Added initscript for nova-ajax-console-proxy
+
+* Wed Mar 02 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1.1-2
+- Added initscript for nova-direct-api
+
+* Wed Mar 02 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1.1-1
+- Bugfix release 2011.1.1
+- Added python-distutils-extra to BuildReqs
+
+* Fri Feb 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-5
+- Merged updated guestfs patch from Ilya Alekseyev
+- Refactored guestfs patch - now it creates directory only if it does not exist
+
 * Fri Feb 18 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-4
 - Added patch with network interface template for RHEL guest OS
   (kudos to Ilya Alekseyev)

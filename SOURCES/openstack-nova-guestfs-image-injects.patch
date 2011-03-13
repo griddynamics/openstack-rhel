@@ -1,6 +1,6 @@
 diff -Naur nova-2011.1.orig/nova/utils.py nova-2011.1/nova/utils.py
---- nova-2011.1.orig/nova/utils.py	2011-02-18 14:46:14.000000000 +0300
-+++ nova-2011.1/nova/utils.py	2011-02-18 14:48:55.000000000 +0300
+--- nova-2011.1.orig/nova/utils.py	2011-02-25 13:41:25.236139084 +0300
++++ nova-2011.1/nova/utils.py	2011-02-25 13:43:10.466136850 +0300
 @@ -25,7 +25,6 @@
  import json
  import os
@@ -18,8 +18,8 @@ diff -Naur nova-2011.1.orig/nova/utils.py nova-2011.1/nova/utils.py
  from nova import exception
  from nova.exception import ProcessExecutionError
 diff -Naur nova-2011.1.orig/nova/virt/disk.py nova-2011.1/nova/virt/disk.py
---- nova-2011.1.orig/nova/virt/disk.py	2011-02-18 14:46:14.000000000 +0300
-+++ nova-2011.1/nova/virt/disk.py	2011-02-18 15:07:27.000000000 +0300
+--- nova-2011.1.orig/nova/virt/disk.py	2011-02-02 14:24:04.000000000 +0300
++++ nova-2011.1/nova/virt/disk.py	2011-02-25 14:16:56.735208350 +0300
 @@ -23,10 +23,8 @@
  """
  
@@ -32,7 +32,7 @@ diff -Naur nova-2011.1.orig/nova/virt/disk.py nova-2011.1/nova/virt/disk.py
  from nova import flags
  from nova import log as logging
  from nova import utils
-@@ -52,135 +50,26 @@
+@@ -52,135 +50,30 @@
  
  
  def inject_data(image, key=None, net=None, partition=None, nbd=False):
@@ -98,8 +98,12 @@ diff -Naur nova-2011.1.orig/nova/virt/disk.py nova-2011.1/nova/virt/disk.py
 +        devices = g.inspect_os()
 +        g.mount(devices[0],"/")
 +        if key:
-+            LOG.debug(_("Injecting key..."))
-+            path = "/root/.ssh/authorized_keys"
++            LOG.debug(_("Injecting SSH key..."))
++            sshdir = "/root/.ssh"
++            path = sshdir + "/authorized_keys"
++            if not g.is_dir(sshdir):
++                g.mkdir_p(sshdir)
++                g.chmod(0700, sshdir)
 +            g.write(path, key)
 +            g.chmod(0600, path)
 +        if net:

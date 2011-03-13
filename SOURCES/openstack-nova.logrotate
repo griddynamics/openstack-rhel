@@ -1,11 +1,32 @@
 compress
 
+/var/log/nova/nova-ajax-console-proxy.log {
+    daily
+    rotate 30
+    missingok
+    notifempty
+    postrotate
+        /sbin/service openstack-nova-ajax-console-proxy condreload
+    endscript
+}
+
 /var/log/nova/nova-api.log {
     daily
     rotate 30
     missingok
+    notifempty
     postrotate
         /sbin/service openstack-nova-api condreload
+    endscript
+}
+
+/var/log/nova/nova-direct-api.log {
+    daily
+    rotate 30
+    missingok
+    notifempty
+    postrotate
+        /sbin/service openstack-nova-direct-api condreload
     endscript
 }
 
@@ -13,6 +34,7 @@ compress
     daily
     rotate 30
     missingok
+    notifempty
     postrotate
         /sbin/service openstack-nova-compute condreload
     endscript
@@ -22,6 +44,7 @@ compress
     daily
     rotate 30
     missingok
+    notifempty
     postrotate
         /sbin/service openstack-nova-network condreload
     endscript
@@ -31,6 +54,7 @@ compress
     daily
     rotate 30
     missingok
+    notifempty
     postrotate
         /sbin/service openstack-nova-objectstore condreload
     endscript
@@ -40,6 +64,7 @@ compress
     daily
     rotate 30
     missingok
+    notifempty
     postrotate
         /sbin/service openstack-nova-scheduler condreload
     endscript
@@ -49,6 +74,7 @@ compress
     daily
     rotate 30
     missingok
+    notifempty
     postrotate
         /sbin/service openstack-nova-volume condreload
     endscript

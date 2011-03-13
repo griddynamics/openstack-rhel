@@ -1,6 +1,6 @@
 Name:             openstack-nova-compute-config
-Version:          2011.1
-Release:          5
+Version:          2011.1.1
+Release:          1
 Summary:          OpenStack Compute (nova) - Compute node configuration
 
 Group:            Development/Languages
@@ -43,6 +43,13 @@ rm -rf %{buildroot}
 %config(noreplace) %{_sysconfdir}/nova/nova.conf
 
 %changelog
+* Wed Mar 02 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1.1-1
+- Release 2011.1.1
+
+* Fri Feb 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-6
+- Switched back to nova.image.s3.S3ImageService instead of glance
+- Use of qcow2 images enabled by default
+
 * Mon Feb 07 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-5
 - Added --state-path
 
