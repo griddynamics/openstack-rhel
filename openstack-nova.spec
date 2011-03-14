@@ -329,9 +329,9 @@ find %{buildroot}%{_sharedstatedir}/nova/CA -name .placeholder -delete
 install -d -m 755 %{buildroot}%{_sysconfdir}/polkit-1/localauthority/50-local.d
 install -p -D -m 644 %{SOURCE21} %{buildroot}%{_sysconfdir}/polkit-1/localauthority/50-local.d/50-%{name}.pkla
 
-# Fix for nova-api.conf misplacement
+# Fix for api-paste.ini misplacement
 install -d -m 750 %{buildroot}%{_sysconfdir}/nova
-mv %{buildroot}%{_sysconfdir}/nova-api.conf %{buildroot}%{_sysconfdir}/nova/nova-api.conf
+mv %{buildroot}%{_sysconfdir}/api-paste.ini %{buildroot}%{_sysconfdir}/nova/api-paste.ini
 
 # Install ajaxterm
 gzip --best -c tools/ajaxterm/ajaxterm.1 > tools/ajaxterm/ajaxterm.1.gz
@@ -495,7 +495,7 @@ fi
 %{_bindir}/nova-api
 %{_bindir}/nova-direct-api
 %defattr(-,nova,nobody,-)
-%config(noreplace) %{_sysconfdir}/nova/nova-api.conf
+%config(noreplace) %{_sysconfdir}/nova/api-paste.ini
 
 %files compute
 %defattr(-,root,root,-)
@@ -546,6 +546,7 @@ fi
 - Cactus pre-release build
 - Changed release to better comply packaging policy
   https://fedoraproject.org/wiki/Packaging:NamingGuidelines
+- /etc/nova/nova-api.conf -> /etc/nova/api-paste.ini
 * Wed Mar 02 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1.1-5
 - Changed logrotate script - it should not rotate empty logs
 
