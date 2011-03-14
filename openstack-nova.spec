@@ -4,15 +4,23 @@
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
 %endif
 
+%define gitdevbranch master
+%define is_devel %(if test $(git branch|grep '*'|cut -f2 -d' ') = %gitdevbranch; then echo 1; else echo 0; fi)
+
 Name:             openstack-nova
-Version:          2011.1.1
-Release:          5
+Version:          2011.2
+Release:          0.1.bzr795
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
+%if %is_devel
+%define bzrnum %(echo "%release" | cut -f3 -d.)
+Source0:          http://nova.openstack.org/tarballs/nova-%{version}~%{bzrnum}.tar.gz
+%else
 Source0:          http://nova.openstack.org/tarballs/nova-%{version}.tar.gz
+%endif
 Source1:          %{name}-README.rhel6
 Source6:          %{name}.logrotate
 
@@ -534,6 +542,10 @@ fi
 %endif
 
 %changelog
+* Mon Mar 14 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.2-0.1.bzr795
+- Cactus pre-release build
+- Changed release to better comply packaging policy
+  https://fedoraproject.org/wiki/Packaging:NamingGuidelines
 * Wed Mar 02 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1.1-5
 - Changed logrotate script - it should not rotate empty logs
 
