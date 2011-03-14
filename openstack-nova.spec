@@ -547,6 +547,8 @@ fi
 - Changed release to better comply packaging policy
   https://fedoraproject.org/wiki/Packaging:NamingGuidelines
 - /etc/nova/nova-api.conf -> /etc/nova/api-paste.ini
+- guestfs patch migrated
+
 * Wed Mar 02 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1.1-5
 - Changed logrotate script - it should not rotate empty logs
 

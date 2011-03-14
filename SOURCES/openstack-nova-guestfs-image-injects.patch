@@ -1,25 +1,6 @@
-diff -Naur nova-2011.1.orig/nova/utils.py nova-2011.1/nova/utils.py
---- nova-2011.1.orig/nova/utils.py	2011-02-25 13:41:25.236139084 +0300
-+++ nova-2011.1/nova/utils.py	2011-02-25 13:43:10.466136850 +0300
-@@ -25,7 +25,6 @@
- import json
- import os
- import random
--import subprocess
- import socket
- import struct
- import sys
-@@ -36,6 +35,7 @@
- 
- from eventlet import event
- from eventlet import greenthread
-+from eventlet.green import subprocess
- 
- from nova import exception
- from nova.exception import ProcessExecutionError
-diff -Naur nova-2011.1.orig/nova/virt/disk.py nova-2011.1/nova/virt/disk.py
---- nova-2011.1.orig/nova/virt/disk.py	2011-02-02 14:24:04.000000000 +0300
-+++ nova-2011.1/nova/virt/disk.py	2011-02-25 14:16:56.735208350 +0300
+diff -Naur nova-2011.2.orig/nova/virt/disk.py nova-2011.2/nova/virt/disk.py
+--- nova-2011.2.orig/nova/virt/disk.py	2011-03-13 19:19:49.000000000 +0300
++++ nova-2011.2/nova/virt/disk.py	2011-03-14 15:44:30.639653039 +0300
 @@ -23,10 +23,8 @@
  """
  
@@ -32,7 +13,18 @@ diff -Naur nova-2011.1.orig/nova/virt/disk.py nova-2011.1/nova/virt/disk.py
  from nova import flags
  from nova import log as logging
  from nova import utils
-@@ -52,135 +50,30 @@
+@@ -38,10 +36,6 @@
+                      'minimum size in bytes of root partition')
+ flags.DEFINE_integer('block_size', 1024 * 1024 * 256,
+                      'block_size to use for dd')
+-flags.DEFINE_integer('timeout_nbd', 10,
+-                     'time to wait for a NBD device coming up')
+-flags.DEFINE_integer('max_nbd_devices', 16,
+-                     'maximum number of possible nbd devices')
+ 
+ 
+ def extend(image, size):
+@@ -56,137 +50,30 @@
  
  
  def inject_data(image, key=None, net=None, partition=None, nbd=False):
@@ -50,7 +42,7 @@ diff -Naur nova-2011.1.orig/nova/virt/disk.py nova-2011.1/nova/virt/disk.py
      try:
 -        if not partition is None:
 -            # create partition
--            out, err = utils.execute('sudo kpartx -a %s' % device)
+-            out, err = utils.execute('sudo', 'kpartx', '-a', device)
 -            if err:
 -                raise exception.Error(_('Failed to load partition: %s') % err)
 -            mapped_device = '/dev/mapper/%sp%s' % (device.split('/')[-1],
@@ -66,13 +58,14 @@ diff -Naur nova-2011.1.orig/nova/virt/disk.py nova-2011.1/nova/virt/disk.py
 -                                  mapped_device)
 -
 -        # Configure ext2fs so that it doesn't auto-check every N boots
--        out, err = utils.execute('sudo tune2fs -c 0 -i 0 %s' % mapped_device)
+-        out, err = utils.execute('sudo', 'tune2fs',
+-                                 '-c', 0, '-i', 0, mapped_device)
 -
 -        tmpdir = tempfile.mkdtemp()
 -        try:
 -            # mount loopback to dir
 -            out, err = utils.execute(
--                    'sudo mount %s %s' % (mapped_device, tmpdir))
+-                    'sudo', 'mount', mapped_device, tmpdir)
 -            if err:
 -                raise exception.Error(_('Failed to mount filesystem: %s')
 -                                      % err)
@@ -85,13 +78,13 @@ diff -Naur nova-2011.1.orig/nova/virt/disk.py nova-2011.1/nova/virt/disk.py
 -                    _inject_net_into_fs(net, tmpdir)
 -            finally:
 -                # unmount device
--                utils.execute('sudo umount %s' % mapped_device)
+-                utils.execute('sudo', 'umount', mapped_device)
 -        finally:
 -            # remove temporary directory
--            utils.execute('rmdir %s' % tmpdir)
+-            utils.execute('rmdir', tmpdir)
 -            if not partition is None:
 -                # remove partitions
--                utils.execute('sudo kpartx -d %s' % device)
+-                utils.execute('sudo', 'kpartx', '-d', device)
 +        LOG.debug(_("Mounting disk..."))
 +        g.add_drive(image)
 +        g.launch()
@@ -121,16 +114,16 @@ diff -Naur nova-2011.1.orig/nova/virt/disk.py nova-2011.1/nova/virt/disk.py
 -    """Link image to device using loopback or nbd"""
 -    if nbd:
 -        device = _allocate_device()
--        utils.execute('sudo qemu-nbd -c %s %s' % (device, image))
+-        utils.execute('sudo', 'qemu-nbd', '-c', device, image)
 -        # NOTE(vish): this forks into another process, so give it a chance
 -        #             to set up before continuuing
--        for i in xrange(10):
+-        for i in xrange(FLAGS.timeout_nbd):
 -            if os.path.exists("/sys/block/%s/pid" % os.path.basename(device)):
 -                return device
 -            time.sleep(1)
 -        raise exception.Error(_('nbd device %s did not show up') % device)
 -    else:
--        out, err = utils.execute('sudo losetup --find --show %s' % image)
+-        out, err = utils.execute('sudo', 'losetup', '--find', '--show', image)
 -        if err:
 -            raise exception.Error(_('Could not attach image to loopback: %s')
 -                                  % err)
@@ -140,13 +133,13 @@ diff -Naur nova-2011.1.orig/nova/virt/disk.py nova-2011.1/nova/virt/disk.py
 -def _unlink_device(device, nbd):
 -    """Unlink image from device using loopback or nbd"""
 -    if nbd:
--        utils.execute('sudo qemu-nbd -d %s' % device)
+-        utils.execute('sudo', 'qemu-nbd', '-d', device)
 -        _free_device(device)
 -    else:
--        utils.execute('sudo losetup --detach %s' % device)
+-        utils.execute('sudo', 'losetup', '--detach', device)
 -
 -
--_DEVICES = ['/dev/nbd%s' % i for i in xrange(16)]
+-_DEVICES = ['/dev/nbd%s' % i for i in xrange(FLAGS.max_nbd_devices)]
 -
 -
 -def _allocate_device():
@@ -173,11 +166,12 @@ diff -Naur nova-2011.1.orig/nova/virt/disk.py nova-2011.1/nova/virt/disk.py
 -    fs is the path to the base of the filesystem into which to inject the key.
 -    """
 -    sshdir = os.path.join(fs, 'root', '.ssh')
--    utils.execute('sudo mkdir -p %s' % sshdir)  # existing dir doesn't matter
--    utils.execute('sudo chown root %s' % sshdir)
--    utils.execute('sudo chmod 700 %s' % sshdir)
+-    utils.execute('sudo', 'mkdir', '-p', sshdir)  # existing dir doesn't matter
+-    utils.execute('sudo', 'chown', 'root', sshdir)
+-    utils.execute('sudo', 'chmod', '700', sshdir)
 -    keyfile = os.path.join(sshdir, 'authorized_keys')
--    utils.execute('sudo tee -a %s' % keyfile, '\n' + key.strip() + '\n')
+-    utils.execute('sudo', 'tee', '-a', keyfile,
+-            process_input='\n' + key.strip() + '\n')
 -
 -
 -def _inject_net_into_fs(net, fs):
@@ -186,10 +180,10 @@ diff -Naur nova-2011.1.orig/nova/virt/disk.py nova-2011.1/nova/virt/disk.py
 -    net is the contents of /etc/network/interfaces.
 -    """
 -    netdir = os.path.join(os.path.join(fs, 'etc'), 'network')
--    utils.execute('sudo mkdir -p %s' % netdir)  # existing dir doesn't matter
--    utils.execute('sudo chown root:root %s' % netdir)
--    utils.execute('sudo chmod 755 %s' % netdir)
+-    utils.execute('sudo', 'mkdir', '-p', netdir)  # existing dir doesn't matter
+-    utils.execute('sudo', 'chown', 'root:root', netdir)
+-    utils.execute('sudo', 'chmod', 755, netdir)
 -    netfile = os.path.join(netdir, 'interfaces')
--    utils.execute('sudo tee %s' % netfile, net)
+-    utils.execute('sudo', 'tee', netfile, process_input=net)
 +        LOG.debug(_("Deleting guestfs object..."))
 +        del(g)
