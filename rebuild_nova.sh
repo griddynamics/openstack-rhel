@@ -1,6 +1,6 @@
 #!/bin/sh
 
-NOVAVER="2011.1"
+NOVAVER="2011.2"
 
 abspath="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
 cd `dirname $abspath`
@@ -26,7 +26,9 @@ if [ ! -f "$RPMSRC" ]; then
 	wget -O "$RPMSRC" "$TARBALLURL"
 fi
 
-cat $NOVASPECORIG | perl -pi -e "s/bzr(\d+)/bzr$BUILD/" > $NOVASPEC
+#cat $NOVASPECORIG | perl -pi -e "s/bzr(\d+)/bzr$BUILD/" > $NOVASPEC
+rm -f $NOVASPEC >/dev/null 2>/dev/null
+cp $NOVASPECORIG $NOVASPEC
 rm -f "$RPMSANDBOX/RPMS/*/*bzr$BUILD*.rpm"
 rpmbuild -bb $NOVASPEC || exit -1
 rpmbuild -bs $NOVASPEC || exit -1
