@@ -1,17 +1,3 @@
-diff -Naur nova-2011.1.orig/bin/nova-api nova-2011.1/bin/nova-api
---- nova-2011.1.orig/bin/nova-api	2011-01-21 19:30:29.000000000 +0300
-+++ nova-2011.1/bin/nova-api	2011-01-21 19:47:48.125872225 +0300
-@@ -82,8 +82,8 @@
-     FLAGS(sys.argv)
-     LOG.audit(_("Starting nova-api node (version %s)"),
-               version.version_string_with_vcs())
--    conf = wsgi.paste_config_file('nova-api.conf')
-+    conf = wsgi.paste_config_file('/etc/nova/nova-api.conf')
-     if conf:
-         run_app(conf)
-     else:
--        LOG.error(_("No paste configuration found for: %s"), 'nova-api.conf')
-+        LOG.error(_("No paste configuration found for: %s"), '/etc/nova/nova-api.conf')
 diff -Naur nova-2011.1.orig/nova/utils.py nova-2011.1/nova/utils.py
 --- nova-2011.1.orig/nova/utils.py	2011-01-21 19:30:29.000000000 +0300
 +++ nova-2011.1/nova/utils.py	2011-01-21 19:46:40.403785449 +0300
@@ -24,3 +10,15 @@ diff -Naur nova-2011.1.orig/nova/utils.py nova-2011.1/nova/utils.py
      for arg in sys.argv:
          if arg.find('flagfile') != -1:
              break
+diff -Naur nova-2011.2.orig/nova/service.py nova-2011.2/nova/service.py
+--- nova-2011.2.orig/nova/service.py	2011-03-13 19:19:49.000000000 +0300
++++ nova-2011.2/nova/service.py	2011-03-14 15:59:06.798683246 +0300
+@@ -56,7 +56,7 @@
+ flags.DEFINE_string('osapi_listen', "0.0.0.0",
+                     'IP address for OpenStack API to listen')
+ flags.DEFINE_integer('osapi_listen_port', 8774, 'port for os api to listen')
+-flags.DEFINE_string('api_paste_config', "api-paste.ini",
++flags.DEFINE_string('api_paste_config', "/etc/nova/api-paste.ini",
+                     'File name for the paste.deploy config for nova-api')
+ 
+ 
