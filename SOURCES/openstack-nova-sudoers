@@ -25,6 +25,7 @@ Cmnd_Alias NOVACMDS = /bin/aoe-stat,                            \
                       /sbin/lvdisplay,                          \
                       /sbin/lvremove,                           \
                       /sbin/pvcreate,                           \
+                      /sbin/route,                              \
                       /sbin/tune2fs,                            \
                       /sbin/vconfig,                            \
                       /sbin/vgcreate,                           \

@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.2.bzr802
+Release:          0.3.bzr802
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -534,6 +534,9 @@ fi
 %endif
 
 %changelog
+* Tue Mar 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.3.bzr802
+- sudo configuration updated
+
 * Tue Mar 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.2.bzr802
 - Update to bzr802
 
