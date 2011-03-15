@@ -4,23 +4,15 @@
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
 %endif
 
-%define gitdevbranch master
-%define is_devel %(if test $(git branch|grep '*'|cut -f2 -d' ') = %gitdevbranch; then echo 1; else echo 0; fi)
-
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.1.bzr795
+Release:          0.2.bzr802
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-%if %is_devel
-%define bzrnum %(echo "%release" | cut -f3 -d.)
-Source0:          http://nova.openstack.org/tarballs/nova-%{version}~%{bzrnum}.tar.gz
-%else
-Source0:          http://nova.openstack.org/tarballs/nova-%{version}.tar.gz
-%endif
+Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr802.tar.gz
 Source1:          %{name}-README.rhel6
 Source6:          %{name}.logrotate
 
@@ -542,6 +534,9 @@ fi
 %endif
 
 %changelog
+* Tue Mar 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.2.bzr802
+- Update to bzr802
+
 * Mon Mar 14 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.2-0.1.bzr795
 - Cactus pre-release build
 - Changed release to better comply packaging policy
