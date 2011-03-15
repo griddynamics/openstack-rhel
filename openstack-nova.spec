@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.3.bzr802
+Release:          0.4.bzr802
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -34,6 +34,7 @@ Patch0:           %{name}-openssl-relaxed-policy.patch
 Patch1:           %{name}-rhel-config-paths.patch
 Patch2:           %{name}-guestfs-image-injects.patch
 Patch3:           %{name}-bexar-libvirt.xml.template.patch
+Patch4:           %{name}-libvirt-xml-cpus.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -534,6 +535,9 @@ fi
 %endif
 
 %changelog
+* Tue Mar 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.4.bzr802
+- Added openstack-nova-libvirt-xml-cpus.patch to prevent error with nova-compute startup
+
 * Tue Mar 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.3.bzr802
 - sudo configuration updated
 
