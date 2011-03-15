@@ -6,13 +6,13 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.7.bzr806
+Release:          0.8.bzr807
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr806.tar.gz
+Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr807.tar.gz
 Source1:          %{name}-README.rhel6
 Source6:          %{name}.logrotate
 
@@ -553,6 +553,9 @@ fi
 %endif
 
 %changelog
+* Tue Mar 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.8.bzr807
+- Update to bzr807
+
 * Tue Mar 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.7.bzr806
 - Update to bzr806
 
