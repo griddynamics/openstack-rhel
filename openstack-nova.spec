@@ -1,4 +1,4 @@
-%global with_doc 1
+%global with_doc 0
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -6,13 +6,13 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.4.bzr802
+Release:          0.7.bzr806
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr802.tar.gz
+Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr806.tar.gz
 Source1:          %{name}-README.rhel6
 Source6:          %{name}.logrotate
 
@@ -355,6 +355,23 @@ if ! fgrep '#includedir /etc/sudoers.d' /etc/sudoers 2>&1 >/dev/null; then
         echo '#includedir /etc/sudoers.d' >> /etc/sudoers
 fi
 
+if rpmquery openstack-nova-cc-config 1>&2 >/dev/null; then
+	# Cloud controller node detected, assuming that is contains database
+	
+	# Database init/migration
+	if [ $1 -gt 1 ]; then
+		current_version=$(nova-manage db version 2>/dev/null)
+		updated_version=$(cd %{python_sitelib}/nova/db/sqlalchemy/migrate_repo; %{__python} manage.py version)
+		if [ "$current_version" -ne "$updated_version" ]; then
+			echo "Performing Nova database upgrade"
+			/usr/bin/nova-manage db sync
+		fi
+	else
+		echo "DB init code, new installation"
+		#/usr/bin/nova-manage db sync
+	fi
+fi
+
 # api
 
 %post api
@@ -536,6 +553,16 @@ fi
 %endif
 
 %changelog
+* Tue Mar 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.7.bzr806
+- Update to bzr806
+
+* Tue Mar 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.6.bzr805
+- Added database migration
+- Temporary disabled documentation build until release
+
+* Tue Mar 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.5.bzr805
+- Update to bzr805
+
 * Tue Mar 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.4.bzr802
 - Added openstack-nova-libvirt-xml-cpus.patch to prevent error with nova-compute startup
 
