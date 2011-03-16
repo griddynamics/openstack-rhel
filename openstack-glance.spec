@@ -6,14 +6,14 @@
 %endif
 
 Name:             openstack-%{prj}
-Version:          0.1.7
-Release:          1
+Version:          2011.2
+Release:          0.2.bzr87
 Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://%{prj}.openstack.org
-Source0:          http://launchpad.net/glance/bexar/%{version}/+download/%{prj}-%{version}.tar.gz
+Source0:          http://glance.openstack.org/tarballs/glance-%{version}~bzr87.tar.gz
 Source1:          %{name}.conf
 Source2:          %{name}.init
 
@@ -111,7 +111,7 @@ rm -fr doc/build/html/.doctrees doc/build/html/.buildinfo
 install -d -m 755 %{buildroot}%{_sharedstatedir}/%{prj}/images
 
 # Config file
-install -p -D -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/nova/%{prj}.conf
+install -p -D -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/%{prj}/%{prj}.conf
 
 # Initscript
 install -p -D -m 755 %{SOURCE2} %{buildroot}%{_initrddir}/%{name}
@@ -121,6 +121,9 @@ install -d -m 755 %{buildroot}%{_localstatedir}/run/%{prj}
 
 # Install log directory
 install -d -m 755 %{buildroot}%{_localstatedir}/log/%{prj}
+
+# Removing glance-combined - it's not for production
+rm -f %{buildroot}%{_bindir}/%{prj}-combined
 
 %clean
 rm -rf %{buildroot}
@@ -144,12 +147,15 @@ fi
 %files
 %defattr(-,root,root,-)
 %doc README
+%{_bindir}/%{prj}
 %{_bindir}/%{prj}-api
+%{_bindir}/%{prj}-control
+%{_bindir}/%{prj}-manage
 %{_bindir}/%{prj}-registry
 %{_bindir}/%{prj}-upload
 %{_initrddir}/%{name}
 %defattr(-,%{prj},nobody,-)
-%config(noreplace) %{_sysconfdir}/nova/%{prj}.conf
+%config(noreplace) %{_sysconfdir}/%{prj}/%{prj}.conf
 %dir %{_sharedstatedir}/%{prj}
 %dir %attr(0755, %{prj}, nobody) %{_localstatedir}/log/%{prj}
 %dir %attr(0755, %{prj}, nobody) %{_localstatedir}/run/%{prj}
@@ -165,29 +171,35 @@ fi
 %endif
 
 %changelog
-* Mon Feb 07 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 0.1.7-1
+* Wed Mar 16 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.2.bzr87
+- Config file moved from /etc/nova to /etc/glance
+
+* Wed Mar 16 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.1.bzr87
+- pre-Cactus version
+
+* Mon Feb 07 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 0.1.7-1
 - Release 0.1.7
 
-* Thu Jan 27 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 0.1.5-1
+* Thu Jan 27 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 0.1.5-1
 - Release 0.1.5
 
-* Wed Jan 26 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 0.1.4-1
+* Wed Jan 26 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 0.1.4-1
 - Release 0.1.4
 
-* Mon Jan 24 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 0.1.3-2
+* Mon Jan 24 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 0.1.3-2
 - Changed description (thanks to Jay Pipes)
 - Added python-argparse to deps, required by /usr/bin/glance-upload
 
-* Mon Jan 24 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 0.1.3-1
+* Mon Jan 24 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 0.1.3-1
 - Release 0.1.3
 - Added glance-upload to openstack-glance package
 
-* Fri Jan 21 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 0.1.2-3
+* Fri Jan 21 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 0.1.2-3
 - Added pid directory
 - Relocated log to /var/log/glance/glance.log
 
-* Fri Jan 21 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 0.1.2-2
+* Fri Jan 21 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 0.1.2-2
 - Changed permissions on initscript
 
-* Thu Jan 20 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 0.1.2-1
+* Thu Jan 20 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 0.1.2-1
 - Initial build
