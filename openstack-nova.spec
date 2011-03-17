@@ -6,13 +6,13 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.8.bzr807
+Release:          0.9.bzr815
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr807.tar.gz
+Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr815.tar.gz
 Source1:          %{name}-README.rhel6
 Source6:          %{name}.logrotate
 
@@ -34,7 +34,6 @@ Patch0:           %{name}-openssl-relaxed-policy.patch
 Patch1:           %{name}-rhel-config-paths.patch
 Patch2:           %{name}-guestfs-image-injects.patch
 Patch3:           %{name}-bexar-libvirt.xml.template.patch
-Patch4:           %{name}-libvirt-xml-cpus.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -259,7 +258,6 @@ This package contains documentation files for %{name}.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
 
 install %{SOURCE1} README.rhel6
 
@@ -553,6 +551,10 @@ fi
 %endif
 
 %changelog
+* Thu Mar 17 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.9.bzr815
+- Update to bzr815
+- Removed libvirt-xml-cpus.patch
+
 * Tue Mar 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.8.bzr807
 - Update to bzr807
 
