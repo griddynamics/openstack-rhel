@@ -168,10 +168,17 @@ fi
 %if 0%{?with_doc}
 %files doc
 %defattr(-,root,root,-)
+%doc ChangeLog
 %doc doc/build/html
 %endif
 
 %changelog
+* Wed Mar 16 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.4.bzr87
+- Default configs patched
+
+* Wed Mar 16 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.3.bzr87
+- Added new config files
+
 * Wed Mar 16 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.2.bzr87
 - Config file moved from /etc/nova to /etc/glance
 
