@@ -17,6 +17,8 @@ Source0:          http://glance.openstack.org/tarballs/glance-%{version}~bzr87.t
 Source1:          %{name}.conf
 Source2:          %{name}.init
 
+Patch1:           %{name}-configs.patch
+
 BuildRoot:        %{_tmppath}/%{prj}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:        noarch
