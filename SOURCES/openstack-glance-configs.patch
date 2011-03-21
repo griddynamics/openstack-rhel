@@ -1,0 +1,12 @@
+diff -Naur glance-2011.2.orig/etc/glance.conf.sample glance-2011.2/etc/glance.conf.sample
+--- glance-2011.2.orig/etc/glance.conf.sample	2011-03-15 20:47:15.000000000 +0300
++++ glance-2011.2/etc/glance.conf.sample	2011-03-16 19:37:17.341493237 +0300
+@@ -64,7 +64,7 @@
+ # SQLAlchemy connection string for the reference implementation
+ # registry server. Any valid SQLAlchemy connection string is fine.
+ # See: http://www.sqlalchemy.org/docs/05/reference/sqlalchemy/connections.html#sqlalchemy.create_engine
+-sql_connection = sqlite:///glance.sqlite
++sql_connection = sqlite:///var/lib/glance/glance.sqlite
+ 
+ # Period in seconds after which SQLAlchemy should reestablish its connection
+ # to the database.

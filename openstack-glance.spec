@@ -7,14 +7,13 @@
 
 Name:             openstack-%{prj}
 Version:          2011.2
-Release:          0.2.bzr87
+Release:          0.9.bzr93
 Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://%{prj}.openstack.org
-Source0:          http://glance.openstack.org/tarballs/glance-%{version}~bzr87.tar.gz
-Source1:          %{name}.conf
+Source0:          http://glance.openstack.org/tarballs/glance-%{version}~bzr93.tar.gz
 Source2:          %{name}.init
 
 Patch1:           %{name}-configs.patch
@@ -89,6 +88,8 @@ This package contains documentation files for OpenStack Glance.
 %prep
 %setup -q -n %{prj}-%{version}
 
+%patch1 -p1
+
 %build
 %{__python} setup.py build
 
@@ -113,7 +114,8 @@ rm -fr doc/build/html/.doctrees doc/build/html/.buildinfo
 install -d -m 755 %{buildroot}%{_sharedstatedir}/%{prj}/images
 
 # Config file
-install -p -D -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/%{prj}/%{prj}.conf
+install -p -D -m 644 etc/%{prj}.conf.sample %{buildroot}%{_sysconfdir}/%{prj}/%{prj}.conf
+install -p -D -m 644 etc/logging.cnf.sample %{buildroot}%{_sysconfdir}/%{prj}/logging.cnf
 
 # Initscript
 install -p -D -m 755 %{SOURCE2} %{buildroot}%{_initrddir}/%{name}
@@ -123,9 +125,6 @@ install -d -m 755 %{buildroot}%{_localstatedir}/run/%{prj}
 
 # Install log directory
 install -d -m 755 %{buildroot}%{_localstatedir}/log/%{prj}
-
-# Removing glance-combined - it's not for production
-rm -f %{buildroot}%{_bindir}/%{prj}-combined
 
 %clean
 rm -rf %{buildroot}
@@ -158,7 +157,7 @@ fi
 %{_initrddir}/%{name}
 %defattr(-,%{prj},nobody,-)
 %config(noreplace) %{_sysconfdir}/%{prj}/%{prj}.conf
-%dir %{_sharedstatedir}/%{prj}
+%config(noreplace) %{_sysconfdir}/%{prj}/logging.cnf
 %{_sharedstatedir}/%{prj}
 %dir %attr(0755, %{prj}, nobody) %{_localstatedir}/log/%{prj}
 %dir %attr(0755, %{prj}, nobody) %{_localstatedir}/run/%{prj}
@@ -175,6 +174,21 @@ fi
 %endif
 
 %changelog
+* Mon Mar 21 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.9.bzr93
+- Update to bzr93
+
+* Mon Mar 21 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.8.bzr92
+- Update to bzr92
+
+* Thu Mar 17 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.7.bzr90
+- Added ChangeLog
+
+* Thu Mar 17 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.6.bzr90
+- Update to bzr90
+
+* Wed Mar 16 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.5.bzr88
+- Update to bzr88
+
 * Wed Mar 16 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.4.bzr87
 - Default configs patched
 
