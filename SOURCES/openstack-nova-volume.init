@@ -13,7 +13,7 @@
 # pidfile: /var/run/nova/nova-volume.pid
 
 ### BEGIN INIT INFO
-# Provides: sshd
+# Provides: openstack-nova-volume
 # Required-Start: $local_fs $network $syslog
 # Required-Stop: $local_fs $syslog
 # Should-Start: $syslog

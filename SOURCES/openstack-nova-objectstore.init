@@ -9,7 +9,7 @@
 # pidfile: /var/run/nova/nova-objectstore.pid
 
 ### BEGIN INIT INFO
-# Provides: sshd
+# Provides: openstack-nova-objectstore
 # Required-Start: $local_fs $network $syslog
 # Required-Stop: $local_fs $syslog
 # Should-Start: $syslog

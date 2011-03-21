@@ -13,7 +13,7 @@
 # pidfile: /var/run/nova/nova-direct-api.pid
 
 ### BEGIN INIT INFO
-# Provides: sshd
+# Provides: openstack-nova-direct-api
 # Required-Start: $local_fs $network $syslog
 # Required-Stop: $local_fs $syslog
 # Should-Start: $syslog
