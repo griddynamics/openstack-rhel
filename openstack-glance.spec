@@ -157,6 +157,7 @@ fi
 %defattr(-,%{prj},nobody,-)
 %config(noreplace) %{_sysconfdir}/%{prj}/%{prj}.conf
 %dir %{_sharedstatedir}/%{prj}
+%{_sharedstatedir}/%{prj}
 %dir %attr(0755, %{prj}, nobody) %{_localstatedir}/log/%{prj}
 %dir %attr(0755, %{prj}, nobody) %{_localstatedir}/run/%{prj}
 
