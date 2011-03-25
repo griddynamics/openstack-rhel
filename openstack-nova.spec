@@ -6,13 +6,13 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.16.bzr886
+Release:          0.18.bzr887
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr886.tar.gz
+Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr887.tar.gz
 Source1:          %{name}-README.rhel6
 Source6:          %{name}.logrotate
 
@@ -84,6 +84,7 @@ Requires:         python-mox >= 0.5.0
 Requires:         python-redis
 Requires:         python-routes
 Requires:         python-sqlalchemy >= 0.6
+Requires:         python-suds >= 0.4.0
 Requires:         python-tornado
 Requires:         python-twisted-core >= 10.1.0
 Requires:         python-twisted-web >= 10.1.0
@@ -552,6 +553,12 @@ fi
 %endif
 
 %changelog
+* Fri Mar 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.18.bzr887
+- Update to bzr887
+
+* Fri Mar 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.17.bzr886
+- Added dependency on python-suds
+
 * Fri Mar 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.16.bzr886
 - Update to bzr886
 
