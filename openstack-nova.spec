@@ -377,7 +377,7 @@ fi
 /sbin/chkconfig --add %{name}-direct-api
 
 %preun api
-if [ $1 = 0 ] ; then
+if [ $1 -eq 0 ] ; then
     /sbin/service %{name}-api stop >/dev/null 2>&1
     /sbin/service %{name}-direct-api stop >/dev/null 2>&1
     /sbin/chkconfig --del %{name}-api
@@ -385,7 +385,7 @@ if [ $1 = 0 ] ; then
 fi
 
 %postun api
-if [ $1 = 1 ] ; then
+if [ $1 -eq 1 ] ; then
     /sbin/service %{name}-api condrestart
     /sbin/service %{name}-direct-api condrestart
 fi
@@ -397,7 +397,7 @@ fi
 /sbin/chkconfig --add %{name}-compute
 
 %preun compute
-if [ $1 = 0 ] ; then
+if [ $1 -eq 0 ] ; then
     /sbin/service %{name}-ajax-console-proxy stop >/dev/null 2>&1
     /sbin/service %{name}-compute stop >/dev/null 2>&1
     /sbin/chkconfig --del %{name}-ajax-console-proxy
@@ -405,7 +405,7 @@ if [ $1 = 0 ] ; then
 fi
 
 %postun compute
-if [ $1 = 1 ] ; then
+if [ $1 -eq 1 ] ; then
     /sbin/service %{name}-ajax-console-proxy condrestart
     /sbin/service %{name}-compute condrestart
 fi
@@ -416,13 +416,13 @@ fi
 /sbin/chkconfig --add %{name}-network
 
 %preun network
-if [ $1 = 0 ] ; then
+if [ $1 -eq 0 ] ; then
     /sbin/service %{name}-network stop >/dev/null 2>&1
     /sbin/chkconfig --del %{name}-network
 fi
 
 %postun network
-if [ $1 = 1 ] ; then
+if [ $1 -eq 1 ] ; then
     /sbin/service %{name}-network condrestart
 fi
 
@@ -432,13 +432,13 @@ fi
 /sbin/chkconfig --add %{name}-objectstore
 
 %preun objectstore
-if [ $1 = 0 ] ; then
+if [ $1 -eq 0 ] ; then
     /sbin/service %{name}-objectstore stop >/dev/null 2>&1
     /sbin/chkconfig --del %{name}-objectstore
 fi
 
 %postun objectstore
-if [ $1 = 1 ] ; then
+if [ $1 -eq 1 ] ; then
     /sbin/service %{name}-objectstore condrestart
 fi
 
@@ -448,13 +448,13 @@ fi
 /sbin/chkconfig --add %{name}-scheduler
 
 %preun scheduler
-if [ $1 = 0 ] ; then
+if [ $1 -eq 0 ] ; then
     /sbin/service %{name}-scheduler stop >/dev/null 2>&1
     /sbin/chkconfig --del %{name}-scheduler
 fi
 
 %postun scheduler
-if [ $1 = 1 ] ; then
+if [ $1 -eq 1 ] ; then
     /sbin/service %{name}-scheduler condrestart
 fi
 
@@ -464,13 +464,13 @@ fi
 /sbin/chkconfig --add %{name}-volume
 
 %preun volume
-if [ $1 = 0 ] ; then
+if [ $1 -eq 0 ] ; then
     /sbin/service %{name}-volume stop >/dev/null 2>&1
     /sbin/chkconfig --del %{name}-volume
 fi
 
 %postun volume
-if [ $1 = 1 ] ; then
+if [ $1 -eq 1 ] ; then
     /sbin/service %{name}-volume condrestart
 fi
 
