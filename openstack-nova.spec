@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.14.bzr885
+Release:          0.15.bzr885
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -90,6 +90,7 @@ Requires:         python-twisted-web >= 10.1.0
 Requires:         python-webob = 0.9.8
 Requires:         python-netaddr
 Requires:         python-glance
+Requires:         python-novaclient
 Requires:         python-sqlalchemy-migrate
 Requires:         radvd
 Requires:         iptables iptables-ipv6
@@ -551,6 +552,9 @@ fi
 %endif
 
 %changelog
+* Fri Mar 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.15.bzr885
+- Added dependency on python-novaclient
+
 * Fri Mar 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.14.bzr885
 - Update to bzr885
 
