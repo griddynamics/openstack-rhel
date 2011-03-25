@@ -1,6 +1,6 @@
 Name:		openstack-repo
-Version:	2011.1
-Release:	2
+Version:	2011.2
+Release:	0.1
 Summary:	OpenStack repository configuration from Grid Dynamics
 
 Group:		System Environment/Base
@@ -29,6 +29,9 @@ install -p -D -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-K
 %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OPENSTACK
 
 %changelog
+* Fri Mar 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.1
+- Version bumped to 2011.2
+
 * Thu Feb 10 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-2
 - Added failover repo
 
