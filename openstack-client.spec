@@ -7,7 +7,7 @@
 
 Name:             openstack-%{prj}
 Version:          2.4.1
-Release:          2
+Release:          3
 Summary:          Client for OpenStack Nova API
 
 Group:            Applications/System
@@ -37,6 +37,7 @@ Group:            Development/Languages
 
 Requires:         python-argparse
 Requires:         python-simplejson
+Requires:         python-json
 Requires:         python-httplib2
 Requires:         python-prettytable
 
@@ -103,6 +104,9 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Fri Mar 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2.4.1-3
+- Added python-json in Requires
+
 * Fri Mar 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2.4.1-2
 - Added dependencies on python-httplib2, python-prettytable
 
