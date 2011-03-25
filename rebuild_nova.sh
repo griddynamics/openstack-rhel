@@ -59,10 +59,10 @@ rpmbuild -bb $NOVASPEC || exit -1
 rpmbuild -bs $NOVASPEC || exit -1
 rm -f $NOVASPEC
 
-if [ -f "$RPMSANDBOX/RPMS/noarch/openstack-nova-$NOVAVER-$SPECRELEASENEW.noarch.rpm" ]; then
-	rm -fr $REPOPATH/*nova*bzr*.rpm
-	mv $RPMSANDBOX/RPMS/noarch/*$NOVAVER-$SPECRELEASENEW*.rpm "$REPOPATH"
-	for fn in $REPOPATH/*.rpm; do ./sign_rpm $fn; done
-	createrepo "$REPOPATH"
-fi
+#if [ -f "$RPMSANDBOX/RPMS/noarch/openstack-nova-$NOVAVER-$SPECRELEASENEW.noarch.rpm" ]; then
+#	rm -fr $REPOPATH/*nova*bzr*.rpm
+#	mv $RPMSANDBOX/RPMS/noarch/*$NOVAVER-$SPECRELEASENEW*.rpm "$REPOPATH"
+for fn in $RPMSANDBOX/RPMS/noarch/*$NOVAVER-$SPECRELEASENEW*.rpm; do ./sign_rpm $fn; done
+#	createrepo "$REPOPATH"
+#fi
 
