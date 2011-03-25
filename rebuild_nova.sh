@@ -4,7 +4,8 @@
 # If build # is not specified, latest available tarball will be built
 
 REPOPATH="/var/www/html/openstack-nova"
-RPMSANDBOX="$HOME/rpmbuild/"
+RPMSANDBOX=`grep topdir $HOME/.rpmmacros 2>/dev/null | awk '{print ($2)}'`
+[ "$RPMSANDBOX" == "" ] && RPMSANDBOX="$HOME/rpmbuild/"
 NOVASPECORIG="openstack-nova.spec"
 TARBALLSHOME="http://nova.openstack.org/tarballs"
 
