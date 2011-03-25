@@ -7,13 +7,13 @@
 
 Name:             openstack-%{prj}
 Version:          2011.2
-Release:          0.9.bzr93
+Release:          0.12.bzr96
 Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://%{prj}.openstack.org
-Source0:          http://glance.openstack.org/tarballs/glance-%{version}~bzr93.tar.gz
+Source0:          http://glance.openstack.org/tarballs/glance-%{version}~bzr96.tar.gz
 Source2:          %{name}.init
 
 Patch1:           %{name}-configs.patch
@@ -169,11 +169,21 @@ fi
 %if 0%{?with_doc}
 %files doc
 %defattr(-,root,root,-)
-%doc ChangeLog
+#doc ChangeLog
 %doc doc/build/html
 %endif
 
 %changelog
+* Fri Mar 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.12.bzr96
+- Update to bzr96
+- Temporary commented Changelog in %doc
+
+* Thu Mar 24 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.11.bzr95
+- Update to bzr95
+
+* Mon Mar 21 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.10.bzr93
+- Added /var/lib/glance and subdirs to include images in package
+
 * Mon Mar 21 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.9.bzr93
 - Update to bzr93
 
