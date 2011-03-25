@@ -6,13 +6,13 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.15.bzr885
+Release:          0.16.bzr886
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr885.tar.gz
+Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr886.tar.gz
 Source1:          %{name}-README.rhel6
 Source6:          %{name}.logrotate
 
@@ -552,6 +552,9 @@ fi
 %endif
 
 %changelog
+* Fri Mar 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.16.bzr886
+- Update to bzr886
+
 * Fri Mar 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.15.bzr885
 - Added dependency on python-novaclient
 
