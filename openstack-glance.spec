@@ -7,7 +7,7 @@
 
 Name:             openstack-%{prj}
 Version:          2011.2
-Release:          0.13.bzr99
+Release:          0.14.bzr99
 Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages
@@ -169,11 +169,14 @@ fi
 %if 0%{?with_doc}
 %files doc
 %defattr(-,root,root,-)
-#doc ChangeLog
+%doc ChangeLog
 %doc doc/build/html
 %endif
 
 %changelog
+* Tue Mar 29 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.14.bzr99
+- Uncommented Changelog back
+
 * Tue Mar 29 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.13.bzr99
 - Update to bzr99
 
