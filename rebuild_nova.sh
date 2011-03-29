@@ -51,21 +51,19 @@ else
 	perl -pi -e "s,^Source0:.*$,Source0:          nova-%{version}.tar.gz,"
 fi
 
-rm -f $NOVASPEC >/dev/null 2>/dev/null
-cp $NOVASPECORIG $NOVASPEC
 SPECRELEASENEW=$(grep '^Release:' $NOVASPECORIG | sed 's/^Release:\s\+//')
 rm -f "$RPMSANDBOX/RPMS/*/*-$NOVAVER-$SPECRELEASENEW*.rpm" 2>/dev/null
-rpmbuild -bb $NOVASPEC
+rpmbuild -bb $NOVASPECORIG
 if [ "$?" != "0" ]; then
 	git checkout -- "$NOVASPECORIG"
 	exit -1
 else
-	git add "$NOVASPEC"
+	git add "$NOVASPECORIG"
 	git commit -m "Update to bzr$BUILD"
 	git push
 fi
-rpmbuild -bs $NOVASPEC
-rm -f $NOVASPEC
+rpmbuild -bs $NOVASPECORIG
+
 for fn in $RPMSANDBOX/RPMS/noarch/*$NOVAVER-$SPECRELEASENEW*.rpm; do ./sign_rpm $fn; done
 
 if [ ! -d "$REPOPATH" ];
