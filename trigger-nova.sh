@@ -35,6 +35,15 @@ GitRev="$(curl -s http://github.com/api/v2/json/commits/list/$GithubUserProject/
 OurBuild=$(echo "$SpecRelease" | cut -d. -f3 | sed 's/bzr//')
 OurRev=$(git log --pretty=format:"%H" -1 $SpecOrig)
 
-echo "Builds : $Build vs $OurBuild"
-echo "Commits: $GitRev vs $OurRev"
-exit -1
+FireNewBuild=0
+if [[ "$Build" -ne "$OurBuild" ]]; then
+	FireNewBuild=1
+fi
+if [[ "$GitRev" -ne "$OurRev" ]]; then
+	FireNewBuild=1
+fi
+
+if [[ "$FireNewBuild" == 1 ]];
+then
+	curl -s "http://$jenkins/job/$jobname/build"
+fi
