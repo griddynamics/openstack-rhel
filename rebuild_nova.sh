@@ -3,7 +3,6 @@
 # If you need to build a specific version - specify it as bzr build # (digits only).
 # If build # is not specified, latest available tarball will be built
 
-REPOPATH="/var/www/html/openstack-nova"
 RPMSANDBOX=`grep topdir $HOME/.rpmmacros 2>/dev/null | awk '{print ($2)}'`
 [ "$RPMSANDBOX" == "" ] && RPMSANDBOX="$HOME/rpmbuild/"
 NOVASPECORIG="openstack-nova.spec"
@@ -29,6 +28,7 @@ fi
 
 GITDEVBRANCH="master"
 GITCURBRANCH=$(git branch|grep '*'|cut -f2 -d' ')
+REPOPATH="/home/build/repo/$GITCURBRANCH/nova"
 
 abspath="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
 cd `dirname $abspath`
@@ -66,11 +66,15 @@ else
 fi
 rpmbuild -bs $NOVASPEC
 rm -f $NOVASPEC
-
-#if [ -f "$RPMSANDBOX/RPMS/noarch/openstack-nova-$NOVAVER-$SPECRELEASENEW.noarch.rpm" ]; then
-#	rm -fr $REPOPATH/*nova*bzr*.rpm
-#	mv $RPMSANDBOX/RPMS/noarch/*$NOVAVER-$SPECRELEASENEW*.rpm "$REPOPATH"
 for fn in $RPMSANDBOX/RPMS/noarch/*$NOVAVER-$SPECRELEASENEW*.rpm; do ./sign_rpm $fn; done
-#	createrepo "$REPOPATH"
-#fi
+
+if [ ! -d "$REPOPATH" ];
+then
+	mkdir -p "$REPOPATH"
+fi
+
+if [ -f "$RPMSANDBOX/RPMS/noarch/openstack-nova-$NOVAVER-$SPECRELEASENEW.noarch.rpm" ]; then
+	rm -fr $REPOPATH/python-nova*.rpm  $REPOPATH/openstack-nova*.rpm
+	mv $RPMSANDBOX/RPMS/noarch/*$NOVAVER-$SPECRELEASENEW*.rpm "$REPOPATH"
+fi
 
