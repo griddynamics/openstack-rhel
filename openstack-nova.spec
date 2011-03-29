@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.26.bzr908
+Release:          0.28.bzr908
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -553,6 +553,9 @@ fi
 %endif
 
 %changelog
+* Wed Mar 30 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.28.bzr908
+- Migrated guestfs patch
+
 * Tue Mar 29 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.26.bzr908
 - Update to bzr908
 

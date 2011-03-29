@@ -1,6 +1,6 @@
 diff -Naur nova-2011.2.orig/nova/virt/disk.py nova-2011.2/nova/virt/disk.py
---- nova-2011.2.orig/nova/virt/disk.py	2011-03-25 18:17:15.000000000 +0300
-+++ nova-2011.2/nova/virt/disk.py	2011-03-25 19:22:46.302656552 +0300
+--- nova-2011.2.orig/nova/virt/disk.py	2011-03-30 00:24:02.000000000 +0400
++++ nova-2011.2/nova/virt/disk.py	2011-03-30 01:05:38.596045293 +0400
 @@ -23,12 +23,10 @@
  """
  
@@ -26,7 +26,7 @@ diff -Naur nova-2011.2.orig/nova/virt/disk.py nova-2011.2/nova/virt/disk.py
  
  
  def extend(image, size):
-@@ -61,144 +55,30 @@
+@@ -61,179 +55,30 @@
  
  
  def inject_data(image, key=None, net=None, partition=None, nbd=False):
@@ -39,9 +39,7 @@ diff -Naur nova-2011.2.orig/nova/virt/disk.py nova-2011.2/nova/virt/disk.py
 -
 -    """
 -    device = _link_device(image, nbd)
-+    """Injects a ssh key and optionally net data into a disk image."""
-+    g = guestfs.GuestFS()
-     try:
+-    try:
 -        if not partition is None:
 -            # create partition
 -            out, err = utils.execute('sudo', 'kpartx', '-a', device)
@@ -83,6 +81,39 @@ diff -Naur nova-2011.2.orig/nova/virt/disk.py nova-2011.2/nova/virt/disk.py
 -            if not partition is None:
 -                # remove partitions
 -                utils.execute('sudo', 'kpartx', '-d', device)
+-    finally:
+-        _unlink_device(device, nbd)
+-
+-
+-def setup_container(image, container_dir=None, nbd=False):
+-    """Setup the LXC container.
+-
+-    It will mount the loopback image to the container directory in order
+-    to create the root filesystem for the container.
+-
+-    LXC does not support qcow2 images yet.
+-    """
+-    try:
+-        device = _link_device(image, nbd)
+-        utils.execute('sudo', 'mount', device, container_dir)
+-    except Exception, exn:
+-        LOG.exception(_('Failed to mount filesystem: %s'), exn)
+-        _unlink_device(device, nbd)
+-
+-
+-def destroy_container(target, instance, nbd=False):
+-    """Destroy the container once it terminates.
+-
+-    It will umount the container that is mounted, try to find the loopback
+-    device associated with the container and delete it.
+-
+-    LXC does not support qcow2 images yet.
+-    """
++    """Injects a ssh key and optionally net data into a disk image."""
++    g = guestfs.GuestFS()
+     try:
+-        container_dir = '%s/rootfs' % target
+-        utils.execute('sudo', 'umount', container_dir)
 +        LOG.debug(_("Mounting disk..."))
 +        g.add_drive(image)
 +        g.launch()
@@ -105,7 +136,11 @@ diff -Naur nova-2011.2.orig/nova/virt/disk.py nova-2011.2/nova/virt/disk.py
 +        LOG.exception(e)
 +        raise
      finally:
--        _unlink_device(device, nbd)
+-        out, err = utils.execute('sudo', 'losetup', '-a')
+-        for loop in out.splitlines():
+-            if instance['name'] in loop:
+-                device = loop.split(loop, ':')
+-                _unlink_device(device, nbd)
 -
 -
 -def _link_device(image, nbd):
