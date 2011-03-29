@@ -7,13 +7,13 @@
 
 Name:             openstack-%{prj}
 Version:          2011.2
-Release:          0.12.bzr96
+Release:          0.13.bzr99
 Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://%{prj}.openstack.org
-Source0:          http://glance.openstack.org/tarballs/glance-%{version}~bzr96.tar.gz
+Source0:          http://glance.openstack.org/tarballs/glance-%{version}~bzr99.tar.gz
 Source2:          %{name}.init
 
 Patch1:           %{name}-configs.patch
@@ -174,6 +174,9 @@ fi
 %endif
 
 %changelog
+* Tue Mar 29 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.13.bzr99
+- Update to bzr99
+
 * Fri Mar 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.12.bzr96
 - Update to bzr96
 - Temporary commented Changelog in %doc
