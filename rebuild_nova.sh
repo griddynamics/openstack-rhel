@@ -58,6 +58,7 @@ rm -f "$RPMSANDBOX/RPMS/*/*-$NOVAVER-$SPECRELEASENEW*.rpm" 2>/dev/null
 rpmbuild -bb $NOVASPEC
 if [ "$?" != "0" ]; then
 	git checkout -- "$NOVASPECORIG"
+	exit -1
 else
 	git add "$NOVASPEC"
 	git commit -m "Update to bzr$BUILD"
