@@ -40,7 +40,7 @@ FireNewBuild=0
 if [[ "$Build" -ne "$OurBuild" ]]; then
 	FireNewBuild=1
 fi
-if [[ "$GitRev" -ne "$OurRev" ]]; then
+if [[ "$GitRev" != "$OurRev" ]]; then
 	FireNewBuild=1
 fi
 
