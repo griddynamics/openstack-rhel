@@ -1,4 +1,4 @@
-%global with_doc 0
+%global with_doc 1
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.22.bzr905
+Release:          0.23.bzr905
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -553,6 +553,9 @@ fi
 %endif
 
 %changelog
+* Tue Mar 29 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.23.bzr905
+- Enabled doc build
+
 * Tue Mar 29 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.22.bzr905
 - Update to bzr905
 
