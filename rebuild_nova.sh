@@ -55,8 +55,15 @@ rm -f $NOVASPEC >/dev/null 2>/dev/null
 cp $NOVASPECORIG $NOVASPEC
 SPECRELEASENEW=$(grep '^Release:' $NOVASPECORIG | sed 's/^Release:\s\+//')
 rm -f "$RPMSANDBOX/RPMS/*/*-$NOVAVER-$SPECRELEASENEW*.rpm" 2>/dev/null
-rpmbuild -bb $NOVASPEC || exit -1
-rpmbuild -bs $NOVASPEC || exit -1
+rpmbuild -bb $NOVASPEC
+if [ "$?" != "0" ]; then
+	git checkout -- "$NOVASPECORIG"
+else
+	git add "$NOVASPEC"
+	git commit -m "Update to bzr$BUILD"
+	git push
+fi
+rpmbuild -bs $NOVASPEC
 rm -f $NOVASPEC
 
 #if [ -f "$RPMSANDBOX/RPMS/noarch/openstack-nova-$NOVAVER-$SPECRELEASENEW.noarch.rpm" ]; then
