@@ -3,8 +3,8 @@
 # If you need to build a specific version - specify it as bzr build # (digits only).
 # If build # is not specified, latest available tarball will be built
 
-REPOPATH="/var/www/html/openstack-nova"
-RPMSANDBOX="$HOME/rpmbuild/"
+RPMSANDBOX=`grep topdir $HOME/.rpmmacros 2>/dev/null | awk '{print ($2)}'`
+[ "$RPMSANDBOX" == "" ] && RPMSANDBOX="$HOME/rpmbuild/"
 GLANCESPECORIG="openstack-glance.spec"
 TARBALLSHOME="http://glance.openstack.org/tarballs"
 
@@ -28,6 +28,7 @@ fi
 
 GITDEVBRANCH="master"
 GITCURBRANCH=$(git branch|grep '*'|cut -f2 -d' ')
+REPOPATH="/home/build/repo/$GITCURBRANCH/nova"
 
 abspath="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
 cd `dirname $abspath`
@@ -50,18 +51,29 @@ else
 	perl -pi -e "s,^Source0:.*$,Source0:          glance-%{version}.tar.gz,"
 fi
 
-rm -f $GLANCESPEC >/dev/null 2>/dev/null
-cp $GLANCESPECORIG $GLANCESPEC
 SPECRELEASENEW=$(grep '^Release:' $GLANCESPECORIG | sed 's/^Release:\s\+//')
 rm -f "$RPMSANDBOX/RPMS/*/*-$GLANCEVER-$SPECRELEASENEW*.rpm" 2>/dev/null
-rpmbuild -bb $GLANCESPEC || exit -1
-rpmbuild -bs $GLANCESPEC || exit -1
-rm -f $GLANCESPEC
+rpmbuild -bb $GLANCESPECORIG
+if [ "$?" != "0" ]; then
+	git checkout -- "$GLANCESPECORIG"
+	exit -1
+else
+	git add "$GLANCESPECORIG"
+	git commit -m "Update to bzr$BUILD"
+	git push
+fi
+rpmbuild -bs $GLANCESPECORIG
+
+for fn in $RPMSANDBOX/RPMS/noarch/*$GLANCEVER-$SPECRELEASENEW*.rpm; do ./sign_rpm $fn; done
+
+if [ ! -d "$REPOPATH" ];
+then
+	mkdir -p "$REPOPATH"
+fi
 
 if [ -f "$RPMSANDBOX/RPMS/noarch/openstack-glance-$GLANCEVER-$SPECRELEASENEW.noarch.rpm" ]; then
-	rm -fr $REPOPATH/*glance*bzr*.rpm
+	rm -fr $REPOPATH/python-glance*.rpm  $REPOPATH/openstack-glance*.rpm
 	mv $RPMSANDBOX/RPMS/noarch/*$GLANCEVER-$SPECRELEASENEW*.rpm "$REPOPATH"
-	for fn in $REPOPATH/*.rpm; do ./sign_rpm $fn; done
-	createrepo "$REPOPATH"
 fi
+
 
