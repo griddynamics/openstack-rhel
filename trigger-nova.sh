@@ -29,7 +29,7 @@ SpecRelease=$(grep '^Release:' $SpecOrig | sed 's/^Release:\s\+//')
 # Gathering actual revisions
 Build="$(curl -s $TarballsHome'/?C=M;O=D' | grep $SpecVer | grep bzr | perl -pi -e 's/^.*bzr(\d+).*$/$1/' | head -n 1)"
 GitCurBranch="$(git branch|grep '*'|cut -f2 -d' ')"
-GitRev="$(curl -s http://github.com/api/v2/json/commits/list/$GithubUserProject/$GitCurBranch/$SpecOrig | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[1]->{'id'}")"
+GitRev="$(curl -s http://github.com/api/v2/json/commits/list/$GithubUserProject/$GitCurBranch/$SpecOrig | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
 
 # Gathering our revisions
 OurBuild=$(echo "$SpecRelease" | cut -d. -f3 | sed 's/bzr//')
