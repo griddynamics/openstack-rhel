@@ -1,23 +1,40 @@
 #!/bin/bash
 
-# 1st parameter: path to Jenkins job's workspace
+prj="nova"
+jenkins="localhost:8080"
+GithubUserProject="abrindeyev/openstack-nova-rhel6"
+TarballsHome="http://$prj.openstack.org/tarballs"
+SpecOrig="openstack-$prj.spec"
 
-cd $1 || exit -1
+abspath="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
+dirname="$(dirname $abspath)"
+if [[ "$dirname" =~ /jobs/.*/workspace$ ]]
+then
+	jobname="$(echo $dirname | sed 's/^.*\/jobs\/\([^/]\+\)\/workspace$/\1/')"
+	# Query job status
+	jobinqueue="$(curl -s http://$jenkins/job/$jobname/api/json | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'inQueue'}")"
+	if [[ "$jobinqueue" == 1 ]];
+	then
+		# Job sits in queue, exiting
+		exit 0
+	fi
+else
+	echo "This script is designed to run from within Jenkins workspace"
+	exit -1
+fi
 
-TARBALLSHOME="http://nova.openstack.org/tarballs"
-SPECORIG="openstack-nova.spec"
-SPECVER=$(grep '^Version:' $SPECORIG | sed 's/^Version:\s\+//')
-SPECRELEASE=$(grep '^Release:' $SPECORIG | sed 's/^Release:\s\+//')
+SpecVer=$(grep '^Version:' $SpecOrig | sed 's/^Version:\s\+//')
+SpecRelease=$(grep '^Release:' $SpecOrig | sed 's/^Release:\s\+//')
 
 # Gathering actual revisions
-BUILD=`curl -s $TARBALLSHOME'/?C=M;O=D' | grep $SPECVER | grep bzr | perl -pi -e 's/^.*bzr(\d+).*$/$1/' | head -n 1`
-GITCURBRANCH=$(git branch|grep '*'|cut -f2 -d' ')
-GITREV=`curl -s http://github.com/api/v2/json/commits/list/abrindeyev/openstack-nova-rhel6/$GITCURBRANCH/openstack-nova.spec | perl github_last_commit.pl`
+Build=`curl -s $TarballsHome'/?C=M;O=D' | grep $SpecVer | grep bzr | perl -pi -e 's/^.*bzr(\d+).*$/$1/' | head -n 1`
+GitCurBranch=$(git branch|grep '*'|cut -f2 -d' ')
+GitRev=`curl -s http://github.com/api/v2/json/commits/list/$GithubUserProject/$GitCurBranch/$SpecOrig | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")`
 
 # Gathering our revisions
-OURBUILD=$(echo "$SPECRELEASE" | cut -d. -f3 | sed 's/bzr//')
-OURREV=$(git log --pretty=format:"%H" -1 $SPECORIG)
+OurBuild=$(echo "$SpecRelease" | cut -d. -f3 | sed 's/bzr//')
+OurRev=$(git log --pretty=format:"%H" -1 $SpecOrig)
 
-echo "BUILDs : $BUILD vs $OURBUILD"
-echo "Commits: $GITREV vs $OURREV"
+echo "Builds : $Build vs $OurBuild"
+echo "Commits: $GitRev vs $OurRev"
 exit -1
