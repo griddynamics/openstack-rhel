@@ -554,7 +554,7 @@ fi
 
 %changelog
 * Tue Mar 29 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.23.bzr905
-- Enabled doc build 
+- Enabled doc build
 
 * Tue Mar 29 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.22.bzr905
 - Update to bzr905
