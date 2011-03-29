@@ -72,7 +72,7 @@ then
 fi
 
 if [ -f "$RPMSANDBOX/RPMS/noarch/openstack-nova-$NOVAVER-$SPECRELEASENEW.noarch.rpm" ]; then
-	rm -fr $REPOPATH/python-nova*.rpm  $REPOPATH/openstack-nova*.rpm
+	rm -fr $REPOPATH/python-nova-$NOVAVER-*.rpm $REPOPATH/openstack-nova-$NOVAVER-*.rpm $REPOPATH/openstack-nova-{api,compute,instancemonitor,network,objectstore,scheduler,volume}-$NOVAVER-*.rpm
 	mv $RPMSANDBOX/RPMS/noarch/*$NOVAVER-$SPECRELEASENEW*.rpm "$REPOPATH"
 fi
 
