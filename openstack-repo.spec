@@ -32,9 +32,9 @@ install -p -D -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-K
 * Fri Mar 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.1
 - Version bumped to 2011.2
 
-* Thu Feb 10 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-2
+* Thu Feb 10 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-2
 - Added failover repo
 
-* Mon Feb 07 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> 2011.1-1
+* Mon Feb 07 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.1-1
 - First release
 
