@@ -8,6 +8,7 @@ SpecOrig="openstack-$prj.spec"
 
 abspath="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
 dirname="$(dirname $abspath)"
+cd "$dirname" || exit -1
 if [[ "$dirname" =~ /jobs/.*/workspace$ ]]
 then
 	jobname="$(echo $dirname | sed 's/^.*\/jobs\/\([^/]\+\)\/workspace$/\1/')"
