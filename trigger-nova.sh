@@ -19,6 +19,14 @@ then
 		# Job sits in queue, exiting
 		exit 0
 	fi
+	LastBuildFailed=$(curl -s http://$jenkins/job/$JobName/api/json | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'lastBuild'}{'number'} == \$d->{'lastUnsuccessfulBuild'}{'number'} ? 1 : 0")
+	if [[ "$LastBuildFailed" == 1 ]];
+	then
+		# Last job failed, user intervention required
+		# Usually that happens when upstream changed
+		# something that breaks our build/patches, etc.
+		exit 0
+	fi
 else
 	echo "This script is designed to run from within Jenkins workspace"
 	exit -1
