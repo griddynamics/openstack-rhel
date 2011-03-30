@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.32.bzr913
+Release:          0.33.bzr913
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -488,6 +488,7 @@ fi
 %{_bindir}/nova-logspool
 %{_bindir}/nova-manage
 %{_bindir}/nova-spoolsentry
+%{_bindir}/nova-vncproxy
 %{_bindir}/stack
 %{_datarootdir}/nova
 %defattr(-,nova,nobody,-)
@@ -553,6 +554,9 @@ fi
 %endif
 
 %changelog
+* Wed Mar 30 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.33.bzr913
+- Added nova-vncproxy
+
 * Wed Mar 30 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.32.bzr913
 - Update to bzr913
 
