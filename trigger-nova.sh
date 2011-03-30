@@ -11,10 +11,10 @@ dirname="$(dirname $abspath)"
 cd "$dirname" || exit -1
 if [[ "$dirname" =~ /jobs/.*/workspace$ ]]
 then
-	jobname="$(echo $dirname | sed 's/^.*\/jobs\/\([^/]\+\)\/workspace$/\1/')"
+	JobName="$(echo $dirname | sed 's/^.*\/jobs\/\([^/]\+\)\/workspace$/\1/')"
 	# Query job status
-	jobinqueue="$(curl -s http://$jenkins/job/$jobname/api/json | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'inQueue'}")"
-	if [[ "$jobinqueue" == 1 ]];
+	JobInQueue="$(curl -s http://$jenkins/job/$JobName/api/json | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'inQueue'}")"
+	if [[ "$JobInQueue" == 1 ]];
 	then
 		# Job sits in queue, exiting
 		exit 0
@@ -46,5 +46,5 @@ fi
 
 if [[ "$FireNewBuild" == 1 ]];
 then
-	curl -s "http://$jenkins/job/$jobname/build"
+	curl -s "http://$jenkins/job/$JobName/build"
 fi
