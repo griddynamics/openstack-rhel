@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.42.bzr925
+Release:          0.43.bzr925
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -62,6 +62,40 @@ Nova is intended to be easy to extend, and adapt. For example, it currently
 uses an LDAP server for users and groups, but also includes a fake LDAP server,
 that stores data in Redis. It has extensive test coverage, and uses the Sphinx
 toolkit (the same as Python itself) for code and user documentation.
+
+%package          node-full
+Summary:          OpenStack Nova full node installation
+Group:            Applications/System
+
+Requires:         %{name} = %{version}-%{release}
+Requires:         %{name}-config-cc = %{version}
+Requires:         %{name}-api = %{version}-%{release}
+Requires:         %{name}-compute = %{version}-%{release}
+Requires:         %{name}-instancemonitor = %{version}-%{release}
+Requires:         %{name}-network = %{version}-%{release}
+Requires:         %{name}-objectstore = %{version}-%{release}
+Requires:         %{name}-scheduler = %{version}-%{release}
+Requires:         %{name}-volume = %{version}-%{release}
+%if 0%{?with_doc}
+Requires:         %{name}-doc = %{version}-%{release}
+%endif
+
+%description      node-full
+This package installs full set of OpenStack Nova packages and Cloud Controller
+configuration.
+
+%package          node-compute
+Summary:          OpenStack Nova compute node installation
+Group:            Applications/System
+
+Requires:         %{name} = %{version}-%{release}
+Requires:         %{name}-config-compute = %{version}
+Requires:         %{name}-compute = %{version}-%{release}
+Requires:         %{name}-instancemonitor = %{version}-%{release}
+
+%description      node-compute
+This package installs compute set of OpenStack Nova packages and Compute node
+configuration.
 
 %package -n       python-nova
 Summary:          Nova Python libraries
@@ -554,6 +588,9 @@ fi
 %endif
 
 %changelog
+* Thu Mar 31 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.43.bzr925
+- Added openstack-nova-node-full, openstack-nova-node-compute meta packages
+
 * Thu Mar 31 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.42.bzr925
 - Update to bzr925
 
