@@ -7,7 +7,7 @@
 
 Name:             openstack-%{prj}
 Version:          2011.2
-Release:          0.15.bzr100
+Release:          0.16.bzr100
 Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages
@@ -174,6 +174,9 @@ fi
 %endif
 
 %changelog
+* Thu Mar 31 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.16.bzr100
+- fixed path to SQLite db in default config
+
 * Tue Mar 29 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.15.bzr100
 - Update to bzr100
 
