@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.46.bzr926
+Release:          0.47.bzr926
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -68,7 +68,7 @@ Summary:          OpenStack Nova full node installation
 Group:            Applications/System
 
 Requires:         %{name} = %{version}-%{release}
-Requires:         %{name}-config-cc = %{version}
+Requires:         %{name}-cc-config = %{version}
 Requires:         %{name}-api = %{version}-%{release}
 Requires:         %{name}-compute = %{version}-%{release}
 Requires:         %{name}-instancemonitor = %{version}-%{release}
@@ -603,6 +603,9 @@ fi
 %files node-compute
 
 %changelog
+* Thu Mar 31 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.47.bzr926
+- s/config-cc/cc-config/
+
 * Thu Mar 31 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.46.bzr926
 - Added empty files sections for meta packages to enable RPM generation
 
