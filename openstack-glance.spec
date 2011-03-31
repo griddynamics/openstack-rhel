@@ -7,14 +7,17 @@
 
 Name:             openstack-%{prj}
 Version:          2011.2
-Release:          0.16.bzr100
+Release:          0.17.bzr100
 Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://%{prj}.openstack.org
 Source0:          http://glance.openstack.org/tarballs/glance-%{version}~bzr100.tar.gz
-Source2:          %{name}.init
+Source1:          %{name}-api.init
+Source2:          %{name}-registry.init
+Source3:          %{name}-logging-api.conf
+Source4:          %{name}-logging-registry.conf
 
 Patch1:           %{name}-configs.patch
 
@@ -115,10 +118,12 @@ install -d -m 755 %{buildroot}%{_sharedstatedir}/%{prj}/images
 
 # Config file
 install -p -D -m 644 etc/%{prj}.conf.sample %{buildroot}%{_sysconfdir}/%{prj}/%{prj}.conf
-install -p -D -m 644 etc/logging.cnf.sample %{buildroot}%{_sysconfdir}/%{prj}/logging.cnf
+install -p -D -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/%{prj}/logging-api.conf
+install -p -D -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/%{prj}/logging-registry.conf
 
-# Initscript
-install -p -D -m 755 %{SOURCE2} %{buildroot}%{_initrddir}/%{name}
+# Initscripts
+install -p -D -m 755 %{SOURCE1} %{buildroot}%{_initrddir}/%{name}-api
+install -p -D -m 755 %{SOURCE2} %{buildroot}%{_initrddir}/%{name}-registry
 
 # Install pid directory
 install -d -m 755 %{buildroot}%{_localstatedir}/run/%{prj}
@@ -133,16 +138,19 @@ rm -rf %{buildroot}
 getent group %{prj} >/dev/null || groupadd -r %{prj}
 getent passwd %{prj} >/dev/null || \
 useradd -r -g %{prj} -d %{_sharedstatedir}/%{prj} -s /sbin/nologin \
--c "OpenStack Glance Daemon" %{prj}
+-c "OpenStack Glance Daemons" %{prj}
 exit 0
 
 %post
-/sbin/chkconfig --add openstack-%{prj}
+/sbin/chkconfig --add openstack-%{prj}-api
+/sbin/chkconfig --add openstack-%{prj}-registry
 
 %preun
 if [ $1 = 0 ] ; then
-    /sbin/service openstack-%{prj} stop
-    /sbin/chkconfig --del openstack-%{prj}
+    /sbin/service openstack-%{prj}-api stop
+    /sbin/chkconfig --del openstack-%{prj}-api
+    /sbin/service openstack-%{prj}-registry stop
+    /sbin/chkconfig --del openstack-%{prj}-registry
 fi
 
 %files
@@ -174,6 +182,10 @@ fi
 %endif
 
 %changelog
+* Thu Mar 31 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.17.bzr100
+- Added new initscripts
+- Changed default logging configuration
+
 * Thu Mar 31 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.16.bzr100
 - fixed path to SQLite db in default config
 
