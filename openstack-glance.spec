@@ -7,7 +7,7 @@
 
 Name:             openstack-%{prj}
 Version:          2011.2
-Release:          0.17.bzr100
+Release:          0.18.bzr100
 Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages
@@ -162,10 +162,12 @@ fi
 %{_bindir}/%{prj}-manage
 %{_bindir}/%{prj}-registry
 %{_bindir}/%{prj}-upload
-%{_initrddir}/%{name}
+%{_initrddir}/%{name}-api
+%{_initrddir}/%{name}-registry
 %defattr(-,%{prj},nobody,-)
 %config(noreplace) %{_sysconfdir}/%{prj}/%{prj}.conf
-%config(noreplace) %{_sysconfdir}/%{prj}/logging.cnf
+%config(noreplace) %{_sysconfdir}/%{prj}/logging-api.conf
+%config(noreplace) %{_sysconfdir}/%{prj}/logging-registry.conf
 %{_sharedstatedir}/%{prj}
 %dir %attr(0755, %{prj}, nobody) %{_localstatedir}/log/%{prj}
 %dir %attr(0755, %{prj}, nobody) %{_localstatedir}/run/%{prj}
@@ -182,6 +184,9 @@ fi
 %endif
 
 %changelog
+* Thu Mar 31 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.18.bzr100
+- Added missed files
+
 * Thu Mar 31 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.17.bzr100
 - Added new initscripts
 - Changed default logging configuration
