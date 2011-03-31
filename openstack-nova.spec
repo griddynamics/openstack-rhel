@@ -598,6 +598,10 @@ fi
 %doc LICENSE doc/build/html
 %endif
 
+%files node-full
+
+%files node-compute
+
 %changelog
 * Thu Mar 31 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.45.bzr926
 - Added SELinux banner
