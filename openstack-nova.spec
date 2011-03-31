@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.44.bzr926
+Release:          0.45.bzr926
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -47,7 +47,7 @@ Requires:         python-nova = %{version}-%{release}
 Requires:         %{name}-config = %{version}
 Requires:         sudo
 
-Requires(post):   chkconfig
+Requires(post):   chkconfig grep sudo libselinux-utils
 Requires(postun): initscripts
 Requires(preun):  chkconfig
 Requires(pre):    shadow-utils qemu-kvm
@@ -388,6 +388,17 @@ exit 0
 if ! fgrep '#includedir /etc/sudoers.d' /etc/sudoers 2>&1 >/dev/null; then
         echo '#includedir /etc/sudoers.d' >> /etc/sudoers
 fi
+if /usr/sbin/selinuxenabled; then
+	echo -e "\033[47m\033[1;31m***************************************************\033[0m"
+	echo -e "\033[47m\033[1;31m*\033[0m \033[40m\033[1;31m                                                \033[47m\033[1;31m*\033[0m"
+	echo -e "\033[47m\033[1;31m*\033[0m \033[40m\033[1;31m >> \033[5mYou have SELinux enabled on your host !\033[25m <<  \033[47m\033[1;31m*\033[0m"
+	echo -e "\033[47m\033[1;31m*\033[0m \033[40m\033[1;31m                                                \033[47m\033[1;31m*\033[0m"
+	echo -e "\033[47m\033[1;31m*\033[0m \033[40m\033[1;31mPlease disable it by setting \`SELINUX=disabled' \033[47m\033[1;31m*\033[0m"
+	echo -e "\033[47m\033[1;31m*\033[0m \033[40m\033[1;31min /etc/sysconfig/selinux and don't forget      \033[47m\033[1;31m*\033[0m"
+	echo -e "\033[47m\033[1;31m*\033[0m \033[40m\033[1;31mto reboot your host to apply that change!       \033[47m\033[1;31m*\033[0m"
+	echo -e "\033[47m\033[1;31m*\033[0m \033[40m\033[1;31m                                                \033[47m\033[1;31m*\033[0m"
+	echo -e "\033[47m\033[1;31m***************************************************\033[0m"
+fi
 
 if rpmquery openstack-nova-cc-config 1>&2 >/dev/null; then
 	# Cloud controller node detected, assuming that is contains database
@@ -588,6 +599,9 @@ fi
 %endif
 
 %changelog
+* Thu Mar 31 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.45.bzr926
+- Added SELinux banner
+
 * Thu Mar 31 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.44.bzr926
 - Update to bzr926
 
