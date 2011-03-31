@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.45.bzr926
+Release:          0.46.bzr926
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -603,6 +603,9 @@ fi
 %files node-compute
 
 %changelog
+* Thu Mar 31 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.46.bzr926
+- Added empty files sections for meta packages to enable RPM generation
+
 * Thu Mar 31 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.45.bzr926
 - Added SELinux banner
 
