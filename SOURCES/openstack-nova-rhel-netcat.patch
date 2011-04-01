@@ -1,0 +1,12 @@
+diff -Naur nova-2011.2.orig/nova/virt/libvirt_conn.py nova-2011.2/nova/virt/libvirt_conn.py
+--- nova-2011.2.orig/nova/virt/libvirt_conn.py	2011-04-01 01:07:49.000000000 +0400
++++ nova-2011.2/nova/virt/libvirt_conn.py	2011-04-01 21:21:29.473804985 +0400
+@@ -646,7 +646,7 @@
+                 port = random.randint(int(start_port), int(end_port))
+                 # netcat will exit with 0 only if the port is in use,
+                 # so a nonzero return value implies it is unused
+-                cmd = 'netcat', '0.0.0.0', port, '-w', '1'
++                cmd = 'nc', '0.0.0.0', port, '-w', '1'
+                 try:
+                     stdout, stderr = utils.execute(*cmd, process_input='')
+                 except exception.ProcessExecutionError:

@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.51.bzr930
+Release:          0.52.bzr930
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -34,6 +34,8 @@ Patch0:           %{name}-openssl-relaxed-policy.patch
 Patch1:           %{name}-rhel-config-paths.patch
 Patch2:           %{name}-guestfs-image-injects.patch
 Patch3:           %{name}-bexar-libvirt.xml.template.patch
+Patch4:           %{name}-rhel-netcat.patch
+Patch5:           %{name}-ajaxterm.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -295,6 +297,8 @@ This package contains documentation files for %{name}.
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
+%patch5 -p0
 
 install %{SOURCE1} README.rhel6
 
@@ -365,9 +369,9 @@ mv %{buildroot}%{_sysconfdir}/api-paste.ini %{buildroot}%{_sysconfdir}/nova/api-
 # Install ajaxterm
 gzip --best -c tools/ajaxterm/ajaxterm.1 > tools/ajaxterm/ajaxterm.1.gz
 install -p -m 755 tools/ajaxterm/ajaxterm.1.gz %{buildroot}%{_mandir}/man1/ajaxterm.1*
-install -d -m 755 %{buildroot}%{python_sitelib}/tools
-install -m 644 tools/ajaxterm/{ajaxterm.css,ajaxterm.html,ajaxterm.js,qweb.py,sarissa.js,sarissa_dhtml.js} %{buildroot}%{python_sitelib}/tools
-install -m 755 tools/ajaxterm/ajaxterm.py %{buildroot}%{python_sitelib}/tools
+install -d -m 755 %{buildroot}%{python_sitelib}/tools/ajaxterm
+install -m 644 tools/ajaxterm/{ajaxterm.css,ajaxterm.html,ajaxterm.js,qweb.py,sarissa.js,sarissa_dhtml.js} %{buildroot}%{python_sitelib}/tools/ajaxterm
+install -m 755 tools/ajaxterm/ajaxterm.py %{buildroot}%{python_sitelib}/tools/ajaxterm
 install -m 755 tools/euca-get-ajax-console %{buildroot}%{_bindir}
 
 # Remove unneeded in production stuff
@@ -564,7 +568,7 @@ fi
 %{_initrddir}/%{name}-compute
 %{_initrddir}/%{name}-ajax-console-proxy
 %{_mandir}/man1/ajaxterm.1*
-%{python_sitelib}/tools
+%{python_sitelib}/tools/ajaxterm
 
 %files instancemonitor
 %defattr(-,root,root,-)
@@ -604,6 +608,10 @@ fi
 %files node-compute
 
 %changelog
+* Fri Apr 01 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.52.bzr930
+- Changed location of ajaxterm.py
+- Patched netcat binary name s/netcat/nc/
+
 * Fri Apr 01 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.51.bzr930
 - Added dependency on our version of euca2ools
 
