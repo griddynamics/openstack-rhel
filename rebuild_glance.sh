@@ -70,7 +70,7 @@ else
 		LastSpecCommit="$(curl -s $GitHubUrl/$NOVASPECORIG | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
 		if [[ "$LastRepoCommit" != "$LastSpecCommit" ]]; then
 			# Last Git repo commit was not to our specfile
-`			# Probably we can safely do git pull to merge following by git push
+			# Probably we can safely do git pull to merge following by git push
 			git pull
 			if [ "$?" != "0" ]; then
 				echo "Sorry, automatic merge failed"
