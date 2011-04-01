@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.50.bzr930
+Release:          0.51.bzr930
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -46,6 +46,7 @@ BuildRequires:    python-netaddr
 Requires:         python-nova = %{version}-%{release}
 Requires:         %{name}-config = %{version}
 Requires:         sudo
+Requires:         euca2ools = 1.3.1-3gd
 
 Requires(post):   chkconfig grep sudo libselinux-utils
 Requires(postun): initscripts
@@ -603,6 +604,9 @@ fi
 %files node-compute
 
 %changelog
+* Fri Apr 01 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.51.bzr930
+- Added dependency on our version of euca2ools
+
 * Fri Apr 01 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.50.bzr930
 - Update to bzr930
 
