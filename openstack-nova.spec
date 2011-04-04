@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.54.bzr932
+Release:          0.55.bzr932
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -35,7 +35,6 @@ Patch1:           %{name}-rhel-config-paths.patch
 Patch2:           %{name}-guestfs-image-injects.patch
 Patch3:           %{name}-bexar-libvirt.xml.template.patch
 Patch4:           %{name}-rhel-netcat.patch
-Patch5:           %{name}-ajaxterm.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -298,7 +297,6 @@ This package contains documentation files for %{name}.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
-%patch5 -p0
 
 install %{SOURCE1} README.rhel6
 
@@ -608,6 +606,9 @@ fi
 %files node-compute
 
 %changelog
+* Mon Apr 04 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.55.bzr932
+- Removed patch for euca-get-ajax-console due it's inclution in upstream
+
 * Fri Apr 01 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.54.bzr932
 - Update to bzr932
 
