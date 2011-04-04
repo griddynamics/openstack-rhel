@@ -6,13 +6,13 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.55.bzr932
+Release:          0.56.bzr933
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr932.tar.gz
+Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr933.tar.gz
 Source1:          %{name}-README.rhel6
 Source6:          %{name}.logrotate
 
@@ -606,6 +606,9 @@ fi
 %files node-compute
 
 %changelog
+* Mon Apr 04 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.56.bzr933
+- Update to bzr933
+
 * Mon Apr 04 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.55.bzr932
 - Removed patch for euca-get-ajax-console due it's inclution in upstream
 
