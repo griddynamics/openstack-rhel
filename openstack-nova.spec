@@ -6,13 +6,13 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.55.bzr932
+Release:          0.63.bzr942
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr932.tar.gz
+Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr942.tar.gz
 Source1:          %{name}-README.rhel6
 Source6:          %{name}.logrotate
 
@@ -606,6 +606,30 @@ fi
 %files node-compute
 
 %changelog
+* Tue Apr 05 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.63.bzr942
+- Update to bzr942
+
+* Mon Apr 04 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.62.bzr941
+- Update to bzr941
+
+* Mon Apr 04 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.61.bzr940
+- Update to bzr940
+
+* Mon Apr 04 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.60.bzr939
+- Update to bzr939
+
+* Mon Apr 04 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.59.bzr938
+- Update to bzr938
+
+* Mon Apr 04 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.58.bzr935
+- Update to bzr935
+
+* Mon Apr 04 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.57.bzr934
+- Update to bzr934
+
+* Mon Apr 04 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.56.bzr933
+- Update to bzr933
+
 * Mon Apr 04 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.55.bzr932
 - Removed patch for euca-get-ajax-console due it's inclution in upstream
 
