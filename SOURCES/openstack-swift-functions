@@ -1,0 +1,63 @@
+# vim: filetype=sh
+
+. /etc/rc.d/init.d/functions
+
+swift_action() {
+  retval=0
+  server="$1"
+  call="swift_$2"
+
+  if [[ -f "/etc/swift/$server-server.conf" ]]; then
+    $call "$server" \
+          "/etc/swift/$server-server.conf" \
+          "/var/run/swift/$server-server.pid"
+    [ $? -ne 0 ] && retval=1
+  elif [[ -d "/etc/swift/$server-server/" ]]; then
+    declare -i count=0
+    for name in $( ls "/etc/swift/$server-server/" ); do
+      $call "$server" \
+            "/etc/swift/$server-server/$name" \
+            "/var/run/swift/$server-server/$count.pid"
+      [ $? -ne 0 ] && retval=1
+      count=$count+1
+    done
+  fi
+  return $retval
+}
+
+swift_start() {
+  name="$1"
+  long_name="$name-server"
+  conf_file="$2"
+  pid_file="$3"
+
+  ulimit -n ${SWIFT_MAX_FILES-32768}
+  echo -n "Starting swift-$long_name: "
+  daemon --pidfile $pid_file \
+    "/usr/bin/swift-$long_name $conf_file &>/dev/null & echo \$! > $pid_file"
+  retval=$?
+  echo
+  return $retval
+}
+
+swift_stop() {
+  name="$1"
+  long_name="$name-server"
+  conf_name="$2"
+  pid_file="$3"
+
+  echo -n "Stopping swift-$long_name: "
+  killproc -p $pid_file -d ${SWIFT_STOP_DELAY-15} $long_name
+  retval=$?
+  echo
+  return $retval
+}
+
+swift_status() {
+  name="$1"
+  long_name="$name-server"
+  conf_name="$2"
+  pid_file="$3"
+
+  status -p $pid_file $long_name
+}
