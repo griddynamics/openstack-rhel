@@ -1,7 +1,15 @@
-diff -Naur nova-2011.2.orig/nova/virt/disk.py nova-2011.2/nova/virt/disk.py
---- nova-2011.2.orig/nova/virt/disk.py	2011-03-30 00:24:02.000000000 +0400
-+++ nova-2011.2/nova/virt/disk.py	2011-03-30 01:05:38.596045293 +0400
-@@ -23,12 +23,10 @@
+diff -Naur nova.rhel.orig/nova/virt/disk.py nova.rhel/nova/virt/disk.py
+--- nova.rhel.orig/nova/virt/disk.py	2011-04-05 18:28:28.000000000 +0400
++++ nova.rhel/nova/virt/disk.py	2011-04-05 19:04:57.000000000 +0400
+@@ -3,6 +3,7 @@
+ # Copyright 2010 United States Government as represented by the
+ # Administrator of the National Aeronautics and Space Administration.
+ # All Rights Reserved.
++# Copyright 2011 Grid Dynamics
+ #
+ #    Licensed under the Apache License, Version 2.0 (the "License"); you may
+ #    not use this file except in compliance with the License. You may obtain
+@@ -23,12 +24,10 @@
  """
  
  import os
@@ -15,7 +23,7 @@ diff -Naur nova-2011.2.orig/nova/virt/disk.py nova-2011.2/nova/virt/disk.py
  from nova import flags
  from nova import log as logging
  from nova import utils
-@@ -43,10 +41,6 @@
+@@ -43,10 +42,6 @@
  flags.DEFINE_string('injected_network_template',
                      utils.abspath('virt/interfaces.template'),
                      'Template file for injected network')
@@ -26,10 +34,11 @@ diff -Naur nova-2011.2.orig/nova/virt/disk.py nova-2011.2/nova/virt/disk.py
  
  
  def extend(image, size):
-@@ -61,179 +55,30 @@
+@@ -60,180 +55,33 @@
+     utils.execute('resize2fs', image, check_exit_code=False)
  
  
- def inject_data(image, key=None, net=None, partition=None, nbd=False):
+-def inject_data(image, key=None, net=None, partition=None, nbd=False):
 -    """Injects a ssh key and optionally net data into a disk image.
 -
 -    it will mount the image as a fully partitioned disk and attempt to inject
@@ -109,6 +118,7 @@ diff -Naur nova-2011.2.orig/nova/virt/disk.py nova-2011.2/nova/virt/disk.py
 -
 -    LXC does not support qcow2 images yet.
 -    """
++def inject_data(image, key=None, nets=None, partition=None, nbd=False):
 +    """Injects a ssh key and optionally net data into a disk image."""
 +    g = guestfs.GuestFS()
      try:
@@ -128,10 +138,12 @@ diff -Naur nova-2011.2.orig/nova/virt/disk.py nova-2011.2/nova/virt/disk.py
 +                g.chmod(0700, sshdir)
 +            g.write(path, key)
 +            g.chmod(0600, path)
-+        if net:
-+            LOG.debug(_("Injecting network..."))
-+            path = "/etc/sysconfig/network-scripts/ifcfg-eth0"
-+            g.write(path, net)
++        if len(nets):
++            for net in nets:
++                LOG.debug(_("Injecting network for interface %(name)s..."
++                                                                        % net))
++                path = "/etc/sysconfig/network-scripts/ifcfg-%(name)s" % net
++                g.write(path, net['net'])
 +    except Exception as e:
 +        LOG.exception(e)
 +        raise
@@ -231,3 +243,37 @@ diff -Naur nova-2011.2.orig/nova/virt/disk.py nova-2011.2/nova/virt/disk.py
 -    utils.execute('sudo', 'tee', netfile, process_input=net)
 +        LOG.debug(_("Deleting guestfs object..."))
 +        del(g)
+diff -Naur nova.rhel.orig/nova/virt/libvirt_conn.py nova.rhel/nova/virt/libvirt_conn.py
+--- nova.rhel.orig/nova/virt/libvirt_conn.py	2011-04-05 18:28:28.000000000 +0400
++++ nova.rhel/nova/virt/libvirt_conn.py	2011-04-05 19:04:33.000000000 +0400
+@@ -859,24 +859,23 @@
+                    'address_v6': address_v6,
+                    'gateway_v6': network_ref['gateway_v6'],
+                    'netmask_v6': network_ref['netmask_v6']}
+-            nets.append(net_info)
+-
+-        if have_injected_networks:
+             net = str(Template(ifc_template,
+-                               searchList=[{'interfaces': nets,
++                               searchList=[{'interfaces': net_info,
+                                             'use_ipv6': FLAGS.use_ipv6}]))
++            name = net_info['name']
++            nets.append({'name': name, 'net': net})
+ 
+-        if key or net:
++        if key or have_injected_networks:
+             inst_name = inst['name']
+             img_id = inst.image_id
+             if key:
+                 LOG.info(_('instance %(inst_name)s: injecting key into'
+                         ' image %(img_id)s') % locals())
+             if net:
+-                LOG.info(_('instance %(inst_name)s: injecting net into'
++                LOG.info(_('instance %(inst_name)s: injecting nets into'
+                         ' image %(img_id)s') % locals())
+             try:
+-                disk.inject_data(basepath('disk'), key, net,
++                disk.inject_data(basepath('disk'), key, nets,
+                                  partition=target_partition,
+                                  nbd=FLAGS.use_cow_images)
+ 
