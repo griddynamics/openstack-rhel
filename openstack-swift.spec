@@ -5,14 +5,14 @@
 %endif
 
 Name:             openstack-swift
-Version:          1.2.0
-Release:          1%{?dist}
+Version:          1.3
+Release:          0.1.bzr262%{?dist}
 Summary:          OpenStack Object Storage (swift)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://launchpad.net/swift
-Source0:          http://launchpad.net/swift/1.2/%{version}/+download/swift-%{version}.tar.gz
+Source0:          http://swift.openstack.org/tarballs/swift-%{version}-dev+bzr262.tar.gz
 Source1:          %{name}-functions
 Source2:          %{name}-account.init
 Source3:          %{name}-auth.init
@@ -356,6 +356,9 @@ fi
 %endif
 
 %changelog
+* Tue Apr 05 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.3-0.1.bzr262
+- Bumped version to Cactus
+
 * Tue Apr 05 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.2.0-1
 - Basic update to version 1.2.0
 
