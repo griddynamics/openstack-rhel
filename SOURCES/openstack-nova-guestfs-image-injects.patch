@@ -245,21 +245,25 @@ diff -Naur nova.rhel.orig/nova/virt/disk.py nova.rhel/nova/virt/disk.py
 +        del(g)
 diff -Naur nova.rhel.orig/nova/virt/libvirt_conn.py nova.rhel/nova/virt/libvirt_conn.py
 --- nova.rhel.orig/nova/virt/libvirt_conn.py	2011-04-05 18:28:28.000000000 +0400
-+++ nova.rhel/nova/virt/libvirt_conn.py	2011-04-05 19:04:33.000000000 +0400
-@@ -859,24 +859,23 @@
++++ nova.rhel/nova/virt/libvirt_conn.py	2011-04-06 16:09:47.000000000 +0400
+@@ -858,25 +858,24 @@
+                    'dns': network_ref['dns'],
                     'address_v6': address_v6,
                     'gateway_v6': network_ref['gateway_v6'],
-                    'netmask_v6': network_ref['netmask_v6']}
+-                   'netmask_v6': network_ref['netmask_v6']}
 -            nets.append(net_info)
--
--        if have_injected_networks:
-             net = str(Template(ifc_template,
--                               searchList=[{'interfaces': nets,
-+                               searchList=[{'interfaces': net_info,
-                                             'use_ipv6': FLAGS.use_ipv6}]))
++                   'netmask_v6': network_ref['netmask_v6'],
++                    'use_ipv6': FLAGS.use_ipv6}
++            net = str(Template(ifc_template,searchList=[net_info]))
++            
 +            name = net_info['name']
 +            nets.append({'name': name, 'net': net})
  
+-        if have_injected_networks:
+-            net = str(Template(ifc_template,
+-                               searchList=[{'interfaces': nets,
+-                                            'use_ipv6': FLAGS.use_ipv6}]))
+-
 -        if key or net:
 +        if key or have_injected_networks:
              inst_name = inst['name']
