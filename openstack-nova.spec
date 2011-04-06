@@ -360,10 +360,6 @@ find %{buildroot}%{_sharedstatedir}/nova/CA -name .placeholder -delete
 install -d -m 755 %{buildroot}%{_sysconfdir}/polkit-1/localauthority/50-local.d
 install -p -D -m 644 %{SOURCE21} %{buildroot}%{_sysconfdir}/polkit-1/localauthority/50-local.d/50-%{name}.pkla
 
-# Fix for api-paste.ini misplacement
-install -d -m 750 %{buildroot}%{_sysconfdir}/nova
-mv %{buildroot}%{_sysconfdir}/api-paste.ini %{buildroot}%{_sysconfdir}/nova/api-paste.ini
-
 # Install ajaxterm
 gzip --best -c tools/ajaxterm/ajaxterm.1 > tools/ajaxterm/ajaxterm.1.gz
 install -p -m 755 tools/ajaxterm/ajaxterm.1.gz %{buildroot}%{_mandir}/man1/ajaxterm.1*
@@ -611,6 +607,7 @@ fi
 - Update to bzr946
 - Migrated openssl.cnf patch
 - Relocated CA directory
+- Disabled manual api-paste.ini installation
 
 * Wed Apr 06 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.65.bzr942
 - Updated network injection patch wich bugfix
