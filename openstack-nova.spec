@@ -35,6 +35,7 @@ Patch1:           %{name}-rhel-config-paths.patch
 Patch2:           %{name}-guestfs-image-injects.patch
 Patch3:           %{name}-bexar-libvirt.xml.template.patch
 Patch4:           %{name}-rhel-netcat.patch
+Patch5:           %{name}-ajaxterm-path.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -297,6 +298,7 @@ This package contains documentation files for %{name}.
 %patch2 -p1
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
 
 install %{SOURCE1} README.rhel6
 
@@ -360,13 +362,9 @@ find %{buildroot}%{_sharedstatedir}/nova/CA -name .placeholder -delete
 install -d -m 755 %{buildroot}%{_sysconfdir}/polkit-1/localauthority/50-local.d
 install -p -D -m 644 %{SOURCE21} %{buildroot}%{_sysconfdir}/polkit-1/localauthority/50-local.d/50-%{name}.pkla
 
-# Install ajaxterm
-gzip --best -c tools/ajaxterm/ajaxterm.1 > tools/ajaxterm/ajaxterm.1.gz
-install -p -m 755 tools/ajaxterm/ajaxterm.1.gz %{buildroot}%{_mandir}/man1/ajaxterm.1*
-install -d -m 755 %{buildroot}%{python_sitelib}/tools/ajaxterm
-install -m 644 tools/ajaxterm/{ajaxterm.css,ajaxterm.html,ajaxterm.js,qweb.py,sarissa.js,sarissa_dhtml.js} %{buildroot}%{python_sitelib}/tools/ajaxterm
-install -m 755 tools/ajaxterm/ajaxterm.py %{buildroot}%{python_sitelib}/tools/ajaxterm
-install -m 755 tools/euca-get-ajax-console %{buildroot}%{_bindir}
+# Fixing ajaxterm installation
+mv %{buildroot}%{_datarootdir}/nova/euca-get-ajax-console %{buildroot}%{_bindir}
+rm -fr %{buildroot}%{_datarootdir}/nova/{install_venv.py,nova-debug,pip-requires,clean-vlans,with_venv.sh,esx} %{buildroot}%{_datarootdir}/nova/ajaxterm/configure*
 
 # Remove unneeded in production stuff
 rm -fr %{buildroot}%{python_sitelib}/run_tests.*
@@ -562,8 +560,7 @@ fi
 %{_bindir}/nova-compute
 %{_initrddir}/%{name}-compute
 %{_initrddir}/%{name}-ajax-console-proxy
-%{_mandir}/man1/ajaxterm.1*
-%{python_sitelib}/tools/ajaxterm
+%{_datarootdir}/nova/ajaxterm
 
 %files instancemonitor
 %defattr(-,root,root,-)
@@ -608,6 +605,7 @@ fi
 - Migrated openssl.cnf patch
 - Relocated CA directory
 - Disabled manual api-paste.ini installation
+- Moved ajaxterm to /usr/share/nova
 
 * Wed Apr 06 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.65.bzr942
 - Updated network injection patch wich bugfix

@@ -1,0 +1,14 @@
+diff -Naur nova-2011.2.orig/nova/virt/libvirt_conn.py nova-2011.2/nova/virt/libvirt_conn.py
+--- nova-2011.2.orig/nova/virt/libvirt_conn.py	2011-04-06 11:02:43.000000000 +0400
++++ nova-2011.2/nova/virt/libvirt_conn.py	2011-04-06 17:43:38.327198456 +0400
+@@ -670,8 +670,8 @@
+         ajaxterm_cmd = 'sudo socat - %s' \
+                        % get_pty_for_instance(instance['name'])
+ 
+-        cmd = '%s/tools/ajaxterm/ajaxterm.py --command "%s" -t %s -p %s' \
+-              % (utils.novadir(), ajaxterm_cmd, token, port)
++        cmd = '/usr/share/nova/ajaxterm/ajaxterm.py --command "%s" -t %s -p %s' \
++              % (ajaxterm_cmd, token, port)
+ 
+         subprocess.Popen(cmd, shell=True)
+         return {'token': token, 'host': host, 'port': port}
