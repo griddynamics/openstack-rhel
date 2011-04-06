@@ -325,7 +325,7 @@ install -d -m 755 %{buildroot}%{_sharedstatedir}/nova/keys
 install -d -m 755 %{buildroot}%{_sharedstatedir}/nova/networks
 install -d -m 755 %{buildroot}%{_sharedstatedir}/nova/tmp
 install -d -m 755 %{buildroot}%{_localstatedir}/log/nova
-cp -rp CA %{buildroot}%{_sharedstatedir}/nova
+cp -rp nova/CA %{buildroot}%{_sharedstatedir}/nova
 
 # Install initscripts for Nova services
 install -p -D -m 755 %{SOURCE11} %{buildroot}%{_initrddir}/%{name}-api
@@ -609,6 +609,7 @@ fi
 * Wed Apr 06 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.65.bzr946
 - Update to bzr946
 - Migrated openssl.cnf patch
+- Relocated CA directory
 
 * Wed Apr 06 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.65.bzr942
 - Updated network injection patch wich bugfix
