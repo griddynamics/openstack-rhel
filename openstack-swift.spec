@@ -5,14 +5,14 @@
 %endif
 
 Name:             openstack-swift
-Version:          1.0.2
-Release:          5%{?dist}
+Version:          1.2.0
+Release:          1%{?dist}
 Summary:          OpenStack Object Storage (swift)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://launchpad.net/swift
-Source0:          http://launchpad.net/swift/1.0/%{version}/+download/swift-%{version}.tar.gz
+Source0:          http://launchpad.net/swift/1.2/%{version}/+download/swift-%{version}.tar.gz
 Source1:          %{name}-functions
 Source2:          %{name}-account.init
 Source3:          %{name}-auth.init
@@ -30,7 +30,8 @@ Requires:         python-configobj
 Requires:         python-eventlet >= 0.9.8
 Requires:         python-greenlet >= 0.3.1
 Requires:         python-simplejson
-Requires:         python-webob
+Requires:         python-webob >= 0.9.8
+Requires:         python-nose
 Requires:         pyxattr
 
 Requires(post):   chkconfig
@@ -138,7 +139,8 @@ dos2unix LICENSE
 %{__python} setup.py build
 
 %if 0%{?with_doc}
-pushd doc; make html; popd
+mkdir doc/build
+python setup.py build_sphinx
 # Fix hidden-file-or-dir warning 
 rm doc/build/html/.buildinfo
 %endif
@@ -265,14 +267,18 @@ fi
 %dir %{python_sitelib}/swift
 %{_bindir}/st
 %{_bindir}/swift-account-audit
+%{_bindir}/swift-account-stats-logger
 %{_bindir}/swift-drive-audit
 %{_bindir}/swift-get-nodes
 %{_bindir}/swift-init
+%{_bindir}/swift-log-stats-collector
+%{_bindir}/swift-log-uploader
 %{_bindir}/swift-ring-builder
 %{_bindir}/swift-stats-populate
 %{_bindir}/swift-stats-report
 %{python_sitelib}/swift/*.py*
 %{python_sitelib}/swift/common
+%{python_sitelib}/swift/stats
 %{python_sitelib}/swift-%{version}-*.egg-info
 
 %files account
@@ -293,9 +299,19 @@ fi
 %dir %{_initrddir}/%{name}-auth
 %dir %attr(0755, swift, root) %{_localstatedir}/run/swift/auth-server
 %dir %{_sysconfdir}/swift/auth-server
-%{_bindir}/swift-auth-create-account
+%{_bindir}/swauth-add-account
+%{_bindir}/swauth-add-user
+%{_bindir}/swauth-cleanup-tokens
+%{_bindir}/swauth-delete-account
+%{_bindir}/swauth-delete-user
+%{_bindir}/swauth-list
+%{_bindir}/swauth-prep
+%{_bindir}/swauth-set-account-service
+%{_bindir}/swift-auth-add-user
 %{_bindir}/swift-auth-recreate-accounts
 %{_bindir}/swift-auth-server
+%{_bindir}/swift-auth-to-swauth
+%{_bindir}/swift-auth-update-reseller-prefixes
 %{python_sitelib}/swift/auth
 
 %files container
@@ -304,6 +320,7 @@ fi
 %dir %{_initrddir}/%{name}-container
 %dir %attr(0755, swift, root) %{_localstatedir}/run/swift/container-server
 %dir %{_sysconfdir}/swift/container-server
+%{_bindir}/swift-bench
 %{_bindir}/swift-container-auditor
 %{_bindir}/swift-container-server
 %{_bindir}/swift-container-replicator
@@ -339,7 +356,10 @@ fi
 %endif
 
 %changelog
-* ??? Nov 03 2010 Silas Sewell <silas@sewell.ch> - ???????
+* Tue Apr 05 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.2.0-1
+- Basic update to version 1.2.0
+
+* Thu Nov 03 2010 Silas Sewell <silas@sewell.ch> - ???????
 - Add doc flag
 - Remove custom man pages
 
