@@ -12,4 +12,4 @@ DNS1=$dns
 #if $use_ipv6
 IPV6INIT=yes
 IPV6ADDR=$address_v6
-#endif
+#end if
