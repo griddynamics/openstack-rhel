@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.64.bzr942
+Release:          0.65.bzr942
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -606,6 +606,9 @@ fi
 %files node-compute
 
 %changelog
+* Wed Apr 06 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.65.bzr942
+- Updated network injection patch wich bugfix
+
 * Tue Apr 05 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.64.bzr942
 - Updated network injection patch (Ilya Alekseyev)
 
