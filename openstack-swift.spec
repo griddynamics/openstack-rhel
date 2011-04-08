@@ -12,7 +12,7 @@ Summary:          OpenStack Object Storage (swift)
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://launchpad.net/swift
-Source0:          http://swift.openstack.org/tarballs/swift-%{version}-dev+bzr262.tar.gz
+Source0:          http://swift.openstack.org/tarballs/swift-%{version}-dev+bzr263.tar.gz
 Source1:          %{name}-functions
 Source2:          %{name}-account.init
 Source3:          %{name}-auth.init
