@@ -6,7 +6,7 @@
 
 Name:             openstack-swift
 Version:          1.3
-Release:          0.1.bzr262%{?dist}
+Release:          0.2.bzr263%{?dist}
 Summary:          OpenStack Object Storage (swift)
 
 Group:            Development/Languages
@@ -349,6 +349,9 @@ fi
 %endif
 
 %changelog
+* Fri Apr 08 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.3-0.2.bzr263
+- Update to bzr263
+
 * Tue Apr 05 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.3-0.1.bzr262
 - Bumped version to Cactus
 
