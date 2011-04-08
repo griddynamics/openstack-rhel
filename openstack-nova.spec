@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.83.bzr967
+Release:          0.84.bzr967
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -605,6 +605,9 @@ fi
 %files node-compute
 
 %changelog
+* Fri Apr 08 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.84.bzr967
+- Fixed initscript for objectstore
+
 * Fri Apr 08 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.83.bzr967
 - Update to bzr967
 
