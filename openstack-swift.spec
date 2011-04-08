@@ -6,7 +6,7 @@
 
 Name:             openstack-swift
 Version:          1.3
-Release:          0.2.bzr263%{?dist}
+Release:          0.3.bzr263%{?dist}
 Summary:          OpenStack Object Storage (swift)
 
 Group:            Development/Languages
@@ -189,73 +189,73 @@ useradd -r -g swift -d %{_sharedstatedir}/swift -s /sbin/nologin \
 exit 0
 
 %post account
-/sbin/chkconfig --add swift-account
+/sbin/chkconfig --add %{name}-account
 
 %preun account
 if [ $1 = 0 ] ; then
-    /sbin/service swift-account stop >/dev/null 2>&1
-    /sbin/chkconfig --del swift-account
+    /sbin/service %{name}-account stop >/dev/null 2>&1
+    /sbin/chkconfig --del %{name}-account
 fi
 
 %postun account
 if [ "$1" -ge "1" ] ; then
-    /sbin/service swift-account condrestart >/dev/null 2>&1 || :
+    /sbin/service %{name}-account condrestart >/dev/null 2>&1 || :
 fi
 
 %post auth
-/sbin/chkconfig --add swift-auth
+/sbin/chkconfig --add %{name}-auth
 
 %preun auth
 if [ $1 = 0 ] ; then
-    /sbin/service swift-auth stop >/dev/null 2>&1
-    /sbin/chkconfig --del swift-auth
+    /sbin/service %{name}-auth stop >/dev/null 2>&1
+    /sbin/chkconfig --del %{name}-auth
 fi
 
 %postun auth
 if [ "$1" -ge "1" ] ; then
-    /sbin/service swift-auth condrestart >/dev/null 2>&1 || :
+    /sbin/service %{name}-auth condrestart >/dev/null 2>&1 || :
 fi
 
 %post container
-/sbin/chkconfig --add swift-container
+/sbin/chkconfig --add %{name}-container
 
 %preun container
 if [ $1 = 0 ] ; then
-    /sbin/service swift-container stop >/dev/null 2>&1
-    /sbin/chkconfig --del swift-container
+    /sbin/service %{name}-container stop >/dev/null 2>&1
+    /sbin/chkconfig --del %{name}-container
 fi
 
 %postun container
 if [ "$1" -ge "1" ] ; then
-    /sbin/service swift-container condrestart >/dev/null 2>&1 || :
+    /sbin/service %{name}-container condrestart >/dev/null 2>&1 || :
 fi
 
 %post object
-/sbin/chkconfig --add swift-object
+/sbin/chkconfig --add %{name}-object
 
 %preun object
 if [ $1 = 0 ] ; then
-    /sbin/service swift-object stop >/dev/null 2>&1
-    /sbin/chkconfig --del swift-object
+    /sbin/service %{name}-object stop >/dev/null 2>&1
+    /sbin/chkconfig --del %{name}-object
 fi
 
 %postun object
 if [ "$1" -ge "1" ] ; then
-    /sbin/service swift-object condrestart >/dev/null 2>&1 || :
+    /sbin/service %{name}-object condrestart >/dev/null 2>&1 || :
 fi
 
 %post proxy
-/sbin/chkconfig --add swift-proxy
+/sbin/chkconfig --add %{name}-proxy
 
 %preun proxy
 if [ $1 = 0 ] ; then
-    /sbin/service swift-proxy stop >/dev/null 2>&1
-    /sbin/chkconfig --del swift-proxy
+    /sbin/service %{name}-proxy stop >/dev/null 2>&1
+    /sbin/chkconfig --del %{name}-proxy
 fi
 
 %postun proxy
 if [ "$1" -ge "1" ] ; then
-    /sbin/service swift-proxy condrestart >/dev/null 2>&1 || :
+    /sbin/service %{name}-proxy condrestart >/dev/null 2>&1 || :
 fi
 
 %files
@@ -349,6 +349,9 @@ fi
 %endif
 
 %changelog
+* Fri Apr 08 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.3-0.3.bzr263
+- Changed name of initscripts
+
 * Fri Apr 08 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.3-0.2.bzr263
 - Update to bzr263
 
