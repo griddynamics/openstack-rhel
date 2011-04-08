@@ -40,7 +40,7 @@ if [ "$GitDevBranch" == "$GitCurBranch" ]; then
 	if [ ! -f "$RPMSrc" ]; then
 		wget -O "$RPMSrc" "$TarballURL"
 	fi
-	SpecRelease=$(grep '^Release:' $SpecOrig | sed 's/^Release:\s\+//')
+	SpecRelease=$(grep '^Release:' $SpecOrig | sed 's/^Release:\s\+//' | sed 's/%{?dist}$//')
 	SPECBUILD=$(echo "$SpecRelease" | cut -d. -f3 | sed 's/bzr//')
 	if [ "$SPECBUILD" -ne "$BUILD" ]; then
 		# Need to increase build in specfile and update changelog
