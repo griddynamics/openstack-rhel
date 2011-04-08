@@ -95,7 +95,7 @@ then
 	mkdir -p "$REPOPATH"
 fi
 
-if [ -f "$RPMSANDBOX/RPMS/noarch/openstack-swift-$Version-$SpecReleaseNew.noarch.rpm" ]; then
+if [ -f "$RPMSANDBOX/RPMS/noarch/openstack-swift-$Version-$SpecReleaseNew*.noarch.rpm" ]; then
 	rm -fr $REPOPATH/openstack-swift-$Version-*.rpm $REPOPATH/openstack-swift-{account,auth,container,object,proxy,doc}-$Version-*.rpm
 	mv $RPMSANDBOX/RPMS/noarch/*$Version-$SpecReleaseNew*.rpm "$REPOPATH"
 fi

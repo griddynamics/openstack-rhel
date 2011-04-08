@@ -95,7 +95,7 @@ then
 	mkdir -p "$REPOPATH"
 fi
 
-if [ -f "$RPMSANDBOX/RPMS/noarch/openstack-glance-$GLANCEVER-$SPECRELEASENEW.noarch.rpm" ]; then
+if [ -f "$RPMSANDBOX/RPMS/noarch/openstack-glance-$GLANCEVER-$SPECRELEASENEW*.noarch.rpm" ]; then
 	rm -fr $REPOPATH/python-glance*.rpm  $REPOPATH/openstack-glance*.rpm
 	mv $RPMSANDBOX/RPMS/noarch/*$GLANCEVER-$SPECRELEASENEW*.rpm "$REPOPATH"
 fi
