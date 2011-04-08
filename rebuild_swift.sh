@@ -88,7 +88,7 @@ else
 fi
 rpmbuild -bs $SpecOrig
 
-for fn in $RPMSANDBOX/RPMS/noarch/*$Version-$SpecReleaseNew*.rpm; do ./sign_rpm $fn; done
+for fn in $RPMSANDBOX/RPMS/noarch/openstack-swift-*$Version-*.rpm; do ./sign_rpm $fn; done
 
 if [ ! -d "$REPOPATH" ];
 then
