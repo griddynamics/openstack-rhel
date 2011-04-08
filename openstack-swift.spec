@@ -131,7 +131,7 @@ This package contains documentation files for %{name}.
 %endif
 
 %prep
-%setup -q -n swift-%{version}
+%setup -q -n swift-%{version}-dev
 # Fix wrong-file-end-of-line-encoding warning
 dos2unix LICENSE
 
@@ -279,7 +279,7 @@ fi
 %{python_sitelib}/swift/*.py*
 %{python_sitelib}/swift/common
 %{python_sitelib}/swift/stats
-%{python_sitelib}/swift-%{version}-*.egg-info
+%{python_sitelib}/swift-%{version}_dev-*.egg-info
 
 %files account
 %defattr(-,root,root,-)
@@ -295,7 +295,6 @@ fi
 
 %files auth
 %defattr(-,root,root,-)
-%doc etc/auth-server.conf-sample
 %dir %{_initrddir}/%{name}-auth
 %dir %attr(0755, swift, root) %{_localstatedir}/run/swift/auth-server
 %dir %{_sysconfdir}/swift/auth-server
@@ -307,12 +306,6 @@ fi
 %{_bindir}/swauth-list
 %{_bindir}/swauth-prep
 %{_bindir}/swauth-set-account-service
-%{_bindir}/swift-auth-add-user
-%{_bindir}/swift-auth-recreate-accounts
-%{_bindir}/swift-auth-server
-%{_bindir}/swift-auth-to-swauth
-%{_bindir}/swift-auth-update-reseller-prefixes
-%{python_sitelib}/swift/auth
 
 %files container
 %defattr(-,root,root,-)
