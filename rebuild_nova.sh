@@ -52,7 +52,7 @@ else
 	perl -pi -e "s,^Source0:.*$,Source0:          nova-%{version}.tar.gz,"
 fi
 
-SPECRELEASENEW=$(grep '^Release:' $NOVASPECORIG | sed 's/^Release:\s\+//')
+SPECRELEASENEW=$(grep '^Release:' $NOVASPECORIG | sed 's/^Release:\s\+//' | sed 's/%{?dist}$//')
 rm -f "$RPMSANDBOX/RPMS/*/*-$NOVAVER-$SPECRELEASENEW*.rpm" 2>/dev/null
 rpmbuild -bb $NOVASPECORIG
 if [ "$?" != "0" ]; then

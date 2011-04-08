@@ -52,7 +52,7 @@ else
 	perl -pi -e "s,^Source0:.*$,Source0:          glance-%{version}.tar.gz,"
 fi
 
-SPECRELEASENEW=$(grep '^Release:' $GLANCESPECORIG | sed 's/^Release:\s\+//')
+SPECRELEASENEW=$(grep '^Release:' $GLANCESPECORIG | sed 's/^Release:\s\+//' | sed 's/%{?dist}$//')
 rm -f "$RPMSANDBOX/RPMS/*/*-$GLANCEVER-$SPECRELEASENEW*.rpm" 2>/dev/null
 rpmbuild -bb $GLANCESPECORIG
 if [ "$?" != "0" ]; then

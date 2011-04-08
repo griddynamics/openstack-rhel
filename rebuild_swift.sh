@@ -52,7 +52,7 @@ else
 	perl -pi -e "s,^Source0:.*$,Source0:          swift-%{version}.tar.gz,"
 fi
 
-SpecReleaseNew=$(grep '^Release:' $SpecOrig | sed 's/^Release:\s\+//')
+SpecReleaseNew=$(grep '^Release:' $SpecOrig | sed 's/^Release:\s\+//' | sed 's/%{?dist}$//')
 rm -f "$RPMSANDBOX/RPMS/*/*-$Version-$SpecReleaseNew*.rpm" 2>/dev/null
 rpmbuild -bb $SpecOrig
 if [ "$?" != "0" ]; then
