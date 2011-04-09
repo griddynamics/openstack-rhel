@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.88.bzr971
+Release:          0.89.bzr971
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -37,6 +37,7 @@ Patch2:           %{name}-guestfs-image-injects.patch
 Patch3:           %{name}-bexar-libvirt.xml.template.patch
 Patch4:           %{name}-rhel-netcat.patch
 Patch5:           %{name}-ajaxterm-path.patch
+Patch6:           %{name}-s3server-quickfix.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -300,6 +301,7 @@ This package contains documentation files for %{name}.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 install %{SOURCE1} README.rhel6
 
@@ -605,6 +607,9 @@ fi
 %files node-compute
 
 %changelog
+* Sun Apr 10 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.89.bzr971
+- Added quick fix for s3server.py which restoring euca-upload-bundle
+
 * Sat Apr 09 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.88.bzr971
 - Update to bzr971
 
