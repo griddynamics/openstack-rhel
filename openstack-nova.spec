@@ -6,13 +6,13 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.97.bzr975
+Release:          0.98.bzr977
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr975.tar.gz
+Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr977.tar.gz
 Source1:          %{name}-README.rhel6
 Source2:          %{name}-noVNC-snap2011.03.24.tgz
 Source6:          %{name}.logrotate
@@ -606,6 +606,9 @@ fi
 %files node-compute
 
 %changelog
+* Mon Apr 11 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.98.bzr977
+- Update to bzr977
+
 * Mon Apr 11 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.97.bzr975
 - Removed openssl.cnf patch (included in upstream)
 
