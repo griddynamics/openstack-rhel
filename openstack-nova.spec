@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.96.bzr975
+Release:          0.97.bzr975
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -31,7 +31,6 @@ Source20:         %{name}-sudoers
 Source21:         %{name}-polkit.pkla
 Source22:         %{name}-rhel-ifc-template
 
-Patch0:           %{name}-openssl-relaxed-policy.patch
 Patch1:           %{name}-rhel-config-paths.patch
 Patch2:           %{name}-guestfs-image-injects.patch
 Patch3:           %{name}-bexar-libvirt.xml.template.patch
@@ -296,7 +295,6 @@ This package contains documentation files for %{name}.
 %prep
 %setup -q -n nova-%{version}
 
-%patch0 -p1
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
@@ -608,6 +606,9 @@ fi
 %files node-compute
 
 %changelog
+* Mon Apr 11 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.97.bzr975
+- Removed openssl.cnf patch (included in upstream)
+
 * Mon Apr 11 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.96.bzr975
 - Update to bzr975
 
