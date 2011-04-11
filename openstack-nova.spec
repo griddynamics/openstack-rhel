@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.92.bzr973
+Release:          0.93.bzr973
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -174,6 +174,7 @@ Group:            Applications/System
 Requires:         %{name} = %{version}-%{release}
 Requires:         start-stop-daemon
 Requires:         libvirt-python
+Requires:         libvirt >= 0.8.2
 Requires:         libxml2-python
 Requires:         rabbitmq-server
 Requires:         python-cheetah
@@ -609,6 +610,10 @@ fi
 %files node-compute
 
 %changelog
+* Mon Apr 11 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.93.bzr973
+- Added dependency libvirt >= 0.8.2 for openstack-nova-compute package, see
+  https://bugs.launchpad.net/nova/+bug/757283
+
 * Mon Apr 11 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.92.bzr973
 - Update to bzr973
 
