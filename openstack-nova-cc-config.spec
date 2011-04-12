@@ -1,6 +1,6 @@
 Name:             openstack-nova-cc-config
 Version:          2011.2
-Release:          2
+Release:          3
 Summary:          OpenStack Compute (nova) - Cloud Controller config
 
 Group:            Development/Languages
@@ -45,6 +45,9 @@ rm -rf %{buildroot}
 %config(noreplace) %{_sysconfdir}/nova/nova.conf
 
 %changelog
+* Tue Apr 12 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-3
+- Added vncproxy options
+
 * Sun Apr 10 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-2
 - Added --lock_path
 
