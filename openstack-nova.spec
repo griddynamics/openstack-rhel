@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.100.bzr980
+Release:          0.101.bzr980
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -26,6 +26,7 @@ Source15:         %{name}-scheduler.init
 Source16:         %{name}-volume.init
 Source17:         %{name}-direct-api.init
 Source18:         %{name}-ajax-console-proxy.init
+Source19:         %{name}-vncproxy.init
 
 Source20:         %{name}-sudoers
 Source21:         %{name}-polkit.pkla
@@ -340,6 +341,7 @@ install -p -D -m 755 %{SOURCE15} %{buildroot}%{_initrddir}/%{name}-scheduler
 install -p -D -m 755 %{SOURCE16} %{buildroot}%{_initrddir}/%{name}-volume
 install -p -D -m 755 %{SOURCE17} %{buildroot}%{_initrddir}/%{name}-direct-api
 install -p -D -m 755 %{SOURCE18} %{buildroot}%{_initrddir}/%{name}-ajax-console-proxy
+install -p -D -m 755 %{SOURCE19} %{buildroot}%{_initrddir}/%{name}-vncproxy
 
 # Install sudoers
 install -p -D -m 440 %{SOURCE20} %{buildroot}%{_sysconfdir}/sudoers.d/%{name}
@@ -537,6 +539,7 @@ fi
 %{_bindir}/nova-manage
 %{_bindir}/nova-spoolsentry
 %{_bindir}/nova-vncproxy
+%{_initrddir}/%{name}-vncproxy
 %{_bindir}/stack
 %{_datarootdir}/nova
 %defattr(-,nova,nobody,-)
@@ -606,6 +609,9 @@ fi
 %files node-compute
 
 %changelog
+* Tue Apr 12 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.101.bzr980
+- Added initscript for vncproxy
+
 * Tue Apr 12 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.100.bzr980
 - Update to bzr980
 
