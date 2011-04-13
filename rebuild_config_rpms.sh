@@ -22,8 +22,8 @@ if [ "$?" != "0" ]; then
 	exit -1
 fi
 
-./sign_rpm.sh $sandbox/openstack-nova-cc-config-*.rpm
-./sign_rpm.sh $sandbox/openstack-nova-compute-config-*.rpm
+./sign_rpm $sandbox/openstack-nova-cc-config-*.rpm
+./sign_rpm $sandbox/openstack-nova-compute-config-*.rpm
 
 rm -f $repo/openstack-nova-cc-config*.rpm
 rm -f $repo/openstack-nova-compute-config*.rpm
