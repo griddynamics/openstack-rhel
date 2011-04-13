@@ -1,6 +1,6 @@
 Name:             openstack-nova-compute-config
 Version:          2011.2
-Release:          2
+Release:          3
 Summary:          OpenStack Compute (nova) - Compute node configuration
 
 Group:            Development/Languages
@@ -43,6 +43,9 @@ rm -rf %{buildroot}
 %config(noreplace) %{_sysconfdir}/nova/nova.conf
 
 %changelog
+* Wed Apr 13 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-3
+- Fixed --dhcpbridge_flagfile
+
 * Sun Apr 10 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-2
 - Added --lock_path
 
