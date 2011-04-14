@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.107.bzr987
+Release:          0.108.bzr987
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -94,7 +94,7 @@ Summary:          OpenStack Nova compute node installation
 Group:            Applications/System
 
 Requires:         %{name} = %{version}-%{release}
-Requires:         %{name}-config-compute = %{version}
+Requires:         %{name}-compute-config = %{version}
 Requires:         %{name}-compute = %{version}-%{release}
 Requires:         %{name}-instancemonitor = %{version}-%{release}
 
@@ -609,6 +609,9 @@ fi
 %files node-compute
 
 %changelog
+* Thu Apr 14 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.108.bzr987
+- Fixed an odd typo
+
 * Thu Apr 14 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.107.bzr987
 - Update to bzr987
 
