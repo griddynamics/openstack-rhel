@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.109.bzr988
+Release:          0.110.bzr988
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -610,7 +610,7 @@ fi
 %files node-compute
 
 %changelog
-* Thu Apr 14 2011 Ilya Alekseyev <ialekseev@griddynamics.com> - 2011.2-0.109.bzr988
+* Thu Apr 14 2011 Ilya Alekseyev <ialekseev@griddynamics.com> - 2011.2-0.110.bzr988
 - Patch for auto assigning floating ips (AWS EC2 behaviour emulation) added
 
 * Thu Apr 14 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.109.bzr988
