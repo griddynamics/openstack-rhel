@@ -38,6 +38,7 @@ Patch3:           %{name}-bexar-libvirt.xml.template.patch
 Patch4:           %{name}-rhel-netcat.patch
 Patch5:           %{name}-ajaxterm-path.patch
 Patch6:           %{name}-s3server-quickfix.patch
+Patch7:           %{name}-auto-floating-ips.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -609,6 +610,9 @@ fi
 %files node-compute
 
 %changelog
+* Thu Apr 14 2011 Ilya Alekseyev <ialekseev@griddynamics.com> - 2011.2-0.109.bzr988
+- Patch for auto assigning floating ips (AWS EC2 behaviour emulation) added
+
 * Thu Apr 14 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.109.bzr988
 - Update to bzr988
 
