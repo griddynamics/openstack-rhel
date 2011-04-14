@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.110.bzr988
+Release:          0.111.bzr988
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -420,7 +420,8 @@ if rpmquery openstack-nova-cc-config 1>&2 >/dev/null; then
 		fi
 	else
 		echo "DB init code, new installation"
-		#/usr/bin/nova-manage db sync
+		/usr/bin/nova-manage db sync
+		echo "Please refer http://wiki.openstack.org/NovaInstall/RHEL6Notes for instructions"
 	fi
 fi
 
@@ -611,6 +612,10 @@ fi
 %files node-compute
 
 %changelog
+* Thu Apr 14 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.111.bzr988
+- Uncommented initial db sync on fresh install
+- Added banner with link to instructions
+
 * Thu Apr 14 2011 Ilya Alekseyev <ialekseev@griddynamics.com> - 2011.2-0.110.bzr988
 - Patch for auto assigning floating ips (AWS EC2 behaviour emulation) added
 
