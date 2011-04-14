@@ -303,6 +303,7 @@ This package contains documentation files for %{name}.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 install %{SOURCE1} README.rhel6
 
