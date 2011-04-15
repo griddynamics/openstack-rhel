@@ -7,7 +7,7 @@
 
 Name:             openstack-%{prj}
 Version:          2.4.1
-Release:          4{?dist}
+Release:          4%{?dist}
 Summary:          Client for OpenStack Nova API
 
 Group:            Applications/System
