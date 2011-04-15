@@ -13,7 +13,7 @@ Summary:          OpenStack Image Registry and Delivery Service
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://%{prj}.openstack.org
-Source0:          http://launchpad.net/glance/cactus/2011.2/+download/glance-2011.2.tar.gz
+Source0:          http://glance.openstack.org/tarballs/glance-%{version}~bzr116.tar.gz
 Source1:          %{name}-api.init
 Source2:          %{name}-registry.init
 Source3:          %{name}-logging-api.conf
