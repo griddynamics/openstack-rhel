@@ -5,7 +5,7 @@
 %endif
 
 Name:             openstack-swift
-Version:          1.3
+Version:          1.3.0
 Release:          1%{?dist}
 Summary:          OpenStack Object Storage (swift)
 
@@ -349,6 +349,9 @@ fi
 %endif
 
 %changelog
+* Fri Apr 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.3.0-1
+- Fixed version to release
+
 * Fri Apr 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.3-1
 - Cactus release
 
