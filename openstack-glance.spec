@@ -6,8 +6,8 @@
 %endif
 
 Name:             openstack-%{prj}
-Version:          2011.2
-Release:          1
+Version:          2011.3
+Release:          0.1.bzr116%{?dist}
 Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages
@@ -184,8 +184,8 @@ fi
 %endif
 
 %changelog
-* Fri Apr 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-1
-- Cactus release
+* Fri Apr 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.1.bzr116
+- Diablo versioning
 
 * Fri Apr 15 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.30.bzr114
 - Update to bzr114
