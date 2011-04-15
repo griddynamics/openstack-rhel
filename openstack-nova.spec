@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          1%{?dist}
+Release:          2%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -82,6 +82,9 @@ Requires:         %{name}-network = %{version}-%{release}
 Requires:         %{name}-objectstore = %{version}-%{release}
 Requires:         %{name}-scheduler = %{version}-%{release}
 Requires:         %{name}-volume = %{version}-%{release}
+Requires:         openstack-client
+Requires:         openstack-glance = %{version}
+Requires:         openstack-glance-doc = %{version}
 %if 0%{?with_doc}
 Requires:         %{name}-doc = %{version}-%{release}
 %endif
@@ -612,6 +615,9 @@ fi
 %files node-compute
 
 %changelog
+* Fri Apr 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-2
+- Updated deps for metapackage node-full
+
 * Fri Apr 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-1
 - Cactus release
 - added dist tag to release
