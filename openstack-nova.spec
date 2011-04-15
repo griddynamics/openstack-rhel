@@ -6,13 +6,13 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          0.111.bzr988
+Release:          0.112.bzr989
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr988.tar.gz
+Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr989.tar.gz
 Source1:          %{name}-README.rhel6
 Source2:          %{name}-noVNC-snap2011.03.24.tgz
 Source6:          %{name}.logrotate
@@ -612,6 +612,9 @@ fi
 %files node-compute
 
 %changelog
+* Fri Apr 15 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.112.bzr989
+- Update to bzr989
+
 * Thu Apr 14 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.111.bzr988
 - Uncommented initial db sync on fresh install
 - Added banner with link to instructions
