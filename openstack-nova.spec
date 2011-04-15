@@ -5,8 +5,8 @@
 %endif
 
 Name:             openstack-nova
-Version:          2011.2
-Release:          0.112.bzr989
+Version:          2011.3
+Release:          0.1.bzr990%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -82,6 +82,9 @@ Requires:         %{name}-network = %{version}-%{release}
 Requires:         %{name}-objectstore = %{version}-%{release}
 Requires:         %{name}-scheduler = %{version}-%{release}
 Requires:         %{name}-volume = %{version}-%{release}
+Requires:         openstack-client
+Requires:         openstack-glance = %{version}
+Requires:         openstack-glance-doc = %{version}
 %if 0%{?with_doc}
 Requires:         %{name}-doc = %{version}-%{release}
 %endif
@@ -612,6 +615,9 @@ fi
 %files node-compute
 
 %changelog
+* Fri Apr 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.1.bzr990
+- Diablo versioning
+
 * Fri Apr 15 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.112.bzr989
 - Update to bzr989
 
