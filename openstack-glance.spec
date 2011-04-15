@@ -7,13 +7,13 @@
 
 Name:             openstack-%{prj}
 Version:          2011.2
-Release:          0.30.bzr114
+Release:          0.31.bzr115
 Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://%{prj}.openstack.org
-Source0:          http://glance.openstack.org/tarballs/glance-%{version}~bzr114.tar.gz
+Source0:          http://glance.openstack.org/tarballs/glance-%{version}~bzr115.tar.gz
 Source1:          %{name}-api.init
 Source2:          %{name}-registry.init
 Source3:          %{name}-logging-api.conf
@@ -184,6 +184,9 @@ fi
 %endif
 
 %changelog
+* Fri Apr 15 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.31.bzr115
+- Update to bzr115
+
 * Fri Apr 15 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.30.bzr114
 - Update to bzr114
 
