@@ -29,7 +29,7 @@ fi
 
 GitDevBranch="master"
 GitCurBranch=$(git branch|grep '*'|cut -f2 -d' ')
-REPOPATH="/home/build/repo/$GitCurBranch/nova"
+REPOPATH="/home/build/repo/$GitCurBranch/openstack"
 
 abspath="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
 cd `dirname $abspath`
