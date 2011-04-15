@@ -49,7 +49,7 @@ if [ "$GitDevBranch" == "$GitCurBranch" ]; then
 	fi
 else
 	have_trunk=0
-	perl -pi -e "s,^Source0:.*$,Source0:          swift-%{version}.tar.gz,"
+	#perl -pi -e "s,^Source0:.*$,Source0:          swift-%{version}.tar.gz,"
 fi
 
 SpecReleaseNew=$(grep '^Release:' $SpecOrig | sed 's/^Release:\s\+//' | sed 's/%{?dist}$//')

@@ -49,7 +49,7 @@ if [ "$GITDEVBRANCH" == "$GITCURBRANCH" ]; then
 	fi
 else
 	have_trunk=0
-	perl -pi -e "s,^Source0:.*$,Source0:          nova-%{version}.tar.gz,"
+	#perl -pi -e "s,^Source0:.*$,Source0:          nova-%{version}.tar.gz,"
 fi
 
 SPECRELEASENEW=$(grep '^Release:' $NOVASPECORIG | sed 's/^Release:\s\+//' | sed 's/%{?dist}$//')
