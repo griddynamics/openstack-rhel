@@ -1,6 +1,6 @@
 Name:		openstack-repo
 Version:	2011.2
-Release:	1
+Release:	1{?dist}
 Summary:	OpenStack repository configuration from Grid Dynamics
 
 Group:		System Environment/Base
@@ -31,6 +31,7 @@ install -p -D -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-K
 %changelog
 * Fri Apr 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-1
 - Cactus release
+- added dist tag to release
 
 * Tue Mar 29 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.4
 - Fixed my ugly build env and now providing really updated keys

@@ -7,7 +7,7 @@
 
 Name:             openstack-%{prj}
 Version:          2.4.1
-Release:          3
+Release:          4{?dist}
 Summary:          Client for OpenStack Nova API
 
 Group:            Applications/System
@@ -104,6 +104,9 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Fri Apr 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2.4.1-4
+- Added dist tag to release
+
 * Fri Mar 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2.4.1-3
 - Added python-json in Requires
 

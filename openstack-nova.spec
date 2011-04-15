@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          1
+Release:          1{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -614,6 +614,7 @@ fi
 %changelog
 * Fri Apr 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-1
 - Cactus release
+- added dist tag to release
 
 * Fri Apr 15 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.112.bzr989
 - Update to bzr989
