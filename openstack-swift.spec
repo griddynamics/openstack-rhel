@@ -6,13 +6,13 @@
 
 Name:             openstack-swift
 Version:          1.3
-Release:          0.3.bzr263%{?dist}
+Release:          1%{?dist}
 Summary:          OpenStack Object Storage (swift)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://launchpad.net/swift
-Source0:          http://swift.openstack.org/tarballs/swift-%{version}-dev+bzr263.tar.gz
+Source0:          http://launchpad.net/swift/1.3/1.3.0/+download/swift-1.3.0.tar.gz
 Source1:          %{name}-functions
 Source2:          %{name}-account.init
 Source3:          %{name}-auth.init
@@ -349,6 +349,9 @@ fi
 %endif
 
 %changelog
+* Fri Apr 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.3-1
+- Cactus release
+
 * Fri Apr 08 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.3-0.3.bzr263
 - Changed name of initscripts
 
