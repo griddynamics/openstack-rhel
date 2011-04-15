@@ -5,8 +5,8 @@
 %endif
 
 Name:             openstack-swift
-Version:          1.3
-Release:          1%{?dist}
+Version:          1.4
+Release:          0.1.bzr268%{?dist}
 Summary:          OpenStack Object Storage (swift)
 
 Group:            Development/Languages
@@ -349,8 +349,8 @@ fi
 %endif
 
 %changelog
-* Fri Apr 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.3-1
-- Cactus release
+* Fri Apr 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.4-0.1.bzr268
+- Diablo versioning
 
 * Fri Apr 08 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.3-0.3.bzr263
 - Changed name of initscripts
