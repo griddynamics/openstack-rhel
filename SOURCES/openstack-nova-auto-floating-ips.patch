@@ -1,19 +1,6 @@
-diff -Naur nova.rhel.orig/nova/api/openstack/contrib/volumes.py nova.rhel/nova/api/openstack/contrib/volumes.py
---- nova.rhel.orig/nova/api/openstack/contrib/volumes.py	2011-04-14 21:27:42.000000000 +0400
-+++ nova.rhel/nova/api/openstack/contrib/volumes.py	2011-04-14 21:30:11.000000000 +0400
-@@ -322,8 +322,7 @@
-         # Does this matter?
-         res = extensions.ResourceExtension('volumes',
-                                         VolumeController(),
--                                        collection_actions={'detail': 'GET'}
--                                          )
-+                                        collection_actions={'detail': 'GET'})
-         resources.append(res)
- 
-         res = extensions.ResourceExtension('volume_attachments',
 diff -Naur nova.rhel.orig/nova/compute/manager.py nova.rhel/nova/compute/manager.py
---- nova.rhel.orig/nova/compute/manager.py	2011-04-14 21:27:42.000000000 +0400
-+++ nova.rhel/nova/compute/manager.py	2011-04-14 21:30:11.000000000 +0400
+--- nova.rhel.orig/nova/compute/manager.py	2011-04-19 13:52:13.000000000 +0400
++++ nova.rhel/nova/compute/manager.py	2011-04-19 13:54:57.000000000 +0400
 @@ -73,6 +73,8 @@
  flags.DEFINE_integer("rescue_timeout", 0,
                       "Automatically unrescue an instance after N seconds."
@@ -65,11 +52,12 @@ diff -Naur nova.rhel.orig/nova/compute/manager.py nova.rhel/nova/compute/manager
          self._update_state(context, instance_id)
  
      @exception.wrap_exception
-@@ -271,6 +308,14 @@
+@@ -271,6 +308,15 @@
                           network_topic,
                           {"method": "disassociate_floating_ip",
                            "args": {"floating_address": address}})
-+                if FLAGS.auto_assign_floating_ip:
++                if FLAGS.auto_assign_floating_ip \
++                        and floating_ip.get('auto_assigned'):
 +                    LOG.debug(_("Deallocating floating ip %s"),
 +                                    floating_ip['address'], context=context)
 +                    rpc.cast(context,
@@ -81,8 +69,8 @@ diff -Naur nova.rhel.orig/nova/compute/manager.py nova.rhel/nova/compute/manager
              address = fixed_ip['address']
              if address:
 diff -Naur nova.rhel.orig/nova/db/api.py nova.rhel/nova/db/api.py
---- nova.rhel.orig/nova/db/api.py	2011-04-14 21:27:42.000000000 +0400
-+++ nova.rhel/nova/db/api.py	2011-04-14 21:30:11.000000000 +0400
+--- nova.rhel.orig/nova/db/api.py	2011-04-19 13:52:13.000000000 +0400
++++ nova.rhel/nova/db/api.py	2011-04-19 13:54:57.000000000 +0400
 @@ -291,8 +291,13 @@
      return IMPL.floating_ip_update(context, address, values)
  
@@ -98,9 +86,17 @@ diff -Naur nova.rhel.orig/nova/db/api.py nova.rhel/nova/db/api.py
      """Update a migration instance"""
      return IMPL.migration_update(context, id, values)
 diff -Naur nova.rhel.orig/nova/db/sqlalchemy/api.py nova.rhel/nova/db/sqlalchemy/api.py
---- nova.rhel.orig/nova/db/sqlalchemy/api.py	2011-04-14 21:27:42.000000000 +0400
-+++ nova.rhel/nova/db/sqlalchemy/api.py	2011-04-14 21:30:11.000000000 +0400
-@@ -489,6 +489,7 @@
+--- nova.rhel.orig/nova/db/sqlalchemy/api.py	2011-04-19 13:52:13.000000000 +0400
++++ nova.rhel/nova/db/sqlalchemy/api.py	2011-04-19 13:54:57.000000000 +0400
+@@ -461,6 +461,7 @@
+     session = get_session()
+     return session.query(models.FloatingIp).\
+                    filter_by(project_id=project_id).\
++                   filter_by(auto_assigned=False).\
+                    filter_by(deleted=False).\
+                    count()
+ 
+@@ -489,6 +490,7 @@
                                                       address,
                                                       session=session)
          floating_ip_ref['project_id'] = None
@@ -108,7 +104,7 @@ diff -Naur nova.rhel.orig/nova/db/sqlalchemy/api.py nova.rhel/nova/db/sqlalchemy
          floating_ip_ref.save(session=session)
  
  
-@@ -522,6 +523,17 @@
+@@ -522,6 +524,17 @@
      return fixed_ip_address
  
  
@@ -126,9 +122,17 @@ diff -Naur nova.rhel.orig/nova/db/sqlalchemy/api.py nova.rhel/nova/db/sqlalchemy
  @require_admin_context
  def floating_ip_get_all(context):
      session = get_session()
+@@ -548,6 +561,7 @@
+     return session.query(models.FloatingIp).\
+                    options(joinedload_all('fixed_ip.instance')).\
+                    filter_by(project_id=project_id).\
++                   filter_by(auto_assigned=False).\
+                    filter_by(deleted=False).\
+                    all()
+ 
 diff -Naur nova.rhel.orig/nova/db/sqlalchemy/migrate_repo/versions/015_add_auto_assign_to_floating_ips.py nova.rhel/nova/db/sqlalchemy/migrate_repo/versions/015_add_auto_assign_to_floating_ips.py
 --- nova.rhel.orig/nova/db/sqlalchemy/migrate_repo/versions/015_add_auto_assign_to_floating_ips.py	1970-01-01 03:00:00.000000000 +0300
-+++ nova.rhel/nova/db/sqlalchemy/migrate_repo/versions/015_add_auto_assign_to_floating_ips.py	2011-04-14 21:30:11.000000000 +0400
++++ nova.rhel/nova/db/sqlalchemy/migrate_repo/versions/015_add_auto_assign_to_floating_ips.py	2011-04-19 13:54:57.000000000 +0400
 @@ -0,0 +1,36 @@
 +# vim: tabstop=4 shiftwidth=4 softtabstop=4
 +
@@ -166,4 +170,44 @@ diff -Naur nova.rhel.orig/nova/db/sqlalchemy/migrate_repo/versions/015_add_auto_
 +                      autoload_with=migrate_engine)
 +
 +    floating_ips.create_column(c_auto_assigned)
-\ No newline at end of file
+diff -Naur nova.rhel.orig/nova/db/sqlalchemy/models.py nova.rhel/nova/db/sqlalchemy/models.py
+--- nova.rhel.orig/nova/db/sqlalchemy/models.py	2011-04-19 13:52:13.000000000 +0400
++++ nova.rhel/nova/db/sqlalchemy/models.py	2011-04-19 13:54:57.000000000 +0400
+@@ -592,6 +592,7 @@
+                                 'FloatingIp.deleted == False)')
+     project_id = Column(String(255))
+     host = Column(String(255))  # , ForeignKey('hosts.id'))
++    auto_assigned = Column(Boolean, default=False, nullable=False)
+ 
+ 
+ class ConsolePool(BASE, NovaBase):
+diff -Naur nova.rhel.orig/nova/network/api.py nova.rhel/nova/network/api.py
+--- nova.rhel.orig/nova/network/api.py	2011-04-19 13:52:13.000000000 +0400
++++ nova.rhel/nova/network/api.py	2011-04-19 13:54:57.000000000 +0400
+@@ -53,6 +53,8 @@
+ 
+     def release_floating_ip(self, context, address):
+         floating_ip = self.db.floating_ip_get_by_address(context, address)
++        if floating_ip.get('auto_assigned'):
++            return
+         # NOTE(vish): We don't know which network host should get the ip
+         #             when we deallocate, so just send it to any one.  This
+         #             will probably need to move into a network supervisor
+@@ -66,6 +68,8 @@
+         if isinstance(fixed_ip, str) or isinstance(fixed_ip, unicode):
+             fixed_ip = self.db.fixed_ip_get_by_address(context, fixed_ip)
+         floating_ip = self.db.floating_ip_get_by_address(context, floating_ip)
++        if floating_ip.get('auto_assigned'):
++            return
+         # Check if the floating ip address is allocated
+         if floating_ip['project_id'] is None:
+             raise exception.ApiError(_("Address (%s) is not allocated") %
+@@ -92,6 +96,8 @@
+ 
+     def disassociate_floating_ip(self, context, address):
+         floating_ip = self.db.floating_ip_get_by_address(context, address)
++        if floating_ip.get('auto_assigned'):
++            return
+         if not floating_ip.get('fixed_ip'):
+             raise exception.ApiError('Address is not associated.')
+         # NOTE(vish): Get the topic from the host name of the network of
