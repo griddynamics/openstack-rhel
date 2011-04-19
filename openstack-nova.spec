@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.9.bzr1000%{?dist}
+Release:          0.10.bzr1000%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -615,6 +615,9 @@ fi
 %files node-compute
 
 %changelog
+* Tue Apr 19 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.10.bzr1000
+- Updated floating IP patch, kudos to Ilya Alekseyev
+
 * Tue Apr 19 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.9.bzr1000
 - Update to bzr1000
 
