@@ -29,7 +29,7 @@ fi
 
 GITDEVBRANCH="master"
 GITCURBRANCH=$(git branch|grep '*'|cut -f2 -d' ')
-REPOPATH="/home/build/repo/$GITCURBRANCH/nova"
+REPOPATH="/home/build/repo/$GITCURBRANCH/openstack"
 
 abspath="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
 cd `dirname $abspath`
@@ -49,7 +49,7 @@ if [ "$GITDEVBRANCH" == "$GITCURBRANCH" ]; then
 	fi
 else
 	have_trunk=0
-	perl -pi -e "s,^Source0:.*$,Source0:          nova-%{version}.tar.gz,"
+	#perl -pi -e "s,^Source0:.*$,Source0:          nova-%{version}.tar.gz,"
 fi
 
 SPECRELEASENEW=$(grep '^Release:' $NOVASPECORIG | sed 's/^Release:\s\+//' | sed 's/%{?dist}$//')

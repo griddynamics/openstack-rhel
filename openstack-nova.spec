@@ -5,14 +5,14 @@
 %endif
 
 Name:             openstack-nova
-Version:          2011.2
-Release:          0.109.bzr988
+Version:          2011.3
+Release:          0.9.bzr1000%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr988.tar.gz
+Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr1000.tar.gz
 Source1:          %{name}-README.rhel6
 Source2:          %{name}-noVNC-snap2011.03.24.tgz
 Source6:          %{name}.logrotate
@@ -82,6 +82,9 @@ Requires:         %{name}-network = %{version}-%{release}
 Requires:         %{name}-objectstore = %{version}-%{release}
 Requires:         %{name}-scheduler = %{version}-%{release}
 Requires:         %{name}-volume = %{version}-%{release}
+Requires:         openstack-client
+Requires:         openstack-glance = %{version}
+Requires:         openstack-glance-doc = %{version}
 %if 0%{?with_doc}
 Requires:         %{name}-doc = %{version}-%{release}
 %endif
@@ -303,6 +306,7 @@ This package contains documentation files for %{name}.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 install %{SOURCE1} README.rhel6
 
@@ -419,7 +423,8 @@ if rpmquery openstack-nova-cc-config 1>&2 >/dev/null; then
 		fi
 	else
 		echo "DB init code, new installation"
-		#/usr/bin/nova-manage db sync
+		/usr/bin/nova-manage db sync
+		echo "Please refer http://wiki.openstack.org/NovaInstall/RHEL6Notes for instructions"
 	fi
 fi
 
@@ -610,7 +615,41 @@ fi
 %files node-compute
 
 %changelog
-* Thu Apr 14 2011 Ilya Alekseyev <ialekseev@griddynamics.com> - 2011.2-0.109.bzr988
+* Tue Apr 19 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.9.bzr1000
+- Update to bzr1000
+
+* Tue Apr 19 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.8.bzr998
+- Update to bzr998
+
+* Tue Apr 19 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.7.bzr997
+- Update to bzr997
+
+* Mon Apr 18 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.6.bzr996
+- Update to bzr996
+
+* Mon Apr 18 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.5.bzr994
+- Update to bzr994
+
+* Sun Apr 17 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.4.bzr993
+- Update to bzr993
+
+* Fri Apr 15 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.3.bzr992
+- Update to bzr992
+
+* Fri Apr 15 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.2.bzr991
+- Update to bzr991
+
+* Fri Apr 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.1.bzr990
+- Diablo versioning
+
+* Fri Apr 15 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.112.bzr989
+- Update to bzr989
+
+* Thu Apr 14 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-0.111.bzr988
+- Uncommented initial db sync on fresh install
+- Added banner with link to instructions
+
+* Thu Apr 14 2011 Ilya Alekseyev <ialekseev@griddynamics.com> - 2011.2-0.110.bzr988
 - Patch for auto assigning floating ips (AWS EC2 behaviour emulation) added
 
 * Thu Apr 14 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.2-0.109.bzr988
