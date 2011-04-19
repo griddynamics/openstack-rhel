@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          2%{?dist}
+Release:          3%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -615,6 +615,9 @@ fi
 %files node-compute
 
 %changelog
+* Tue Apr 19 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-3
+- Updated floating IP patch, kudos to Ilya Alekseyev
+
 * Fri Apr 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-2
 - Updated deps for metapackage node-full
 
