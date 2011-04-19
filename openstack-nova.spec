@@ -12,7 +12,7 @@ Summary:          OpenStack Compute (nova)
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr1000.tar.gz
+Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr1003.tar.gz
 Source1:          %{name}-README.rhel6
 Source2:          %{name}-noVNC-snap2011.03.24.tgz
 Source6:          %{name}.logrotate
@@ -125,7 +125,7 @@ Requires:         python-gflags >= 1.3
 Requires:         python-lockfile = 0.8
 Requires:         python-mox >= 0.5.0
 Requires:         python-redis
-Requires:         python-routes
+Requires:         python-routes >= 1.12.3
 Requires:         python-sqlalchemy >= 0.6
 Requires:         python-suds >= 0.4.0
 Requires:         python-tornado
@@ -281,7 +281,7 @@ BuildRequires:    python-eventlet
 BuildRequires:    python-gflags
 #BuildRequires:    python-mox
 #BuildRequires:    python-redis
-BuildRequires:    python-routes
+BuildRequires:    python-routes >= 1.12.3
 BuildRequires:    python-sqlalchemy
 BuildRequires:    python-tornado
 BuildRequires:    python-twisted-core
@@ -615,6 +615,9 @@ fi
 %files node-compute
 
 %changelog
+* Tue Apr 19 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.11.bzr1000
+- Updated dependency on python-routes with version 1.12.3
+
 * Tue Apr 19 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.11.bzr1003
 - Update to bzr1003
 
