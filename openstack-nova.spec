@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          3%{?dist}
+Release:          4%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -125,7 +125,7 @@ Requires:         python-gflags >= 1.3
 Requires:         python-lockfile = 0.8
 Requires:         python-mox >= 0.5.0
 Requires:         python-redis
-Requires:         python-routes
+Requires:         python-routes >= 1.12.3
 Requires:         python-sqlalchemy >= 0.6
 Requires:         python-suds >= 0.4.0
 Requires:         python-tornado
@@ -281,7 +281,7 @@ BuildRequires:    python-eventlet
 BuildRequires:    python-gflags
 #BuildRequires:    python-mox
 #BuildRequires:    python-redis
-BuildRequires:    python-routes
+BuildRequires:    python-routes >= 1.12.3
 BuildRequires:    python-sqlalchemy
 BuildRequires:    python-tornado
 BuildRequires:    python-twisted-core
@@ -615,6 +615,9 @@ fi
 %files node-compute
 
 %changelog
+* Tue Apr 19 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-4
+- Updated dependency on python-routes with version >= 1.12.3
+
 * Tue Apr 19 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-3
 - Updated floating IP patch, kudos to Ilya Alekseyev
 
