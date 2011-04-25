@@ -12,7 +12,7 @@ Summary:          OpenStack Compute (nova)
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr1010.tar.gz
+Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr1030.tar.gz
 Source1:          %{name}-README.rhel6
 Source2:          %{name}-noVNC-snap2011.03.24.tgz
 Source6:          %{name}.logrotate
