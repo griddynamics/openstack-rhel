@@ -3,7 +3,7 @@
 # If you need to build a specific version - specify it as bzr build # (digits only).
 # If build # is not specified, latest available tarball will be built
 
-GithubUserProject="abrindeyev/openstack-nova-rhel6"
+GithubUserProject="griddynamics/openstack-rhel"
 RPMSANDBOX=`grep topdir $HOME/.rpmmacros 2>/dev/null | awk '{print ($2)}'`
 [ "$RPMSANDBOX" == "" ] && RPMSANDBOX="$HOME/rpmbuild/"
 NOVASPECORIG="openstack-nova.spec"
