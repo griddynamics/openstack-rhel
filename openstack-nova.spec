@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.18.bzr1010%{?dist}
+Release:          0.19.bzr1030%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -38,7 +38,6 @@ Patch3:           %{name}-bexar-libvirt.xml.template.patch
 Patch4:           %{name}-rhel-netcat.patch
 Patch5:           %{name}-ajaxterm-path.patch
 Patch6:           %{name}-s3server-quickfix.patch
-Patch7:           %{name}-auto-floating-ips.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -306,7 +305,6 @@ This package contains documentation files for %{name}.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
-%patch7 -p1
 
 install %{SOURCE1} README.rhel6
 
@@ -615,6 +613,9 @@ fi
 %files node-compute
 
 %changelog
+* Mon Apr 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.19.bzr1030
+- Floating IPs merged to trunk
+
 * Thu Apr 21 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.18.bzr1010
 - Update to bzr1010
 
