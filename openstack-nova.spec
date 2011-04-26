@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.20.bzr1031%{?dist}
+Release:          0.21.bzr1031%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -613,6 +613,9 @@ fi
 %files node-compute
 
 %changelog
+* Tue Apr 26 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.21.bzr1031
+- Updated patch6
+
 * Tue Apr 26 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.20.bzr1031
 - Update to bzr1031
 
