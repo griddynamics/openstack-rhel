@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          4%{?dist}
+Release:          5%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -615,6 +615,9 @@ fi
 %files node-compute
 
 %changelog
+* Tue Apr 26 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-5
+- Updated patch6
+
 * Tue Apr 19 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-4
 - Updated dependency on python-routes with version >= 1.12.3
 
