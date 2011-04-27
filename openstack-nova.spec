@@ -90,6 +90,7 @@ Requires:         %{name}-api = %{version}-%{release}
 Requires:         %{name}-compute = %{version}-%{release}
 Requires:         %{name}-instancemonitor = %{version}-%{release}
 Requires:         %{name}-network = %{version}-%{release}
+Requires:         %{name}-noVNC = %{version}-%{release}
 Requires:         %{name}-objectstore = %{version}-%{release}
 Requires:         %{name}-scheduler = %{version}-%{release}
 Requires:         %{name}-volume = %{version}-%{release}
