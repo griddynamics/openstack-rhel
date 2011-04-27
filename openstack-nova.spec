@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.22.bzr1032%{?dist}
+Release:          0.23.bzr1032%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -67,6 +67,18 @@ Nova is intended to be easy to extend, and adapt. For example, it currently
 uses an LDAP server for users and groups, but also includes a fake LDAP server,
 that stores data in Redis. It has extensive test coverage, and uses the Sphinx
 toolkit (the same as Python itself) for code and user documentation.
+
+%package          noVNC
+Summary:          OpenStack Nova VNC console service
+Group:            Applications/System
+License:          LGPL v3 with exceptions
+URL:              https://github.com/openstack/noVNC
+
+Requires:         %{name} = %{version}-%{release}
+
+%description      noVNC
+This package contains noVNC code and daemon which is required for accessing
+instances's console using VNC.
 
 %package          node-full
 Summary:          OpenStack Nova full node installation
@@ -542,12 +554,23 @@ fi
 %{_bindir}/nova-logspool
 %{_bindir}/nova-manage
 %{_bindir}/nova-spoolsentry
-%{_bindir}/nova-vncproxy
-%{_initrddir}/%{name}-vncproxy
 %{_bindir}/stack
 %{_datarootdir}/nova
 %defattr(-,nova,nobody,-)
-%{_sharedstatedir}/nova
+%dir %{_sharedstatedir}/nova
+%{_sharedstatedir}/nova/CA
+%{_sharedstatedir}/nova/images
+%{_sharedstatedir}/nova/instances
+%{_sharedstatedir}/nova/keys
+%{_sharedstatedir}/nova/networks
+%{_sharedstatedir}/nova/tmp
+
+%files noVNC
+%{_bindir}/nova-vncproxy
+%{_initrddir}/%{name}-vncproxy
+%{_sharedstatedir}/nova/noVNC
+%doc %{_sharedstatedir}/nova/noVNC/LICENSE.txt
+%doc %{_sharedstatedir}/nova/noVNC/README.md
 
 %files -n python-nova
 %defattr(-,root,root,-)
@@ -612,6 +635,9 @@ fi
 %files node-compute
 
 %changelog
+* Wed Apr 27 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.23.bzr1032
+- created separate package for noVNC due licensing issue
+
 * Wed Apr 27 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.22.bzr1032
 - Update to bzr1032
 

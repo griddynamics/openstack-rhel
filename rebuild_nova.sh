@@ -95,6 +95,6 @@ then
 	mkdir -p "$REPOPATH"
 fi
 
-rm -fr $REPOPATH/python-nova-$NOVAVER-*.rpm $REPOPATH/openstack-nova-$NOVAVER-*.rpm $REPOPATH/openstack-nova-{api,compute,doc,instancemonitor,network,objectstore,scheduler,volume}-$NOVAVER-*.rpm $REPOPATH/openstack-nova-node-*-$NOVAVER-*.rpm
+rm -fr $REPOPATH/python-nova-$NOVAVER-*.rpm $REPOPATH/openstack-nova-$NOVAVER-*.rpm $REPOPATH/openstack-nova-{api,compute,doc,instancemonitor,network,noVNC,objectstore,scheduler,volume}-$NOVAVER-*.rpm $REPOPATH/openstack-nova-node-*-$NOVAVER-*.rpm
 mv $RPMSANDBOX/RPMS/noarch/*$NOVAVER-$SPECRELEASENEW*.rpm "$REPOPATH"
 
