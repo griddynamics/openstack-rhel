@@ -548,7 +548,6 @@ fi
 %{_datarootdir}/nova
 %defattr(-,nova,nobody,-)
 %{_sharedstatedir}/nova
-%{_datarootdir}/nova/setup_iptables.sh
 
 %files -n python-nova
 %defattr(-,root,root,-)
