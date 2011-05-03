@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.35.bzr1052%{?dist}
+Release:          0.36.bzr1052%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -38,6 +38,7 @@ Patch3:           %{name}-bexar-libvirt.xml.template.patch
 Patch4:           %{name}-rhel-netcat.patch
 Patch5:           %{name}-ajaxterm-path.patch
 Patch6:           %{name}-s3server-quickfix.patch
+Patch7:           %{name}-scsi-target-utils-support.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -318,6 +319,7 @@ This package contains documentation files for %{name}.
 %patch4 -p1
 %patch5 -p1
 %patch6 -p1
+%patch7 -p1
 
 install %{SOURCE1} README.rhel6
 
@@ -636,6 +638,9 @@ fi
 %files node-compute
 
 %changelog
+* Tue May 03 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.36.bzr1052
+- Added support for scsi-target-utils
+
 * Tue May 03 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.35.bzr1052
 - Update to bzr1052
 
