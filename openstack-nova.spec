@@ -6,13 +6,13 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.33.bzr1050%{?dist}
+Release:          0.34.bzr1051%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr1050.tar.gz
+Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr1051.tar.gz
 Source1:          %{name}-README.rhel6
 Source2:          %{name}-noVNC-snap2011.03.24.tgz
 Source6:          %{name}.logrotate
@@ -636,6 +636,9 @@ fi
 %files node-compute
 
 %changelog
+* Tue May 03 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.34.bzr1051
+- Update to bzr1051
+
 * Tue May 03 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.33.bzr1050
 - Update to bzr1050
 
