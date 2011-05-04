@@ -1,6 +1,6 @@
 [openstack-nova]
 name=OpenStack Nova Compute
-baseurl=http://yum.griddynamics.net/yum/master/nova
+baseurl=http://yum.griddynamics.net/yum/master/openstack
 enabled=1
 gpgcheck=1
 metadata_expire=90
@@ -11,5 +11,6 @@ name=OpenStack Nova Compute Dependencies
 baseurl=http://yum.griddynamics.net/yum/master/deps
 enabled=1
 gpgcheck=1
+metadata_expire=90
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OPENSTACK
 
