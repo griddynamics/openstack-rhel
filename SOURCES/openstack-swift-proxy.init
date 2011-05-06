@@ -17,11 +17,11 @@
 . /etc/rc.d/init.d/functions
 . /usr/share/openstack-swift/functions
 
-name="proxy"
+name="proxy-server"
 
 [ -e "/etc/sysconfig/openstack-swift-$name" ] && . "/etc/sysconfig/openstack-swift-$name"
 
-lockfile="/var/lock/subsys/openstack-swift-proxy"
+lockfile="/var/lock/subsys/openstack-swift-proxy-server"
 
 start() {
     swift_action "$name" start
