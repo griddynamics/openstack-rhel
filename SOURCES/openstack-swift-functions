@@ -4,37 +4,32 @@
 
 swift_action() {
   retval=0
-  server="$1"
+  name="$1"
+  component=$(echo $1 | cut -f 1 -d -)
   call="swift_$2"
 
-  if [[ -f "/etc/swift/$server-server.conf" ]]; then
-    $call "$server" \
-          "/etc/swift/$server-server.conf" \
-          "/var/run/swift/$server-server.pid"
+  if [[ -f "/etc/swift/$component-server.conf" ]]; then
+    $call "$name" \
+          "/etc/swift/$component-server.conf" \
+          "/var/run/swift/$name.pid"
     [ $? -ne 0 ] && retval=1
-  elif [[ -d "/etc/swift/$server-server/" ]]; then
-    declare -i count=0
-    for name in $( ls "/etc/swift/$server-server/" ); do
-      $call "$server" \
-            "/etc/swift/$server-server/$name" \
-            "/var/run/swift/$server-server/$count.pid"
-      [ $? -ne 0 ] && retval=1
-      count=$count+1
-    done
+  else
+      # Unconfigured service
+      # http://fedoraproject.org/wiki/Packaging/SysVInitScript#Exit_Codes_for_non-Status_Actions
+      retval=6
   fi
   return $retval
 }
 
 swift_start() {
   name="$1"
-  long_name="$name-server"
   conf_file="$2"
   pid_file="$3"
 
   ulimit -n ${SWIFT_MAX_FILES-32768}
-  echo -n "Starting swift-$long_name: "
+  echo -n "Starting swift-$name: "
   daemon --pidfile $pid_file \
-    "/usr/bin/swift-$long_name $conf_file &>/dev/null & echo \$! > $pid_file"
+    "/usr/bin/swift-$name $conf_file &>/dev/null & echo \$! > $pid_file"
   retval=$?
   echo
   return $retval
@@ -42,12 +37,11 @@ swift_start() {
 
 swift_stop() {
   name="$1"
-  long_name="$name-server"
   conf_name="$2"
   pid_file="$3"
 
-  echo -n "Stopping swift-$long_name: "
-  killproc -p $pid_file -d ${SWIFT_STOP_DELAY-15} $long_name
+  echo -n "Stopping swift-$name: "
+  killproc -p $pid_file -d ${SWIFT_STOP_DELAY-15} $name
   retval=$?
   echo
   return $retval
@@ -55,9 +49,8 @@ swift_stop() {
 
 swift_status() {
   name="$1"
-  long_name="$name-server"
   conf_name="$2"
   pid_file="$3"
 
-  status -p $pid_file $long_name
+  status -p $pid_file $name
 }

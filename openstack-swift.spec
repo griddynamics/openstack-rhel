@@ -6,7 +6,7 @@
 
 Name:             openstack-swift
 Version:          1.4
-Release:          0.5.bzr287%{?dist}
+Release:          0.6.bzr287%{?dist}
 Summary:          OpenStack Object Storage (swift)
 
 Group:            Development/Languages
@@ -18,7 +18,6 @@ Source2:          %{name}-account-auditor.init
 Source3:          %{name}-account-reaper.init
 Source4:          %{name}-account-replicator.init
 Source5:          %{name}-account-server.init
-Source6:          %{name}-auth.init
 Source7:          %{name}-container-auditor.init
 Source8:          %{name}-container-replicator.init
 Source9:          %{name}-container-server.init
@@ -166,7 +165,6 @@ install -p -D -m 755 %{SOURCE2} %{buildroot}%{_initrddir}/%{name}-account-audito
 install -p -D -m 755 %{SOURCE3} %{buildroot}%{_initrddir}/%{name}-account-reaper
 install -p -D -m 755 %{SOURCE4} %{buildroot}%{_initrddir}/%{name}-account-replicator
 install -p -D -m 755 %{SOURCE5} %{buildroot}%{_initrddir}/%{name}-account-server
-install -p -D -m 755 %{SOURCE6} %{buildroot}%{_initrddir}/%{name}-auth
 install -p -D -m 755 %{SOURCE7} %{buildroot}%{_initrddir}/%{name}-container-auditor
 install -p -D -m 755 %{SOURCE8} %{buildroot}%{_initrddir}/%{name}-container-replicator
 install -p -D -m 755 %{SOURCE9} %{buildroot}%{_initrddir}/%{name}-container-server
@@ -222,20 +220,6 @@ if [ "$1" -ge "1" ] ; then
     /sbin/service %{name}-account-reaper condrestart >/dev/null 2>&1 || :
     /sbin/service %{name}-account-replicator condrestart >/dev/null 2>&1 || :
     /sbin/service %{name}-account-server condrestart >/dev/null 2>&1 || :
-fi
-
-%post auth
-/sbin/chkconfig --add %{name}-auth
-
-%preun auth
-if [ $1 = 0 ] ; then
-    /sbin/service %{name}-auth stop >/dev/null 2>&1
-    /sbin/chkconfig --del %{name}-auth
-fi
-
-%postun auth
-if [ "$1" -ge "1" ] ; then
-    /sbin/service %{name}-auth condrestart >/dev/null 2>&1 || :
 fi
 
 %post container
@@ -339,7 +323,6 @@ fi
 
 %files auth
 %defattr(-,root,root,-)
-%{_initrddir}/%{name}-auth
 %{_bindir}/swauth-add-account
 %{_bindir}/swauth-add-user
 %{_bindir}/swauth-cleanup-tokens
@@ -385,6 +368,13 @@ fi
 %endif
 
 %changelog
+* Fri May 06 2011 Jasper Capel <jasper.capel@spilgames.com> - 1.4.0-6.bzr287
+- Changed init-functions script to accomodate extra init scripts
+- Removed auth init script (there only is swauth now, which is loaded from
+  proxy)
+- Fixed proxy init script so it will still start with the changes to the
+  function script
+
 * Fri May 06 2011 Jasper Capel <jasper.capel@spilgames.com> - 1.4-0.5.bzr287
 - Added dependency on python-netifaces
 - Added dependency on python-paste-deploy
