@@ -1,27 +1,27 @@
 #!/bin/sh
 
 ### BEGIN INIT INFO
-# Provides:          openstack-swift-auth
+# Provides:          openstack-swift-object-auditor
 # Required-Start:    $remote_fs
 # Required-Stop:     $remote_fs
 # Default-Stop:      0 1 6
-# Short-Description: Swift auth server
-# Description:       Auth server for swift.
+# Short-Description: Swift object auditor
+# Description:       Object auditor for swift.
 ### END INIT INFO
 
-# openstack-swift-auth: swift auth server
+# openstack-swift-object: swift object auditor
 #
 # chkconfig: - 20 80
-# description: Auth server for swift.
+# description: Object auditor for swift.
 
 . /etc/rc.d/init.d/functions
 . /usr/share/openstack-swift/functions
 
-name="auth"
+name="object-auditor"
 
 [ -e "/etc/sysconfig/openstack-swift-$name" ] && . "/etc/sysconfig/openstack-swift-$name"
 
-lockfile="/var/lock/subsys/openstack-swift-auth"
+lockfile="/var/lock/subsys/openstack-swift-$name"
 
 start() {
     swift_action "$name" start
@@ -49,6 +49,7 @@ rh_status() {
 rh_status_q() {
     rh_status &> /dev/null
 }
+
 
 case "$1" in
     start)
