@@ -1,27 +1,27 @@
 #!/bin/sh
 
 ### BEGIN INIT INFO
-# Provides:          openstack-swift-proxy
+# Provides:          openstack-swift-account-auditor
 # Required-Start:    $remote_fs
 # Required-Stop:     $remote_fs
 # Default-Stop:      0 1 6
-# Short-Description: Swift proxy server
-# Description:       Account server for swift.
+# Short-Description: Swift account auditor
+# Description:       Account auditor for swift.
 ### END INIT INFO
 
-# openstack-swift-proxy: swift proxy server
+# openstack-swift-account-auditor: swift account auditor
 #
 # chkconfig: - 20 80
-# description: Proxy server for swift.
+# description: Account auditor for swift.
 
 . /etc/rc.d/init.d/functions
 . /usr/share/openstack-swift/functions
 
-name="proxy-server"
+name="account-auditor"
 
 [ -e "/etc/sysconfig/openstack-swift-$name" ] && . "/etc/sysconfig/openstack-swift-$name"
 
-lockfile="/var/lock/subsys/openstack-swift-proxy-server"
+lockfile="/var/lock/subsys/openstack-swift-$name"
 
 start() {
     swift_action "$name" start
@@ -49,7 +49,6 @@ rh_status() {
 rh_status_q() {
     rh_status &> /dev/null
 }
-
 
 case "$1" in
     start)

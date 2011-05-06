@@ -1,27 +1,27 @@
 #!/bin/sh
 
 ### BEGIN INIT INFO
-# Provides:          openstack-swift-proxy
+# Provides:          openstack-swift-object-updater
 # Required-Start:    $remote_fs
 # Required-Stop:     $remote_fs
 # Default-Stop:      0 1 6
-# Short-Description: Swift proxy server
-# Description:       Account server for swift.
+# Short-Description: Swift object updater
+# Description:       Object updater for swift.
 ### END INIT INFO
 
-# openstack-swift-proxy: swift proxy server
+# openstack-swift-object: swift object updater
 #
 # chkconfig: - 20 80
-# description: Proxy server for swift.
+# description: Object updater for swift.
 
 . /etc/rc.d/init.d/functions
 . /usr/share/openstack-swift/functions
 
-name="proxy-server"
+name="object-updater"
 
 [ -e "/etc/sysconfig/openstack-swift-$name" ] && . "/etc/sysconfig/openstack-swift-$name"
 
-lockfile="/var/lock/subsys/openstack-swift-proxy-server"
+lockfile="/var/lock/subsys/openstack-swift-$name"
 
 start() {
     swift_action "$name" start

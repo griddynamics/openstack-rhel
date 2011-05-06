@@ -1,27 +1,27 @@
 #!/bin/sh
 
 ### BEGIN INIT INFO
-# Provides:          openstack-swift-account
+# Provides:          openstack-swift-container-replicator
 # Required-Start:    $remote_fs
 # Required-Stop:     $remote_fs
 # Default-Stop:      0 1 6
-# Short-Description: Swift account server
-# Description:       Account server for swift.
+# Short-Description: Swift container replicator
+# Description:       Container replicator for swift.
 ### END INIT INFO
 
-# openstack-swift-account: swift account server
+# openstack-swift-container: swift container replicator
 #
 # chkconfig: - 20 80
-# description: Account server for swift.
+# description: Container replicator for swift.
 
 . /etc/rc.d/init.d/functions
 . /usr/share/openstack-swift/functions
 
-name="account"
+name="container-replicator"
 
 [ -e "/etc/sysconfig/openstack-swift-$name" ] && . "/etc/sysconfig/openstack-swift-$name"
 
-lockfile="/var/lock/subsys/openstack-swift-account"
+lockfile="/var/lock/subsys/openstack-swift-$name"
 
 start() {
     swift_action "$name" start
