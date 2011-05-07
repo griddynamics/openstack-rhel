@@ -6,13 +6,13 @@
 
 Name:             openstack-swift
 Version:          1.4
-Release:          0.6.bzr287%{?dist}
+Release:          0.7.bzr288%{?dist}
 Summary:          OpenStack Object Storage (swift)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://launchpad.net/swift
-Source0:          http://swift.openstack.org/tarballs/swift-%{version}-dev+bzr287.tar.gz
+Source0:          http://swift.openstack.org/tarballs/swift-%{version}-dev+bzr288.tar.gz
 Source1:          %{name}-functions
 Source2:          %{name}-account-auditor.init
 Source3:          %{name}-account-reaper.init
@@ -368,6 +368,9 @@ fi
 %endif
 
 %changelog
+* Sat May 07 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.7.bzr288
+- Update to bzr288
+
 * Fri May 06 2011 Jasper Capel <jasper.capel@spilgames.com> - 1.4.0-6.bzr287
 - Changed init-functions script to accomodate extra init scripts
 - Removed auth init script (there only is swauth now, which is loaded from
