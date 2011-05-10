@@ -4,7 +4,7 @@
 Name:           python-netifaces
 Version:        0.5
 Release:        1%{?dist}
-Summary:        netifaces provides a (hopefully portable-ish) way for Python programmers to get access to a list of the network interfaces on the local machine, and to obtain the addresses of those network interfaces.
+Summary:        Python library which provides a list of network interfaces and its addresses on the local machine
 
 Group:          Development/Languages
 License:        MIT
@@ -15,7 +15,9 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  python-devel python-setuptools
 
 %description
-
+netifaces provides a (hopefully portable-ish) way for Python programmers to get
+access to a list of the network interfaces on the local machine, and to obtain
+the addresses of those network interfaces.
 
 %prep
 %setup -q -n netifaces-%{version}
@@ -42,3 +44,5 @@ rm -rf $RPM_BUILD_ROOT
 
 
 %changelog
+* Tue May 10 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 0.5-1
+- Initial build
