@@ -33,13 +33,13 @@ rm -rf %{buildroot}
 install -d -m 755 %{buildroot}%{_sysconfdir}/nova
 
 # Install config files
-install -p -D -m 644 %{SOURCE0} %{buildroot}%{_sysconfdir}/nova/nova.conf
+install -p -D -m 600 %{SOURCE0} %{buildroot}%{_sysconfdir}/nova/nova.conf
 
 %clean
 rm -rf %{buildroot}
 
 %files
-%defattr(-,root,root,-)
+%defattr(-,nova,nobody,-)
 %config(noreplace) %{_sysconfdir}/nova/nova.conf
 
 %changelog
