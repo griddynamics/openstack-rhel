@@ -137,6 +137,8 @@ Requires:         python-eventlet >= 0.9.12-1.1.el6
 Requires:         python-gflags >= 1.3
 Requires:         python-lockfile = 0.8
 Requires:         python-mox >= 0.5.0
+Requires:         python-paste
+Requires:         python-paste-deploy
 Requires:         python-redis
 Requires:         python-routes >= 1.12.3
 Requires:         python-sqlalchemy >= 0.6
@@ -172,8 +174,6 @@ Group:            Applications/System
 
 Requires:         %{name} = %{version}-%{release}
 Requires:         start-stop-daemon
-Requires:         python-paste
-Requires:         python-paste-deploy
 
 %description      api
 Nova is a cloud computing fabric controller (the main part of an IaaS system)
