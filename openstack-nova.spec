@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          6%{?dist}
+Release:          7%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -617,6 +617,10 @@ fi
 %files node-compute
 
 %changelog
+* Wed May 11 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-7
+- Moved deps for paste and paste-deploy modules from openstack-nova-api to
+  python-nova
+
 * Tue May 10 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-6
 - Backported scsi-target utils support from upstream branch
 
