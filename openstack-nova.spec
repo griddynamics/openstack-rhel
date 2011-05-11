@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          5%{?dist}
+Release:          6%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -38,7 +38,8 @@ Patch3:           %{name}-bexar-libvirt.xml.template.patch
 Patch4:           %{name}-rhel-netcat.patch
 Patch5:           %{name}-ajaxterm-path.patch
 Patch6:           %{name}-s3server-quickfix.patch
-Patch7:           %{name}-auto-floating-ips.patch
+Patch7:           %{name}-scsi-target-utils-support.patch
+Patch8:           %{name}-auto-floating-ips.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -307,6 +308,7 @@ This package contains documentation files for %{name}.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 install %{SOURCE1} README.rhel6
 
@@ -615,6 +617,9 @@ fi
 %files node-compute
 
 %changelog
+* Tue May 10 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-6
+- Backported scsi-target utils support from upstream branch
+
 * Tue Apr 26 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-5
 - Updated patch6
 
