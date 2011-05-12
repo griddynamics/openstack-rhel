@@ -306,6 +306,8 @@ fi
 %{_bindir}/swift-ring-builder
 %{_bindir}/swift-stats-populate
 %{_bindir}/swift-stats-report
+%{_bindir}/swift-dispersion-populate
+%{_bindir}/swift-dispersion-report
 %{python_sitelib}/swift/*.py*
 %{python_sitelib}/swift/common
 %{python_sitelib}/swift/stats
