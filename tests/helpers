@@ -1,0 +1,70 @@
+ssh_helper () {
+	ssh "$1" "$2"
+}
+
+nova_option () {
+	ssh $1 grep "$2" /etc/nova/nova.conf | cut -d= -f2 | grep "$3" >/dev/null
+	return $?
+}
+
+nova_action () {
+	HOSTS=$1
+	action=$2
+	for host in $HOSTS; do
+		if [[ "$host" == "$CC_HOST" ]]; then
+			# It's a Cloud Controller node
+			service_list="nova-api nova-compute nova-network nova-objectstore nova-scheduler nova-vncproxy"
+			if nova_option "$host" 'image_service' 'nova.image.glance.GlanceImageService'; then
+				service_list="$service_list glance-api glance-registry"
+			fi
+		else
+			service_list="nova-compute"
+		fi
+		for nova_service in $service_list; do
+			ssh_helper "$host" "/sbin/service openstack-$nova_service $action"
+		done
+	done
+}
+
+nova_start () {
+	nova_action "$1" 'start'
+}
+
+nova_stop () {
+	nova_action "$1" 'stop'
+}
+
+nova_cleanup () {
+	HOSTS=$1
+	for host in $HOSTS; do
+		for n in $(ssh_helper "$host" "virsh list" |grep instance |perl -pi -e 's/^\s*(\d+).*$/$1/'); do ssh_helper "$host" "virsh destroy $n"; done
+		for n in $(ssh_helper "$host" "virsh list --all"|grep instance |perl -pi -e 's/^\s*(\d+).*$/$1/'); do ssh_helper "$host" "virsh undefine $n"; done
+		ssh_helper "$host" "killall dnsmasq"
+		if [[ "$host" == "$CC_HOST" ]]; then
+			if nova_option "$host" 'sql_connection' 'mysql://'; then
+				ssh_helper "$host" "mysqladmin -uroot -p$PWD -f drop nova"
+			fi
+			ssh_helper "$host" "rm -f /var/lib/nova/CA/serial /var/lib/nova/CA/serial.old  /var/lib/nova/CA/openssl.cnf /var/lib/nova/CA/index.txt* /var/lib/nova/CA/newcerts/* /var/lib/nova/CA/cacert.pem"
+			if nova_option "$host" 'image_service' 'nova.image.glance.GlanceImageService'; then
+				ssh_helper "$host" "rm -fr /var/log/glance/*.log /var/lib/glance/images/* /var/lib/glance/glance.sqlite"
+			fi
+		fi
+		ssh_helper "$host" "rm -fr /var/lib/nova/instances/* /var/lib/nova/images/* /var/lib/nova/buckets/* /var/log/nova/*.log*"
+		ssh_helper "$host" "rm -fr /tmp/tmp*"
+	done
+}
+
+nova_initial_setup () {
+	HOSTS=$1
+	if nova_option "$host" 'sql_connection' 'mysql://'; then
+		for host in $HOSTS; do
+			if [[ "$host" == "$CC_HOST" ]]; then
+				mysqladmin -uroot -p$PWD create nova
+				echo "GRANT ALL PRIVILEGES ON $DB_NAME.* TO $DB_USER IDENTIFIED BY '$DB_PASS';" | mysql -uroot -p$DB_PASS mysql
+				echo "GRANT ALL PRIVILEGES ON $DB_NAME.* TO root IDENTIFIED BY '$DB_PASS';" | mysql -uroot -p$DB_PASS mysql
+			fi
+			echo "GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER'@'$h' IDENTIFIED BY '$DB_PASS';" | mysql -uroot -p$DB_PASS mysql
+		done
+	fi
+	nova-manage db sync
+}
