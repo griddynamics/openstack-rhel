@@ -22,4 +22,6 @@ nova_stop "$HOSTS"
 nova_cleanup "$HOSTS"
 nova_initial_setup "$HOSTS"
 nova_start "$HOSTS"
+echo "Allow services to come up online"
+sleep 2
 nova-manage service list
