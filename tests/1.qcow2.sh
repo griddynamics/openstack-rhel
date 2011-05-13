@@ -2,9 +2,11 @@
 
 USER=abr
 PROJECT=rhelimg
-NETWORK="192.168.99.0/24"
+#NETWORK="192.168.99.0/24"
+#ADDR_PER_NETWORK=250
+NETWORK="10.20.0.0/16"
+ADDR_PER_NETWORK=65530
 NETWORKS_NUM=1
-ADDR_PER_NETWORK=128
 TMPDIR="rhelimg"
 
 
@@ -13,6 +15,10 @@ mkdir "$TMPDIR"
 
 nova-manage user admin $USER
 nova-manage project create $PROJECT $USER
+echo "Setting quotas"
+nova-manage project quota $PROJECT instances 512
+nova-manage project quota $PROJECT cores 1024
+echo "Creating network..."
 nova-manage network create $NETWORK $NETWORKS_NUM $ADDR_PER_NETWORK
 nova-manage project zip $PROJECT $USER $TMPFILE $TMPDIR/nova_creds.zip
 
