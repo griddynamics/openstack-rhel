@@ -2,7 +2,7 @@
 #
 # nova-api	OpenStack Nova API Server
 #
-# chkconfig: 2345 20 81
+# chkconfig: 2345 96 81
 # description: At the heart of the cloud framework is an API Server. \
 #              This API Server makes command and control of the      \
 #              hypervisor, storage, and networking programmatically  \

@@ -2,7 +2,7 @@
 #
 # nova-ajax-console-proxy	OpenStack Nova Web-based serial console proxy
 #
-# chkconfig: 2345 20 81
+# chkconfig: 2345 96 81
 # description: OpenStack Nova Web-based serial console proxy
 #
 # config: /etc/nova/nova.conf
