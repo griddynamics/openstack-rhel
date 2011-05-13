@@ -91,6 +91,9 @@ if [ "$STATUS" != "available" ]; then
 	exit -1
 fi
 
+euca-authorize -P icmp -t -1:-1 default
+euca-authorize -P tcp -p 22 default
+
 echo "euca-run-instances $AMI_MACHINE --kernel $AMI_KERNEL --ramdisk $AMI_RAMDISK -k rhelkey -t m1.tiny"
 echo "euca-run-instances $AMI_MACHINE --kernel $AMI_KERNEL --ramdisk $AMI_RAMDISK -k rhelkey -t m1.tiny" > cmd.txt
 euca-run-instances $AMI_MACHINE --kernel $AMI_KERNEL --ramdisk $AMI_RAMDISK -k rhelkey -t m1.tiny
