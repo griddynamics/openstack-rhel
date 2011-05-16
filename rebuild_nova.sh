@@ -15,7 +15,7 @@ NOVAVER=$(grep '^Version:' $NOVASPECORIG | sed 's/^Version:\s\+//')
 if [ $1 ]; then
 	BUILD=$1
 else
-	BUILD=`curl -s $TARBALLSHOME'/?C=M;O=D'|grep bzr|perl -pi -e 's/^.*bzr(\d+).*$/$1/'|head -n 1`
+	BUILD=`curl -s $TARBALLSHOME'/?C=M;O=D'|grep nova-$NOVAVER|perl -pi -e 's/^.*bzr(\d+).*$/$1/'|head -n 1`
 fi
 
 SRCFILE="nova-$NOVAVER~bzr$BUILD.tar.gz"
