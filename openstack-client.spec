@@ -6,14 +6,14 @@
 %endif
 
 Name:             openstack-%{prj}
-Version:          2.4.1
-Release:          3
+Version:          2.4.2
+Release:          1
 Summary:          Client for OpenStack Nova API
 
 Group:            Applications/System
 License:          ASL 2.0
 URL:              http://pypi.python.org/pypi/python-novaclient
-Source0:          http://pypi.python.org/packages/source/p/python-novaclient/python-novaclient-%{version}.tar.gz
+Source0:          python-novaclient-2.4.2~bzr25.tar.gz
 
 BuildRoot:        %{_tmppath}/%{prj}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -104,6 +104,9 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Tue May 17 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2.4.2-1
+- 2.4.2 release
+
 * Fri Mar 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2.4.1-3
 - Added python-json in Requires
 
