@@ -117,7 +117,8 @@ rm -fr doc/build/html/.doctrees doc/build/html/.buildinfo
 install -d -m 755 %{buildroot}%{_sharedstatedir}/%{prj}/images
 
 # Config file
-install -p -D -m 644 etc/%{prj}.conf.sample %{buildroot}%{_sysconfdir}/%{prj}/%{prj}.conf
+install -p -D -m 644 etc/%{prj}-api.conf %{buildroot}%{_sysconfdir}/%{prj}/%{prj}-api.conf
+install -p -D -m 644 etc/%{prj}-registry.conf %{buildroot}%{_sysconfdir}/%{prj}/%{prj}-registry.conf
 install -p -D -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/%{prj}/logging-api.conf
 install -p -D -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/%{prj}/logging-registry.conf
 
@@ -165,7 +166,8 @@ fi
 %{_initrddir}/%{name}-api
 %{_initrddir}/%{name}-registry
 %defattr(-,%{prj},nobody,-)
-%config(noreplace) %{_sysconfdir}/%{prj}/%{prj}.conf
+%config(noreplace) %{_sysconfdir}/%{prj}/%{prj}-api.conf
+%config(noreplace) %{_sysconfdir}/%{prj}/%{prj}-registry.conf
 %config(noreplace) %{_sysconfdir}/%{prj}/logging-api.conf
 %config(noreplace) %{_sysconfdir}/%{prj}/logging-registry.conf
 %{_sharedstatedir}/%{prj}

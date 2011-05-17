@@ -5,7 +5,7 @@
 # chkconfig: 2345 96 81
 # description: OpenStack Glance Registry reference server implementation
 #
-# config: /etc/glance/glance.conf
+# config: /etc/glance/glance-registry.conf
 # pidfile: /var/run/glance/glance-registry.pid
 
 ### BEGIN INIT INFO
@@ -27,7 +27,7 @@
 
 prog="OpenStack Glance Registry Server"
 suffix="registry"
-flgfile=/etc/glance/glance.conf
+flgfile=/etc/glance/glance-registry.conf
 logconf=/etc/glance/logging-$suffix.conf
 pidfile=/var/run/glance/glance-$suffix.pid
 lckfile=/var/lock/subsys/openstack-glance-$suffix
