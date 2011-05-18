@@ -39,6 +39,7 @@ Patch4:           %{name}-rhel-netcat.patch
 Patch5:           %{name}-ajaxterm-path.patch
 Patch6:           %{name}-s3server-quickfix.patch
 Patch7:           %{name}-scsi-target-utils-support.patch
+Patch8:           %{name}-rpc-improvements.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -320,6 +321,7 @@ This package contains documentation files for %{name}.
 %patch5 -p1
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 install %{SOURCE1} README.rhel6
 
