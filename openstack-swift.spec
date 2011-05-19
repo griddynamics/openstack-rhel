@@ -342,6 +342,7 @@ fi
 %{_bindir}/swift-container-auditor
 %{_bindir}/swift-container-server
 %{_bindir}/swift-container-replicator
+%{_bindir}/swift-container-stats-logger
 %{_bindir}/swift-container-updater
 %{python_sitelib}/swift/container
 
