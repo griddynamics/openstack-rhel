@@ -6,13 +6,13 @@
 
 Name:             openstack-swift
 Version:          1.4
-Release:          0.14.bzr296%{?dist}
+Release:          0.15.bzr297%{?dist}
 Summary:          OpenStack Object Storage (swift)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://launchpad.net/swift
-Source0:          http://swift.openstack.org/tarballs/swift-%{version}-dev+bzr296.tar.gz
+Source0:          http://swift.openstack.org/tarballs/swift-%{version}-dev+bzr297.tar.gz
 Source1:          %{name}-functions
 Source2:          %{name}-account-auditor.init
 Source3:          %{name}-account-reaper.init
@@ -371,6 +371,9 @@ fi
 %endif
 
 %changelog
+* Fri May 20 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.15.bzr297
+- Update to bzr297
+
 * Thu May 19 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.14.bzr296
 - Update to bzr296
 
