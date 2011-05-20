@@ -1,6 +1,6 @@
-diff -Naur nova.rhel.orig/nova/virt/disk.py nova.rhel/nova/virt/disk.py
---- nova.rhel.orig/nova/virt/disk.py	2011-04-05 18:28:28.000000000 +0400
-+++ nova.rhel/nova/virt/disk.py	2011-04-05 19:04:57.000000000 +0400
+=== modified file 'nova/virt/disk.py'
+--- nova/virt/disk.py	2011-05-12 20:42:04 +0000
++++ nova/virt/disk.py	2011-05-20 14:33:01 +0000
 @@ -3,6 +3,7 @@
  # Copyright 2010 United States Government as represented by the
  # Administrator of the National Aeronautics and Space Administration.
@@ -34,7 +34,7 @@ diff -Naur nova.rhel.orig/nova/virt/disk.py nova.rhel/nova/virt/disk.py
  
  
  def extend(image, size):
-@@ -60,180 +55,33 @@
+@@ -60,182 +55,33 @@
      utils.execute('resize2fs', image, check_exit_code=False)
  
  
@@ -59,34 +59,36 @@ diff -Naur nova.rhel.orig/nova/virt/disk.py nova.rhel/nova/virt/disk.py
 -        else:
 -            mapped_device = device
 -
--        # We can only loopback mount raw images. If the device isn't there,
--        # it's normally because it's a .vmdk or a .vdi etc
--        if not os.path.exists(mapped_device):
--            raise exception.Error('Mapped device was not found (we can'
--                                  ' only inject raw disk images): %s' %
--                                  mapped_device)
--
--        # Configure ext2fs so that it doesn't auto-check every N boots
--        out, err = utils.execute('sudo', 'tune2fs',
--                                 '-c', 0, '-i', 0, mapped_device)
--
--        tmpdir = tempfile.mkdtemp()
 -        try:
--            # mount loopback to dir
--            out, err = utils.execute(
--                    'sudo', 'mount', mapped_device, tmpdir)
--            if err:
--                raise exception.Error(_('Failed to mount filesystem: %s')
--                                      % err)
+-            # We can only loopback mount raw images. If the device isn't there,
+-            # it's normally because it's a .vmdk or a .vdi etc
+-            if not os.path.exists(mapped_device):
+-                raise exception.Error('Mapped device was not found (we can'
+-                                      ' only inject raw disk images): %s' %
+-                                      mapped_device)
 -
+-            # Configure ext2fs so that it doesn't auto-check every N boots
+-            out, err = utils.execute('sudo', 'tune2fs',
+-                                     '-c', 0, '-i', 0, mapped_device)
+-
+-            tmpdir = tempfile.mkdtemp()
 -            try:
--                inject_data_into_fs(tmpdir, key, net, utils.execute)
+-                # mount loopback to dir
+-                out, err = utils.execute(
+-                        'sudo', 'mount', mapped_device, tmpdir)
+-                if err:
+-                    raise exception.Error(_('Failed to mount filesystem: %s')
+-                                          % err)
+-
+-                try:
+-                    inject_data_into_fs(tmpdir, key, net, utils.execute)
+-                finally:
+-                    # unmount device
+-                    utils.execute('sudo', 'umount', mapped_device)
 -            finally:
--                # unmount device
--                utils.execute('sudo', 'umount', mapped_device)
+-                # remove temporary directory
+-                utils.execute('rmdir', tmpdir)
 -        finally:
--            # remove temporary directory
--            utils.execute('rmdir', tmpdir)
 -            if not partition is None:
 -                # remove partitions
 -                utils.execute('sudo', 'kpartx', '-d', device)
@@ -118,36 +120,10 @@ diff -Naur nova.rhel.orig/nova/virt/disk.py nova.rhel/nova/virt/disk.py
 -
 -    LXC does not support qcow2 images yet.
 -    """
-+def inject_data(image, key=None, nets=None, partition=None, nbd=False):
-+    """Injects a ssh key and optionally net data into a disk image."""
-+    g = guestfs.GuestFS()
-     try:
+-    try:
 -        container_dir = '%s/rootfs' % target
 -        utils.execute('sudo', 'umount', container_dir)
-+        LOG.debug(_("Mounting disk..."))
-+        g.add_drive(image)
-+        g.launch()
-+        devices = g.inspect_os()
-+        g.mount(devices[0],"/")
-+        if key:
-+            LOG.debug(_("Injecting SSH key..."))
-+            sshdir = "/root/.ssh"
-+            path = sshdir + "/authorized_keys"
-+            if not g.is_dir(sshdir):
-+                g.mkdir_p(sshdir)
-+                g.chmod(0700, sshdir)
-+            g.write(path, key)
-+            g.chmod(0600, path)
-+        if len(nets):
-+            for net in nets:
-+                LOG.debug(_("Injecting network for interface %(name)s..."
-+                                                                        % net))
-+                path = "/etc/sysconfig/network-scripts/ifcfg-%(name)s" % net
-+                g.write(path, net['net'])
-+    except Exception as e:
-+        LOG.exception(e)
-+        raise
-     finally:
+-    finally:
 -        out, err = utils.execute('sudo', 'losetup', '-a')
 -        for loop in out.splitlines():
 -            if instance['name'] in loop:
@@ -241,43 +217,34 @@ diff -Naur nova.rhel.orig/nova/virt/disk.py nova.rhel/nova/virt/disk.py
 -    utils.execute('sudo', 'chmod', 755, netdir)
 -    netfile = os.path.join(netdir, 'interfaces')
 -    utils.execute('sudo', 'tee', netfile, process_input=net)
++def inject_data(image, key=None, nets=None, partition=None, nbd=False):
++    """Injects a ssh key and optionally net data into a disk image."""
++    g = guestfs.GuestFS()
++    try:
++        LOG.debug(_("Mounting disk..."))
++        g.add_drive(image)
++        g.launch()
++        devices = g.inspect_os()
++        g.mount(devices[0],"/")
++        if key:
++            LOG.debug(_("Injecting SSH key..."))
++            sshdir = "/root/.ssh"
++            path = sshdir + "/authorized_keys"
++            if not g.is_dir(sshdir):
++                g.mkdir_p(sshdir)
++                g.chmod(0700, sshdir)
++            g.write(path, key)
++            g.chmod(0600, path)
++        if len(nets):
++            for net in nets:
++                LOG.debug(_("Injecting network for interface %(name)s..."
++                                                                        % net))
++                path = "/etc/sysconfig/network-scripts/ifcfg-%(name)s" % net
++                g.write(path, net['net'])
++    except Exception as e:
++        LOG.exception(e)
++        raise
++    finally:
 +        LOG.debug(_("Deleting guestfs object..."))
 +        del(g)
-diff -Naur nova.rhel.orig/nova/virt/libvirt_conn.py nova.rhel/nova/virt/libvirt_conn.py
---- nova.rhel.orig/nova/virt/libvirt_conn.py	2011-04-05 18:28:28.000000000 +0400
-+++ nova.rhel/nova/virt/libvirt_conn.py	2011-04-06 16:09:47.000000000 +0400
-@@ -858,25 +858,24 @@
-                    'dns': network_ref['dns'],
-                    'address_v6': address_v6,
-                    'gateway_v6': network_ref['gateway_v6'],
--                   'netmask_v6': network_ref['netmask_v6']}
--            nets.append(net_info)
-+                   'netmask_v6': network_ref['netmask_v6'],
-+                    'use_ipv6': FLAGS.use_ipv6}
-+            net = str(Template(ifc_template,searchList=[net_info]))
-+            
-+            name = net_info['name']
-+            nets.append({'name': name, 'net': net})
- 
--        if have_injected_networks:
--            net = str(Template(ifc_template,
--                               searchList=[{'interfaces': nets,
--                                            'use_ipv6': FLAGS.use_ipv6}]))
--
--        if key or net:
-+        if key or have_injected_networks:
-             inst_name = inst['name']
-             img_id = inst.image_id
-             if key:
-                 LOG.info(_('instance %(inst_name)s: injecting key into'
-                         ' image %(img_id)s') % locals())
-             if net:
--                LOG.info(_('instance %(inst_name)s: injecting net into'
-+                LOG.info(_('instance %(inst_name)s: injecting nets into'
-                         ' image %(img_id)s') % locals())
-             try:
--                disk.inject_data(basepath('disk'), key, net,
-+                disk.inject_data(basepath('disk'), key, nets,
-                                  partition=target_partition,
-                                  nbd=FLAGS.use_cow_images)
- 
+
