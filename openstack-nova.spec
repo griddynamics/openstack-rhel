@@ -310,7 +310,7 @@ This package contains documentation files for %{name}.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
-%patch8 -p0
+%patch9 -p0
 
 install %{SOURCE1} README.rhel6
 
