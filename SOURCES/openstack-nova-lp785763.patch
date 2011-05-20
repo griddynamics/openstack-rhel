@@ -1,15 +1,14 @@
-=== modified file 'nova/network/linux_net.py'
---- nova/network/linux_net.py	2011-05-11 19:24:01 +0000
-+++ nova/network/linux_net.py	2011-05-20 13:27:24 +0000
-@@ -27,6 +27,7 @@
+--- nova/network/linux_net.py.orig	2011-04-15 06:57:52.000000000 +0400
++++ nova/network/linux_net.py	2011-05-20 19:12:14.032509113 +0400
+@@ -28,6 +28,7 @@
  from nova import flags
  from nova import log as logging
  from nova import utils
 +from IPy import IP
  
- 
  LOG = logging.getLogger("nova.linux_net")
-@@ -698,6 +699,7 @@
+ 
+@@ -684,6 +685,7 @@
             '--listen-address=%s' % net['gateway'],
             '--except-interface=lo',
             '--dhcp-range=%s,static,120s' % net['dhcp_start'],
@@ -17,4 +16,3 @@
             '--dhcp-hostsfile=%s' % _dhcp_file(net['bridge'], 'conf'),
             '--dhcp-script=%s' % FLAGS.dhcpbridge,
             '--leasefile-ro']
-
