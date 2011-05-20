@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          7%{?dist}
+Release:          8%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -40,6 +40,7 @@ Patch5:           %{name}-ajaxterm-path.patch
 Patch6:           %{name}-s3server-quickfix.patch
 Patch7:           %{name}-scsi-target-utils-support.patch
 Patch8:           %{name}-auto-floating-ips.patch
+Patch9:           %{name}-lp785763.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -309,6 +310,7 @@ This package contains documentation files for %{name}.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
+%patch8 -p0
 
 install %{SOURCE1} README.rhel6
 
@@ -617,6 +619,10 @@ fi
 %files node-compute
 
 %changelog
+* Fri May 20 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-8
+- Backported from trunk dnsmasq configuration patch to allow more than 150
+  instances per network
+
 * Wed May 11 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-7
 - Moved deps for paste and paste-deploy modules from openstack-nova-api to
   python-nova
