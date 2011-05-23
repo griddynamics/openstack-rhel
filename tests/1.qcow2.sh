@@ -20,6 +20,10 @@ nova-manage project quota $PROJECT instances 512
 nova-manage project quota $PROJECT cores 1024
 echo "Creating network..."
 nova-manage network create $NETWORK $NETWORKS_NUM $ADDR_PER_NETWORK
+
+# Turning on network injection
+#echo "UPDATE networks SET injected = 1" | mysql -uroot -pnova nova
+
 nova-manage project zip $PROJECT $USER $TMPFILE $TMPDIR/nova_creds.zip
 
 CDIR=`pwd`
