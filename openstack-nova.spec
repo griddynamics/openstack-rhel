@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          8%{?dist}
+Release:          9%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -43,6 +43,7 @@ Patch8:           %{name}-auto-floating-ips.patch
 
 # Backports
 Patch1001:        %{name}-lp785763.patch
+Patch1002:        %{name}-lp785890.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -315,6 +316,7 @@ This package contains documentation files for %{name}.
 
 # Backport patches
 %patch1001 -p0
+%patch1002 -p1
 
 install %{SOURCE1} README.rhel6
 
@@ -623,9 +625,12 @@ fi
 %files node-compute
 
 %changelog
+* Mon May 23 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-9
+- Backported fix for LP#785890. Locks during VLAN creation.
+
 * Fri May 20 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-8
 - Backported from trunk dnsmasq configuration patch to allow more than 150
-  instances per network
+  instances per network. Fixes LP#785763
 
 * Wed May 11 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-7
 - Moved deps for paste and paste-deploy modules from openstack-nova-api to
