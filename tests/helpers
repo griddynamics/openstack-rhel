@@ -38,6 +38,7 @@ nova_stop () {
 nova_cleanup () {
 	HOSTS=$1
 	for host in $HOSTS; do
+		ssh_helper "$host" "ntpdate 128.107.79.1"
 		for n in $(ssh_helper "$host" "virsh list" |grep instance |perl -pi -e 's/^\s*(\d+).*$/$1/'); do ssh_helper "$host" "virsh destroy $n"; done
 		for n in $(ssh_helper "$host" "virsh list --all"|grep 'shut off' |cut -d' ' -f4); do ssh_helper "$host" "virsh undefine $n"; done
 		ssh_helper "$host" "killall dnsmasq"
