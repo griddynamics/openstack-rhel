@@ -50,7 +50,7 @@ nova_cleanup () {
 				ssh_helper "$host" "rm -fr /var/log/glance/*.log /var/lib/glance/images/* /var/lib/glance/glance.sqlite"
 			fi
 		fi
-		ssh_helper "$host" "rm -fr /var/lib/nova/instances/* /var/lib/nova/images/* /var/lib/nova/buckets/* /var/log/nova/*.log*"
+		ssh_helper "$host" "rm -fr /var/lib/nova/instances/* /var/lib/nova/images/* /var/lib/nova/buckets/* /var/log/nova/*.log* /var/lib/nova/tmp/nova-ensure_bridge.lock.lock /var/lib/nova/tmp/nova-iptables.lock.lock"
 		ssh_helper "$host" "rm -fr /tmp/tmp*"
 	done
 }
