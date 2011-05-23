@@ -1,0 +1,48 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+
+use Data::Dumper;
+my %instances;
+
+foreach (<>) {
+	next unless /^INSTANCE/;
+	my @a = split /\t/, $_;
+	$instances{$a[1]} = {
+		ip => $a[3],
+		host => $a[6],
+	};
+}
+map { $instances{$_}->{'host'} = $1 if $instances{$_}->{'host'} =~ /^[a-zA-Z0-9]+\s\([a-zA-Z0-9]+, (.+)\)/ } keys %instances;
+
+my %okp;
+my %nkp;
+my $total = scalar keys %instances;
+my $i = 0;
+foreach (keys %instances) {
+	$i++;
+	my $p = int($i/$total*100);
+	#print "$p%\n";
+	#print("ping -c 1 ". $instances{$_}->{'ip'}. " 2>&1 >/dev/null\n");
+	system("ping -c 1 ". $instances{$_}->{'ip'}. " 2>&1 >/dev/null");
+	if ($? == 0) {
+		$okp{ $instances{$_}->{'host'} } = 0 unless exists $okp{ $instances{$_}->{'host'} };
+		$okp{ $instances{$_}->{'host'} } += 1; 
+	}
+	else {
+		my $out = system("stack --user abr --project rhelimg compute get_vnc_console instance_id=". hex(substr($_, 2)));
+		if ($? == 0) {
+			$out =~ s,^.*'(http://[^']+').*$,$1,g;
+		}
+		else { $out = '' }
+		print "not responding: ". $instances{$_}->{'ip'} .", VNC: $out\n";
+		$nkp{ $instances{$_}->{'host'} } = 0 unless exists $nkp{ $instances{$_}->{'host'} };
+		$nkp{ $instances{$_}->{'host'} } += 1; 
+	}
+}
+
+print Data::Dumper->Dump([\%okp]);
+my $pp = 0;
+map { $pp += $okp{$_} } keys %okp;
+print "pingable: $pp\n";
