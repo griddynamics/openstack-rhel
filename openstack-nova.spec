@@ -40,7 +40,9 @@ Patch5:           %{name}-ajaxterm-path.patch
 Patch6:           %{name}-s3server-quickfix.patch
 Patch7:           %{name}-scsi-target-utils-support.patch
 Patch8:           %{name}-auto-floating-ips.patch
-Patch9:           %{name}-lp785763.patch
+
+# Backports
+Patch1001:        %{name}-lp785763.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -310,7 +312,9 @@ This package contains documentation files for %{name}.
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1
-%patch9 -p0
+
+# Backport patches
+%patch1001 -p0
 
 install %{SOURCE1} README.rhel6
 
