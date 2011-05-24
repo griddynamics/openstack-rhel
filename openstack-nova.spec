@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.2
-Release:          9%{?dist}
+Release:          10%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -43,7 +43,7 @@ Patch8:           %{name}-auto-floating-ips.patch
 
 # Backports
 Patch1001:        %{name}-lp785763.patch
-Patch1002:        %{name}-lp785890.patch
+#Patch1002:        %{name}-lp785890.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -316,7 +316,7 @@ This package contains documentation files for %{name}.
 
 # Backport patches
 %patch1001 -p0
-%patch1002 -p1
+#patch1002 -p1
 
 install %{SOURCE1} README.rhel6
 
@@ -625,6 +625,9 @@ fi
 %files node-compute
 
 %changelog
+* Tue May 24 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-10
+- Rolled back LP#785763 patch.
+
 * Mon May 23 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-9
 - Backported fix for LP#785890. Locks during VLAN creation.
 
