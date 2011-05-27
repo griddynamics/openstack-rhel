@@ -321,7 +321,7 @@ This package contains documentation files for %{name}.
 %patch5 -p0
 %patch6 -p1
 %patch7 -p1
-%patch8 -p1
+#patch8 -p1
 
 install %{SOURCE1} README.rhel6
 
