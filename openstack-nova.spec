@@ -36,7 +36,7 @@ Patch1:           %{name}-rhel-config-paths.patch
 Patch2:           %{name}-guestfs-image-injects.patch
 Patch3:           %{name}-bexar-libvirt.xml.template.patch
 Patch4:           %{name}-rhel-netcat.patch
-Patch5:           %{name}-ajaxterm-path.patch
+Patch5:           %{name}-rhel-ajaxterm-path.patch
 Patch6:           %{name}-s3server-quickfix.patch
 Patch7:           %{name}-scsi-target-utils-support.patch
 Patch8:           %{name}-rpc-improvements.patch
@@ -318,7 +318,7 @@ This package contains documentation files for %{name}.
 %patch2 -p0
 %patch3 -p1
 %patch4 -p0
-%patch5 -p1
+%patch5 -p0
 %patch6 -p1
 %patch7 -p1
 %patch8 -p1

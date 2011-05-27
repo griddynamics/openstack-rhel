@@ -1,7 +1,7 @@
-diff -Naur nova-2011.2.orig/nova/virt/libvirt_conn.py nova-2011.2/nova/virt/libvirt_conn.py
---- nova-2011.2.orig/nova/virt/libvirt_conn.py	2011-04-06 11:02:43.000000000 +0400
-+++ nova-2011.2/nova/virt/libvirt_conn.py	2011-04-06 17:43:38.327198456 +0400
-@@ -670,8 +670,8 @@
+=== modified file 'nova/virt/libvirt/connection.py'
+--- nova/virt/libvirt/connection.py	2011-05-19 20:25:57 +0000
++++ nova/virt/libvirt/connection.py	2011-05-27 14:59:20 +0000
+@@ -669,8 +669,8 @@
          ajaxterm_cmd = 'sudo socat - %s' \
                         % get_pty_for_instance(instance['name'])
  
@@ -12,3 +12,4 @@ diff -Naur nova-2011.2.orig/nova/virt/libvirt_conn.py nova-2011.2/nova/virt/libv
  
          subprocess.Popen(cmd, shell=True)
          return {'token': token, 'host': host, 'port': port}
+
