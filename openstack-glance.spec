@@ -7,13 +7,13 @@
 
 Name:             openstack-%{prj}
 Version:          2011.3
-Release:          0.18.bzr134%{?dist}
+Release:          0.d1.1%{?dist}
 Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://%{prj}.openstack.org
-Source0:          http://glance.openstack.org/tarballs/glance-%{version}~bzr134.tar.gz
+Source0:          http://launchpad.net/glance/diablo/diablo-1/+download/glance-%{version}~d1.tar.gz
 Source1:          %{name}-api.init
 Source2:          %{name}-registry.init
 Source3:          %{name}-logging-api.conf
@@ -186,6 +186,9 @@ fi
 %endif
 
 %changelog
+* Thu Jun 02 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.d1.1
+- Diablo-1 release
+
 * Thu May 26 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.18.bzr134
 - Update to bzr134
 
