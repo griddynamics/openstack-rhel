@@ -311,7 +311,7 @@ fi
 %{python_sitelib}/swift/*.py*
 %{python_sitelib}/swift/common
 %{python_sitelib}/swift/stats
-%{python_sitelib}/swift-%{version}_dev-*.egg-info
+%{python_sitelib}/swift-%{version}-*.egg-info
 
 %files account
 %defattr(-,root,root,-)
