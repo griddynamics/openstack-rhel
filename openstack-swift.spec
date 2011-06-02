@@ -141,7 +141,7 @@ This package contains documentation files for %{name}.
 %endif
 
 %prep
-%setup -q -n swift-%{version}-dev
+%setup -q -n swift-%{version}
 # Fix wrong-file-end-of-line-encoding warning
 dos2unix LICENSE
 
