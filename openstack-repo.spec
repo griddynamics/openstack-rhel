@@ -1,6 +1,6 @@
 Name:		openstack-repo
 Version:	2011.3
-Release:	0.1
+Release:	0.d1
 Summary:	OpenStack repository configuration from Grid Dynamics
 
 Group:		System Environment/Base
@@ -29,6 +29,9 @@ install -p -D -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-K
 %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OPENSTACK
 
 %changelog
+* Thu Jun 02 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.d1
+- Bumped version for Diablo-1 release
+
 * Wed May 04 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.1
 - Bumped version for Diablo
 
