@@ -96,8 +96,9 @@ euca-authorize -P tcp -p 22 default
 
 echo "euca-run-instances $AMI_MACHINE --kernel $AMI_KERNEL --ramdisk $AMI_RAMDISK -k rhelkey -t m1.tiny"
 echo "euca-run-instances $AMI_MACHINE --kernel $AMI_KERNEL --ramdisk $AMI_RAMDISK -k rhelkey -t m1.tiny" > cmd.txt
-	nohup euca-run-instances $AMI_MACHINE --kernel $AMI_KERNEL --ramdisk $AMI_RAMDISK -k rhelkey -t m1.tiny -n 10 &
 for n in `seq 1 40`; do
+	#nohup euca-run-instances $AMI_MACHINE --kernel $AMI_KERNEL --ramdisk $AMI_RAMDISK -k rhelkey -t m1.tiny -n 10 &
+	nohup euca-run-instances $AMI_MACHINE --kernel $AMI_KERNEL --ramdisk $AMI_RAMDISK -t m1.tiny -n 5 &
 done
 #stack --user abr --project rhelimg compute get_vnc_console instance_id=1
 date
