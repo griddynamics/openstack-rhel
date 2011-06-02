@@ -13,13 +13,14 @@ nova_action () {
 	for host in $HOSTS; do
 		if [[ "$host" == "$CC_HOST" ]]; then
 			# It's a Cloud Controller node
-			service_list="nova-api nova-compute nova-network nova-objectstore nova-scheduler nova-vncproxy"
-			#service_list="nova-api nova-network nova-objectstore nova-scheduler nova-vncproxy"
+			#service_list="nova-api nova-compute nova-network nova-objectstore nova-scheduler nova-vncproxy"
+			service_list="nova-api nova-network nova-objectstore nova-scheduler nova-vncproxy"
 
 			if nova_option "$host" 'image_service' 'nova.image.glance.GlanceImageService'; then
 				service_list="$service_list glance-api glance-registry"
 			fi
 		else
+			# It's a Compute node
 			service_list="nova-compute"
 		fi
 		for nova_service in $service_list; do
