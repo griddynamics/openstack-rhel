@@ -7,7 +7,7 @@
 
 Name:             openstack-%{prj}
 Version:          2011.3
-Release:          0.d1.1%{?dist}
+Release:          0.20110601.139.1%{?dist}
 Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages
@@ -186,7 +186,7 @@ fi
 %endif
 
 %changelog
-* Thu Jun 02 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.d1.1
+* Wed Jun 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110601.139.1
 - Diablo-1 release
 
 * Thu May 26 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.18.bzr134
