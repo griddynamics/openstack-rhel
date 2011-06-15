@@ -1,29 +1,25 @@
-=== modified file 'nova/virt/disk.py'
---- nova/virt/disk.py	2011-05-12 20:42:04 +0000
-+++ nova/virt/disk.py	2011-05-20 14:33:01 +0000
-@@ -3,6 +3,7 @@
- # Copyright 2010 United States Government as represented by the
+diff -Naur nova-2011.3.orig/nova/virt/disk.py nova-2011.3/nova/virt/disk.py
+--- nova-2011.3.orig/nova/virt/disk.py	2011-06-01 12:51:40.000000000 +0400
++++ nova-2011.3/nova/virt/disk.py	2011-06-15 14:18:04.000000000 +0400
+@@ -4,6 +4,8 @@
  # Administrator of the National Aeronautics and Space Administration.
  # All Rights Reserved.
-+# Copyright 2011 Grid Dynamics
  #
++# Copyright 2011 Grid Dynamics
++#
  #    Licensed under the Apache License, Version 2.0 (the "License"); you may
  #    not use this file except in compliance with the License. You may obtain
-@@ -23,12 +24,10 @@
- """
- 
- import os
--import tempfile
--import time
-+import guestfs
- 
- from nova import context
- from nova import db
--from nova import exception
- from nova import flags
+ #    a copy of the License at
+@@ -33,6 +35,8 @@
  from nova import log as logging
  from nova import utils
-@@ -43,10 +42,6 @@
+ 
++import guestfs
++
+ 
+ LOG = logging.getLogger('nova.compute.disk')
+ FLAGS = flags.FLAGS
+@@ -43,10 +47,6 @@
  flags.DEFINE_string('injected_network_template',
                      utils.abspath('virt/interfaces.template'),
                      'Template file for injected network')
@@ -34,21 +30,23 @@
  
  
  def extend(image, size):
-@@ -60,182 +55,33 @@
+@@ -60,62 +60,37 @@
      utils.execute('resize2fs', image, check_exit_code=False)
  
  
 -def inject_data(image, key=None, net=None, partition=None, nbd=False):
--    """Injects a ssh key and optionally net data into a disk image.
++def inject_data(image, key=None, net=[], partition=None, nbd=False):
+     """Injects a ssh key and optionally net data into a disk image.
 -
 -    it will mount the image as a fully partitioned disk and attempt to inject
 -    into the specified partition number.
 -
 -    If partition is not specified it mounts the image as a single partition.
 -
--    """
+     """
 -    device = _link_device(image, nbd)
--    try:
++    g = guestfs.GuestFS()
+     try:
 -        if not partition is None:
 -            # create partition
 -            out, err = utils.execute('sudo', 'kpartx', '-a', device)
@@ -92,43 +90,40 @@
 -            if not partition is None:
 -                # remove partitions
 -                utils.execute('sudo', 'kpartx', '-d', device)
--    finally:
++        LOG.debug(_("Mounting disk..."))
++        g.add_drive(image)
++        g.launch()
++        devices = g.inspect_os()
++        g.mount(devices[0],"/")
++        if key:
++            LOG.debug(_("Injecting SSH key..."))
++            sshdir = "/root/.ssh"
++            path = sshdir + "/authorized_keys"
++            if not g.is_dir(sshdir):
++                g.mkdir_p(sshdir)
++                g.chmod(0700, sshdir)
++            g.write(path, key)
++            g.chmod(0600, path)
++        if len(nets):
++            for net in nets:
++                LOG.debug(_("Injecting network for interface %(name)s..."
++                                                                        % net))
++                path = "/etc/sysconfig/network-scripts/ifcfg-%(name)s" % net
++                g.write(path, net['data'])
++    except Exception as e:
++        LOG.exception(e)
++        raise
+     finally:
 -        _unlink_device(device, nbd)
--
--
--def setup_container(image, container_dir=None, nbd=False):
--    """Setup the LXC container.
--
--    It will mount the loopback image to the container directory in order
--    to create the root filesystem for the container.
--
--    LXC does not support qcow2 images yet.
--    """
--    try:
--        device = _link_device(image, nbd)
--        utils.execute('sudo', 'mount', device, container_dir)
--    except Exception, exn:
--        LOG.exception(_('Failed to mount filesystem: %s'), exn)
--        _unlink_device(device, nbd)
--
--
--def destroy_container(target, instance, nbd=False):
--    """Destroy the container once it terminates.
--
--    It will umount the container that is mounted, try to find the loopback
--    device associated with the container and delete it.
--
--    LXC does not support qcow2 images yet.
--    """
--    try:
--        container_dir = '%s/rootfs' % target
--        utils.execute('sudo', 'umount', container_dir)
--    finally:
--        out, err = utils.execute('sudo', 'losetup', '-a')
--        for loop in out.splitlines():
--            if instance['name'] in loop:
--                device = loop.split(loop, ':')
--                _unlink_device(device, nbd)
++        LOG.debug(_("Deleting guestfs object..."))
++        del(g)
+ 
+ 
+ def setup_container(image, container_dir=None, nbd=False):
+@@ -151,91 +126,3 @@
+             if instance['name'] in loop:
+                 device = loop.split(loop, ':')
+                 _unlink_device(device, nbd)
 -
 -
 -def _link_device(image, nbd):
@@ -217,34 +212,33 @@
 -    utils.execute('sudo', 'chmod', 755, netdir)
 -    netfile = os.path.join(netdir, 'interfaces')
 -    utils.execute('sudo', 'tee', netfile, process_input=net)
-+def inject_data(image, key=None, nets=None, partition=None, nbd=False):
-+    """Injects a ssh key and optionally net data into a disk image."""
-+    g = guestfs.GuestFS()
-+    try:
-+        LOG.debug(_("Mounting disk..."))
-+        g.add_drive(image)
-+        g.launch()
-+        devices = g.inspect_os()
-+        g.mount(devices[0],"/")
-+        if key:
-+            LOG.debug(_("Injecting SSH key..."))
-+            sshdir = "/root/.ssh"
-+            path = sshdir + "/authorized_keys"
-+            if not g.is_dir(sshdir):
-+                g.mkdir_p(sshdir)
-+                g.chmod(0700, sshdir)
-+            g.write(path, key)
-+            g.chmod(0600, path)
-+        if len(nets):
-+            for net in nets:
-+                LOG.debug(_("Injecting network for interface %(name)s..."
-+                                                                        % net))
-+                path = "/etc/sysconfig/network-scripts/ifcfg-%(name)s" % net
-+                g.write(path, net['net'])
-+    except Exception as e:
-+        LOG.exception(e)
-+        raise
-+    finally:
-+        LOG.debug(_("Deleting guestfs object..."))
-+        del(g)
-
+diff -Naur nova-2011.3.orig/nova/virt/libvirt/connection.py nova-2011.3/nova/virt/libvirt/connection.py
+--- nova-2011.3.orig/nova/virt/libvirt/connection.py	2011-06-01 12:51:40.000000000 +0400
++++ nova-2011.3/nova/virt/libvirt/connection.py	2011-06-15 14:11:49.000000000 +0400
+@@ -874,17 +874,21 @@
+             nets.append(net_info)
+ 
+         if have_injected_networks:
+-            net = str(Template(ifc_template,
+-                               searchList=[{'interfaces': nets,
+-                                            'use_ipv6': FLAGS.use_ipv6}]))
++            net = [
++                    {'name': x['name'],
++                     'data':
++                     str(Template(ifc_template,
++                                  searchList=[x, {'use_ipv6':
++                                                  FLAGS.use_ipv6}]))}
++                    for x in nets]
+ 
+-        if key or net:
++        if key or len(net):
+             inst_name = inst['name']
+             img_id = inst.image_id
+             if key:
+                 LOG.info(_('instance %(inst_name)s: injecting key into'
+                         ' image %(img_id)s') % locals())
+-            if net:
++            if len(net):
+                 LOG.info(_('instance %(inst_name)s: injecting net into'
+                         ' image %(img_id)s') % locals())
+             try:
