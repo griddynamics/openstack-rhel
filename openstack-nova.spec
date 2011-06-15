@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.20110601.1130.1%{?dist}
+Release:          0.20110601.1130.2%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -147,7 +147,7 @@ Requires:         python-suds >= 0.4.0
 Requires:         python-tornado
 Requires:         python-twisted-core >= 10.1.0
 Requires:         python-twisted-web >= 10.1.0
-Requires:         python-webob = 0.9.8
+Requires:         python-webob
 Requires:         python-netaddr
 Requires:         python-glance
 Requires:         python-novaclient
@@ -640,6 +640,9 @@ fi
 %files node-compute
 
 %changelog
+* Thu Jun 16 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110601.1130.2
+- Relaxed python-webob dep for python-nova package
+
 * Wed Jun 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110601.1130.1
 - Diablo-1 release
 
