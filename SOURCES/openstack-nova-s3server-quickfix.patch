@@ -1,11 +1,12 @@
-diff -Naur nova-2011.2/nova/objectstore/s3server.py nova-2011.2.new/nova/objectstore/s3server.py
---- nova-2011.2/nova/objectstore/s3server.py	2011-04-09 02:13:01.000000000 +0400
-+++ nova-2011.2.new/nova/objectstore/s3server.py	2011-04-10 00:20:19.701169827 +0400
-@@ -125,6 +125,7 @@
+diff -Naur nova-2011.2.orig/nova/objectstore/s3server.py nova-2011.2/nova/objectstore/s3server.py
+--- nova-2011.2.orig/nova/objectstore/s3server.py	2011-04-25 23:44:39.000000000 +0400
++++ nova-2011.2/nova/objectstore/s3server.py	2011-04-25 23:49:28.000000000 +0400
+@@ -125,6 +125,8 @@
          self.response = webob.Response()
          params = request.environ['wsgiorg.routing_args'][1]
          del params['controller']
-+        del params['action']
++        if 'action' in params:
++            del params['action']
          f(**params)
          return self.response
  

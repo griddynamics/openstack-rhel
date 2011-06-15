@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source novarc
+#$date >> log.run
+euca-describe-instances |egrep ^INSTANCE|./eucaping

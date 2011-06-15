@@ -3,7 +3,7 @@
 # If you need to build a specific version - specify it as bzr build # (digits only).
 # If build # is not specified, latest available tarball will be built
 
-GithubUserProject="abrindeyev/openstack-nova-rhel6"
+GithubUserProject="griddynamics/openstack-rhel"
 RPMSANDBOX=`grep topdir $HOME/.rpmmacros 2>/dev/null | awk '{print ($2)}'`
 [ "$RPMSANDBOX" == "" ] && RPMSANDBOX="$HOME/rpmbuild/"
 GLANCESPECORIG="openstack-glance.spec"
@@ -61,28 +61,30 @@ if [ "$?" != "0" ]; then
 else
 	git add "$GLANCESPECORIG"
 	git commit -m "Update to bzr$BUILD"
-	git push
-	if [ "$?" != "0" ]; then
-		# Somebody pushed a commit to origin since we last time pulled.
-		# Need to check - if that commit was to our file or to some other file?
-		GitHubUrl="http://github.com/api/v2/json/commits/list/$GithubUserProject/$GITCURBRANCH"
-		LastRepoCommit="$(curl -s $GitHubUrl | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
-		LastSpecCommit="$(curl -s $GitHubUrl/$NOVASPECORIG | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
-		if [[ "$LastRepoCommit" != "$LastSpecCommit" ]]; then
-			# Last Git repo commit was not to our specfile
-			# Probably we can safely do git pull to merge following by git push
-			git pull
-			if [ "$?" != "0" ]; then
-				echo "Sorry, automatic merge failed"
-				echo "Human intervention required, giving up here"
+	if [ "$?" != "1" ]; then
+		git push
+		if [ "$?" != "0" ]; then
+			# Somebody pushed a commit to origin since we last time pulled.
+			# Need to check - if that commit was to our file or to some other file?
+			GitHubUrl="http://github.com/api/v2/json/commits/list/$GithubUserProject/$GITCURBRANCH"
+			LastRepoCommit="$(curl -s $GitHubUrl | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
+			LastSpecCommit="$(curl -s $GitHubUrl/$NOVASPECORIG | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
+			if [[ "$LastRepoCommit" != "$LastSpecCommit" ]]; then
+				# Last Git repo commit was not to our specfile
+				# Probably we can safely do git pull to merge following by git push
+				git pull
+				if [ "$?" != "0" ]; then
+					echo "Sorry, automatic merge failed"
+					echo "Human intervention required, giving up here"
+					exit -1
+				fi
+				git push
+			else
+				# Last commit was to our specfile
+				git pull
+				echo "There should be a conflict above, please fix by hands and commit"
 				exit -1
 			fi
-			git push
-		else
-			# Last commit was to our specfile
-			git pull
-			echo "There should be a conflict above, please fix by hands and commit"
-			exit -1
 		fi
 	fi
 fi

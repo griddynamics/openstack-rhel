@@ -6,7 +6,7 @@ if [ ! -d ".git" ]; then
 fi
 sandbox='/home/build/rpmbuild/RPMS/noarch'
 branch=$(git branch|grep '*'|cut -f2 -d' ')
-repo="/home/build/repo/$branch/nova/"
+repo="/home/build/repo/$branch/openstack/"
 host=`hostname -s`
 if [[ "$host" != "je-cssn" ]]; then
 	echo "That script should be run only on Jenkins host!"

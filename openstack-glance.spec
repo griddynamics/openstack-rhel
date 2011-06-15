@@ -7,13 +7,13 @@
 
 Name:             openstack-%{prj}
 Version:          2011.3
-Release:          0.1.bzr116%{?dist}
+Release:          0.d1.1%{?dist}
 Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://%{prj}.openstack.org
-Source0:          http://glance.openstack.org/tarballs/glance-%{version}~bzr116.tar.gz
+Source0:          http://launchpad.net/glance/diablo/diablo-1/+download/glance-%{version}~d1.tar.gz
 Source1:          %{name}-api.init
 Source2:          %{name}-registry.init
 Source3:          %{name}-logging-api.conf
@@ -117,7 +117,8 @@ rm -fr doc/build/html/.doctrees doc/build/html/.buildinfo
 install -d -m 755 %{buildroot}%{_sharedstatedir}/%{prj}/images
 
 # Config file
-install -p -D -m 644 etc/%{prj}.conf.sample %{buildroot}%{_sysconfdir}/%{prj}/%{prj}.conf
+install -p -D -m 644 etc/%{prj}-api.conf %{buildroot}%{_sysconfdir}/%{prj}/%{prj}-api.conf
+install -p -D -m 644 etc/%{prj}-registry.conf %{buildroot}%{_sysconfdir}/%{prj}/%{prj}-registry.conf
 install -p -D -m 644 %{SOURCE3} %{buildroot}%{_sysconfdir}/%{prj}/logging-api.conf
 install -p -D -m 644 %{SOURCE4} %{buildroot}%{_sysconfdir}/%{prj}/logging-registry.conf
 
@@ -165,7 +166,8 @@ fi
 %{_initrddir}/%{name}-api
 %{_initrddir}/%{name}-registry
 %defattr(-,%{prj},nobody,-)
-%config(noreplace) %{_sysconfdir}/%{prj}/%{prj}.conf
+%config(noreplace) %{_sysconfdir}/%{prj}/%{prj}-api.conf
+%config(noreplace) %{_sysconfdir}/%{prj}/%{prj}-registry.conf
 %config(noreplace) %{_sysconfdir}/%{prj}/logging-api.conf
 %config(noreplace) %{_sysconfdir}/%{prj}/logging-registry.conf
 %{_sharedstatedir}/%{prj}
@@ -184,6 +186,60 @@ fi
 %endif
 
 %changelog
+* Thu Jun 02 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.d1.1
+- Diablo-1 release
+
+* Thu May 26 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.18.bzr134
+- Update to bzr134
+
+* Wed May 25 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.17.bzr133
+- Update to bzr133
+
+* Wed May 18 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.16.bzr132
+- Update to bzr132
+
+* Tue May 17 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.15.bzr131
+- Update to bzr131
+
+* Wed May 11 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.14.bzr130
+- Update to bzr130
+
+* Thu May 05 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.13.bzr129
+- Update to bzr129
+
+* Sun May 01 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.12.bzr128
+- Update to bzr128
+
+* Wed Apr 27 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.11.bzr126
+- Update to bzr126
+
+* Tue Apr 26 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.10.bzr125
+- Update to bzr125
+
+* Fri Apr 22 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.9.bzr124
+- Update to bzr124
+
+* Thu Apr 21 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.8.bzr123
+- Update to bzr123
+
+* Thu Apr 21 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.7.bzr122
+- Update to bzr122
+
+* Thu Apr 21 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.6.bzr121
+- Update to bzr121
+
+* Wed Apr 20 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.5.bzr120
+- Update to bzr120
+
+* Wed Apr 20 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.4.bzr119
+- Update to bzr119
+
+* Tue Apr 19 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.3.bzr118
+- Update to bzr118
+
+* Tue Apr 19 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.2.bzr117
+- Update to bzr117
+
 * Fri Apr 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.1.bzr116
 - Diablo versioning
 

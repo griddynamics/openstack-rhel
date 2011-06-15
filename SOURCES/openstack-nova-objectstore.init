@@ -2,7 +2,7 @@
 #
 # nova-objectstore	OpenStack Nova Object Storage
 #
-# chkconfig: 2345 20 81
+# chkconfig: 2345 96 81
 # description: Implementation of an S3-like storage server based on local files.
 #
 # config: /etc/nova/nova.conf

@@ -1,6 +1,6 @@
 Name:             openstack-nova-cc-config
-Version:          2011.2
-Release:          4
+Version:          2011.3
+Release:          2
 Summary:          OpenStack Compute (nova) - Cloud Controller config
 
 Group:            Development/Languages
@@ -35,16 +35,22 @@ rm -rf %{buildroot}
 install -d -m 755 %{buildroot}%{_sysconfdir}/nova
 
 # Install config files
-install -p -D -m 644 %{SOURCE0} %{buildroot}%{_sysconfdir}/nova/nova.conf
+install -p -D -m 600 %{SOURCE0} %{buildroot}%{_sysconfdir}/nova/nova.conf
 
 %clean
 rm -rf %{buildroot}
 
 %files
-%defattr(-,root,root,-)
+%defattr(-,nova,nobody,-)
 %config(noreplace) %{_sysconfdir}/nova/nova.conf
 
 %changelog
+* Wed May 11 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-2
+- Secured permissions and ownership of /etc/nova/nova.conf
+
+* Wed Apr 27 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-1
+- Finally bumped version to Diablo
+
 * Wed Apr 13 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.2-4
 - Added --logdir
 

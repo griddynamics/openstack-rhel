@@ -3,7 +3,7 @@
 # If you need to build a specific version - specify it as bzr build # (digits only).
 # If build # is not specified, latest available tarball will be built
 
-GithubUserProject="abrindeyev/openstack-nova-rhel6"
+GithubUserProject="griddynamics/openstack-rhel"
 RPMSANDBOX=`grep topdir $HOME/.rpmmacros 2>/dev/null | awk '{print ($2)}'`
 [ "$RPMSANDBOX" == "" ] && RPMSANDBOX="$HOME/rpmbuild/"
 NOVASPECORIG="openstack-nova.spec"
@@ -15,7 +15,7 @@ NOVAVER=$(grep '^Version:' $NOVASPECORIG | sed 's/^Version:\s\+//')
 if [ $1 ]; then
 	BUILD=$1
 else
-	BUILD=`curl -s $TARBALLSHOME'/?C=M;O=D'|grep bzr|perl -pi -e 's/^.*bzr(\d+).*$/$1/'|head -n 1`
+	BUILD=`curl -s $TARBALLSHOME'/?C=M;O=D'|grep nova-$NOVAVER|perl -pi -e 's/^.*bzr(\d+).*$/$1/'|head -n 1`
 fi
 
 SRCFILE="nova-$NOVAVER~bzr$BUILD.tar.gz"
@@ -61,28 +61,30 @@ if [ "$?" != "0" ]; then
 else
 	git add "$NOVASPECORIG"
 	git commit -m "Update to bzr$BUILD"
-	git push
-	if [ "$?" != "0" ]; then
-		# Somebody pushed a commit to origin since we last time pulled.
-		# Need to check - if that commit was to our file or to some other file?
-		GitHubUrl="http://github.com/api/v2/json/commits/list/$GithubUserProject/$GITCURBRANCH"
-		LastRepoCommit="$(curl -s $GitHubUrl | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
-		LastSpecCommit="$(curl -s $GitHubUrl/$NOVASPECORIG | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
-		if [[ "$LastRepoCommit" != "$LastSpecCommit" ]]; then
-			# Last Git repo commit was not to our specfile
-			# Probably we can safely do git pull to merge following by git push
-			git pull
-			if [ "$?" != "0" ]; then
-				echo "Sorry, automatic merge failed"
-				echo "Human intervention required, giving up here"
+	if [ "$?" != "1" ]; then
+		git push
+		if [ "$?" != "0" ]; then
+			# Somebody pushed a commit to origin since we last time pulled.
+			# Need to check - if that commit was to our file or to some other file?
+			GitHubUrl="http://github.com/api/v2/json/commits/list/$GithubUserProject/$GITCURBRANCH"
+			LastRepoCommit="$(curl -s $GitHubUrl | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
+			LastSpecCommit="$(curl -s $GitHubUrl/$NOVASPECORIG | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
+			if [[ "$LastRepoCommit" != "$LastSpecCommit" ]]; then
+				# Last Git repo commit was not to our specfile
+				# Probably we can safely do git pull to merge following by git push
+				git pull
+				if [ "$?" != "0" ]; then
+					echo "Sorry, automatic merge failed"
+					echo "Human intervention required, giving up here"
+					exit -1
+				fi
+				git push
+			else
+				# Last commit was to our specfile
+				git pull
+				echo "There should be a conflict above, please fix by hands and commit"
 				exit -1
 			fi
-			git push
-		else
-			# Last commit was to our specfile
-			git pull
-			echo "There should be a conflict above, please fix by hands and commit"
-			exit -1
 		fi
 	fi
 fi
@@ -95,6 +97,6 @@ then
 	mkdir -p "$REPOPATH"
 fi
 
-rm -fr $REPOPATH/python-nova-$NOVAVER-*.rpm $REPOPATH/openstack-nova-$NOVAVER-*.rpm $REPOPATH/openstack-nova-{api,compute,doc,instancemonitor,network,objectstore,scheduler,volume}-$NOVAVER-*.rpm $REPOPATH/openstack-nova-node-*-$NOVAVER-*.rpm
+rm -fr $REPOPATH/python-nova-$NOVAVER-*.rpm $REPOPATH/openstack-nova-$NOVAVER-*.rpm $REPOPATH/openstack-nova-{api,compute,doc,instancemonitor,network,noVNC,objectstore,scheduler,volume}-$NOVAVER-*.rpm $REPOPATH/openstack-nova-node-*-$NOVAVER-*.rpm
 mv $RPMSANDBOX/RPMS/noarch/*$NOVAVER-$SPECRELEASENEW*.rpm "$REPOPATH"
 

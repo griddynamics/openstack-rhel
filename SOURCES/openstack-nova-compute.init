@@ -2,7 +2,7 @@
 #
 # nova-compute	OpenStack Nova Compute Worker
 #
-# chkconfig: 2345 20 81
+# chkconfig: 2345 96 81
 # description: Compute workers manage computing instances on host  \
 #               machines. Through the API, commands are dispatched \
 #               to compute workers to:                             \

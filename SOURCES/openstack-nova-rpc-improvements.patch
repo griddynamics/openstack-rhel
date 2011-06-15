@@ -1,0 +1,546 @@
+diff -Naur nova/nova/fakerabbit.py rpc-improvements/nova/fakerabbit.py
+--- nova/nova/fakerabbit.py	2011-05-18 13:45:52.000000000 +0400
++++ rpc-improvements/nova/fakerabbit.py	2011-05-18 13:42:35.000000000 +0400
+@@ -77,6 +77,10 @@
+ 
+ 
+ class Backend(base.BaseBackend):
++    def __init__(self, connection, **kwargs):
++        super(Backend, self).__init__(connection, **kwargs)
++        self.consumers = {}
++
+     def queue_declare(self, queue, **kwargs):
+         global QUEUES
+         if queue not in QUEUES:
+@@ -96,17 +100,26 @@
+                 ' key %(routing_key)s') % locals())
+         EXCHANGES[exchange].bind(QUEUES[queue].push, routing_key)
+ 
+-    def declare_consumer(self, queue, callback, *args, **kwargs):
+-        self.current_queue = queue
+-        self.current_callback = callback
++    def declare_consumer(self, queue, callback, consumer_tag, *args, **kwargs):
++        LOG.debug("Adding consumer %s", consumer_tag)
++        self.consumers[consumer_tag] = (queue, callback)
++
++    def cancel(self, consumer_tag):
++        LOG.debug("Removing consumer %s", consumer_tag)
++        del self.consumers[consumer_tag]
+ 
+     def consume(self, limit=None):
++        num = 0
+         while True:
+-            item = self.get(self.current_queue)
+-            if item:
+-                self.current_callback(item)
+-                raise StopIteration()
+-            greenthread.sleep(0)
++            for (queue, callback) in self.consumers.itervalues():
++                item = self.get(queue)
++                if item:
++                    callback(item)
++                    num += 1
++                    yield
++                    if limit and num == limit:
++                        raise StopIteration()
++            greenthread.sleep(0.1)
+ 
+     def get(self, queue, no_ack=False):
+         global QUEUES
+diff -Naur nova/nova/rpc.py rpc-improvements/nova/rpc.py
+--- nova/nova/rpc.py	2011-05-18 13:45:52.000000000 +0400
++++ rpc-improvements/nova/rpc.py	2011-05-18 13:42:35.000000000 +0400
+@@ -24,6 +24,7 @@
+ 
+ """
+ 
++import greenlet
+ import json
+ import sys
+ import time
+@@ -33,7 +34,7 @@
+ from carrot import connection as carrot_connection
+ from carrot import messaging
+ from eventlet import greenpool
+-from eventlet import greenthread
++from eventlet import pools
+ 
+ from nova import context
+ from nova import exception
+@@ -47,7 +48,10 @@
+ 
+ 
+ FLAGS = flags.FLAGS
+-flags.DEFINE_integer('rpc_thread_pool_size', 1024, 'Size of RPC thread pool')
++flags.DEFINE_integer('rpc_thread_pool_size', 1024,
++        'Size of RPC thread pool')
++flags.DEFINE_integer('rpc_conn_pool_size', 30,
++        'Size of RPC connection pool')
+ 
+ 
+ class Connection(carrot_connection.BrokerConnection):
+@@ -90,6 +94,15 @@
+         return cls.instance()
+ 
+ 
++class Pool(pools.Pool):
++    """Class that implements a Pool of Connections"""
++
++    def create(self):
++        return Connection.instance(new=True)
++
++ConnectionPool = Pool(max_size=FLAGS.rpc_conn_pool_size)
++
++
+ class Consumer(messaging.Consumer):
+     """Consumer base class.
+ 
+@@ -159,13 +172,11 @@
+         self.pool = greenpool.GreenPool(FLAGS.rpc_thread_pool_size)
+         super(AdapterConsumer, self).__init__(connection=connection,
+                                               topic=topic)
++        self.register_callback(self.process_data)
+ 
+-    def receive(self, *args, **kwargs):
+-        self.pool.spawn_n(self._receive, *args, **kwargs)
+-
+-    @exception.wrap_exception
+-    def _receive(self, message_data, message):
+-        """Magically looks for a method on the proxy object and calls it.
++    def process_data(self, message_data, message):
++        """Consumer callback that parses the message for validity and
++        fires off a thread to call the proxy object method.
+ 
+         Message data should be a dictionary with two keys:
+             method: string representing the method to call
+@@ -190,6 +201,13 @@
+             LOG.warn(_('no method for message: %s') % message_data)
+             msg_reply(msg_id, _('No method for message: %s') % message_data)
+             return
++        self.pool.spawn_n(self._process_data, msg_id, ctxt, method, args)
++
++    @exception.wrap_exception
++    def _process_data(self, msg_id, ctxt, method, args):
++        """Thread that maigcally looks for a method on the proxy
++        object and calls it.
++        """
+ 
+         node_func = getattr(self.proxy, str(method))
+         node_args = dict((str(k), v) for k, v in args.iteritems())
+@@ -205,11 +223,6 @@
+         return
+ 
+ 
+-class Publisher(messaging.Publisher):
+-    """Publisher base class."""
+-    pass
+-
+-
+ class TopicAdapterConsumer(AdapterConsumer):
+     """Consumes messages on a specific topic."""
+ 
+@@ -242,6 +255,56 @@
+                                     topic=topic, proxy=proxy)
+ 
+ 
++class ConsumerSet(object):
++    """Groups consumers to listen on together on a single connection"""
++
++    def __init__(self, conn, consumer_list):
++        self.consumer_list = set(consumer_list)
++        self.consumer_set = None
++        self.enabled = True
++        self.init(conn)
++
++    def init(self, conn):
++        if not conn:
++            conn = Connection.instance(new=True)
++        if self.consumer_set:
++            self.consumer_set.close()
++        self.consumer_set = messaging.ConsumerSet(conn)
++        for consumer in self.consumer_list:
++            consumer.connection = conn
++            # consumer.backend is set for us
++            self.consumer_set.add_consumer(consumer)
++
++    def reconnect(self):
++        self.init(None)
++
++    def wait(self, limit=None):
++        running = True
++        while running:
++            it = self.consumer_set.iterconsume(limit=limit)
++            if not it:
++                break
++            while True:
++                try:
++                    it.next()
++                except StopIteration:
++                    return
++                except greenlet.GreenletExit:
++                    running = False
++                    break
++                except Exception as e:
++                    LOG.error(_("Received exception %s " % type(e) + \
++                            "while processing consumer"))
++                    self.reconnect()
++                    # Break to outer loop
++                    break
++
++
++class Publisher(messaging.Publisher):
++    """Publisher base class."""
++    pass
++
++
+ class TopicPublisher(Publisher):
+     """Publishes messages on a specific topic."""
+ 
+@@ -306,7 +369,7 @@
+         LOG.error(_("Returning exception %s to caller"), message)
+         LOG.error(tb)
+         failure = (failure[0].__name__, str(failure[1]), tb)
+-    conn = Connection.instance()
++    conn = ConnectionPool.get()
+     publisher = DirectPublisher(connection=conn, msg_id=msg_id)
+     try:
+         publisher.send({'result': reply, 'failure': failure})
+@@ -315,7 +378,9 @@
+                 {'result': dict((k, repr(v))
+                                 for k, v in reply.__dict__.iteritems()),
+                  'failure': failure})
++
+     publisher.close()
++    ConnectionPool.put(conn)
+ 
+ 
+ class RemoteError(exception.Error):
+@@ -383,11 +448,10 @@
+                 self.result = data['result']
+ 
+     wait_msg = WaitMessage()
+-    conn = Connection.instance()
++    conn = ConnectionPool.get()
+     consumer = DirectConsumer(connection=conn, msg_id=msg_id)
+     consumer.register_callback(wait_msg)
+ 
+-    conn = Connection.instance()
+     publisher = TopicPublisher(connection=conn, topic=topic)
+     publisher.send(msg)
+     publisher.close()
+@@ -396,7 +460,10 @@
+         consumer.wait(limit=1)
+     except StopIteration:
+         pass
+-    consumer.close()
++    finally:
++        consumer.close()
++    ConnectionPool.put(conn)
++
+     # NOTE(termie): this is a little bit of a change from the original
+     #               non-eventlet code where returning a Failure
+     #               instance from a deferred call is very similar to
+@@ -410,20 +477,22 @@
+     """Sends a message on a topic without waiting for a response."""
+     LOG.debug(_('Making asynchronous cast on %s...'), topic)
+     _pack_context(msg, context)
+-    conn = Connection.instance()
++    conn = ConnectionPool.get()
+     publisher = TopicPublisher(connection=conn, topic=topic)
+     publisher.send(msg)
+     publisher.close()
++    ConnectionPool.put(conn)
+ 
+ 
+ def fanout_cast(context, topic, msg):
+     """Sends a message on a fanout exchange without waiting for a response."""
+     LOG.debug(_('Making asynchronous fanout cast...'))
+     _pack_context(msg, context)
+-    conn = Connection.instance()
++    conn = ConnectionPool.get()
+     publisher = FanoutPublisher(topic, connection=conn)
+     publisher.send(msg)
+     publisher.close()
++    ConnectionPool.put(conn)
+ 
+ 
+ def generic_response(message_data, message):
+@@ -459,6 +528,7 @@
+ 
+     if wait:
+         consumer.wait()
++        consumer.close()
+ 
+ 
+ if __name__ == '__main__':
+diff -Naur nova/nova/service.py rpc-improvements/nova/service.py
+--- nova/nova/service.py	2011-05-18 13:45:52.000000000 +0400
++++ rpc-improvements/nova/service.py	2011-05-18 13:42:35.000000000 +0400
+@@ -19,14 +19,11 @@
+ 
+ """Generic Node baseclass for all workers that run on hosts."""
+ 
++import greenlet
+ import inspect
+ import os
+-import sys
+-import time
+ 
+-from eventlet import event
+ from eventlet import greenthread
+-from eventlet import greenpool
+ 
+ from nova import context
+ from nova import db
+@@ -91,27 +88,31 @@
+         if 'nova-compute' == self.binary:
+             self.manager.update_available_resource(ctxt)
+ 
+-        conn1 = rpc.Connection.instance(new=True)
+-        conn2 = rpc.Connection.instance(new=True)
+-        conn3 = rpc.Connection.instance(new=True)
+-        if self.report_interval:
+-            consumer_all = rpc.TopicAdapterConsumer(
+-                    connection=conn1,
+-                    topic=self.topic,
+-                    proxy=self)
+-            consumer_node = rpc.TopicAdapterConsumer(
+-                    connection=conn2,
+-                    topic='%s.%s' % (self.topic, self.host),
+-                    proxy=self)
+-            fanout = rpc.FanoutAdapterConsumer(
+-                    connection=conn3,
+-                    topic=self.topic,
+-                    proxy=self)
+-
+-            self.timers.append(consumer_all.attach_to_eventlet())
+-            self.timers.append(consumer_node.attach_to_eventlet())
+-            self.timers.append(fanout.attach_to_eventlet())
++        conn = rpc.Connection.instance(new=True)
++        logging.debug("Creating Consumer connection for Service %s" % \
++                self.topic)
++
++        # Share this same connection for these Consumers
++        consumer_all = rpc.TopicAdapterConsumer(
++                connection=conn,
++                topic=self.topic,
++                proxy=self)
++        consumer_node = rpc.TopicAdapterConsumer(
++                connection=conn,
++                topic='%s.%s' % (self.topic, self.host),
++                proxy=self)
++        fanout = rpc.FanoutAdapterConsumer(
++                connection=conn,
++                topic=self.topic,
++                proxy=self)
++
++        cset = rpc.ConsumerSet(conn, [consumer_all,
++                    consumer_node,
++                    fanout])
++        # Wait forever, processing these consumers
++        self.csetthread = greenthread.spawn(cset.wait)
+ 
++        if self.report_interval:
+             pulse = utils.LoopingCall(self.report_state)
+             pulse.start(interval=self.report_interval, now=False)
+             self.timers.append(pulse)
+@@ -167,6 +168,11 @@
+ 
+     def kill(self):
+         """Destroy the service object in the datastore."""
++        self.csetthread.kill()
++        try:
++            self.csetthread.wait()
++        except greenlet.GreenletExit:
++            pass
+         self.stop()
+         try:
+             db.service_destroy(context.get_admin_context(), self.service_id)
+diff -Naur nova/nova/tests/test_cloud.py rpc-improvements/nova/tests/test_cloud.py
+--- nova/nova/tests/test_cloud.py	2011-05-18 13:45:52.000000000 +0400
++++ rpc-improvements/nova/tests/test_cloud.py	2011-05-18 13:42:35.000000000 +0400
+@@ -17,13 +17,8 @@
+ #    under the License.
+ 
+ from base64 import b64decode
+-import json
+ from M2Crypto import BIO
+ from M2Crypto import RSA
+-import os
+-import shutil
+-import tempfile
+-import time
+ 
+ from eventlet import greenthread
+ 
+@@ -33,12 +28,10 @@
+ from nova import flags
+ from nova import log as logging
+ from nova import rpc
+-from nova import service
+ from nova import test
+ from nova import utils
+ from nova import exception
+ from nova.auth import manager
+-from nova.compute import power_state
+ from nova.api.ec2 import cloud
+ from nova.api.ec2 import ec2utils
+ from nova.image import local
+@@ -79,6 +72,15 @@
+         self.stubs.Set(local.LocalImageService, 'show', fake_show)
+         self.stubs.Set(local.LocalImageService, 'show_by_name', fake_show)
+ 
++        # NOTE(vish): set up a manual wait so rpc.cast has a chance to finish
++        rpc_cast = rpc.cast
++
++        def finish_cast(*args, **kwargs):
++            rpc_cast(*args, **kwargs)
++            greenthread.sleep(0.2)
++
++        self.stubs.Set(rpc, 'cast', finish_cast)
++
+     def tearDown(self):
+         network_ref = db.project_get_network(self.context,
+                                              self.project.id)
+@@ -113,7 +115,6 @@
+         self.cloud.describe_addresses(self.context)
+         self.cloud.release_address(self.context,
+                                   public_ip=address)
+-        greenthread.sleep(0.3)
+         db.floating_ip_destroy(self.context, address)
+ 
+     def test_associate_disassociate_address(self):
+@@ -129,12 +130,10 @@
+         self.cloud.associate_address(self.context,
+                                      instance_id=ec2_id,
+                                      public_ip=address)
+-        greenthread.sleep(0.3)
+         self.cloud.disassociate_address(self.context,
+                                         public_ip=address)
+         self.cloud.release_address(self.context,
+                                   public_ip=address)
+-        greenthread.sleep(0.3)
+         self.network.deallocate_fixed_ip(self.context, fixed)
+         db.instance_destroy(self.context, inst['id'])
+         db.floating_ip_destroy(self.context, address)
+@@ -306,31 +305,26 @@
+                   'instance_type': instance_type,
+                   'max_count': max_count}
+         rv = self.cloud.run_instances(self.context, **kwargs)
+-        greenthread.sleep(0.3)
+         instance_id = rv['instancesSet'][0]['instanceId']
+         output = self.cloud.get_console_output(context=self.context,
+                                                instance_id=[instance_id])
+         self.assertEquals(b64decode(output['output']), 'FAKE CONSOLE?OUTPUT')
+         # TODO(soren): We need this until we can stop polling in the rpc code
+         #              for unit tests.
+-        greenthread.sleep(0.3)
+         rv = self.cloud.terminate_instances(self.context, [instance_id])
+-        greenthread.sleep(0.3)
+ 
+     def test_ajax_console(self):
++
+         kwargs = {'image_id': 'ami-1'}
+         rv = self.cloud.run_instances(self.context, **kwargs)
+         instance_id = rv['instancesSet'][0]['instanceId']
+-        greenthread.sleep(0.3)
+         output = self.cloud.get_ajax_console(context=self.context,
+                                              instance_id=[instance_id])
+         self.assertEquals(output['url'],
+                           '%s/?token=FAKETOKEN' % FLAGS.ajax_console_proxy_url)
+         # TODO(soren): We need this until we can stop polling in the rpc code
+         #              for unit tests.
+-        greenthread.sleep(0.3)
+         rv = self.cloud.terminate_instances(self.context, [instance_id])
+-        greenthread.sleep(0.3)
+ 
+     def test_key_generation(self):
+         result = self._create_key('test')
+diff -Naur nova/nova/tests/test_service.py rpc-improvements/nova/tests/test_service.py
+--- nova/nova/tests/test_service.py	2011-05-18 13:45:52.000000000 +0400
++++ rpc-improvements/nova/tests/test_service.py	2011-05-18 13:42:35.000000000 +0400
+@@ -106,7 +106,10 @@
+ 
+         # NOTE(vish): Create was moved out of mox replay to make sure that
+         #             the looping calls are created in StartService.
+-        app = service.Service.create(host=host, binary=binary)
++        app = service.Service.create(host=host, binary=binary, topic=topic)
++
++        self.mox.StubOutWithMock(service.rpc.Connection, 'instance')
++        service.rpc.Connection.instance(new=mox.IgnoreArg())
+ 
+         self.mox.StubOutWithMock(rpc,
+                                  'TopicAdapterConsumer',
+@@ -114,6 +117,11 @@
+         self.mox.StubOutWithMock(rpc,
+                                  'FanoutAdapterConsumer',
+                                  use_mock_anything=True)
++
++        self.mox.StubOutWithMock(rpc,
++                                 'ConsumerSet',
++                                 use_mock_anything=True)
++
+         rpc.TopicAdapterConsumer(connection=mox.IgnoreArg(),
+                             topic=topic,
+                             proxy=mox.IsA(service.Service)).AndReturn(
+@@ -129,9 +137,13 @@
+                             proxy=mox.IsA(service.Service)).AndReturn(
+                                     rpc.FanoutAdapterConsumer)
+ 
+-        rpc.TopicAdapterConsumer.attach_to_eventlet()
+-        rpc.TopicAdapterConsumer.attach_to_eventlet()
+-        rpc.FanoutAdapterConsumer.attach_to_eventlet()
++        def wait_func(self, limit=None):
++            return None
++
++        mock_cset = self.mox.CreateMock(rpc.ConsumerSet,
++                {'wait': wait_func})
++        rpc.ConsumerSet(mox.IgnoreArg(), mox.IsA(list)).AndReturn(mock_cset)
++        wait_func(mox.IgnoreArg())
+ 
+         service_create = {'host': host,
+                           'binary': binary,
+@@ -287,8 +299,41 @@
+         # Creating mocks
+         self.mox.StubOutWithMock(service.rpc.Connection, 'instance')
+         service.rpc.Connection.instance(new=mox.IgnoreArg())
+-        service.rpc.Connection.instance(new=mox.IgnoreArg())
+-        service.rpc.Connection.instance(new=mox.IgnoreArg())
++
++        self.mox.StubOutWithMock(rpc,
++                                 'TopicAdapterConsumer',
++                                 use_mock_anything=True)
++        self.mox.StubOutWithMock(rpc,
++                                 'FanoutAdapterConsumer',
++                                 use_mock_anything=True)
++
++        self.mox.StubOutWithMock(rpc,
++                                 'ConsumerSet',
++                                 use_mock_anything=True)
++
++        rpc.TopicAdapterConsumer(connection=mox.IgnoreArg(),
++                            topic=topic,
++                            proxy=mox.IsA(service.Service)).AndReturn(
++                                    rpc.TopicAdapterConsumer)
++
++        rpc.TopicAdapterConsumer(connection=mox.IgnoreArg(),
++                            topic='%s.%s' % (topic, host),
++                            proxy=mox.IsA(service.Service)).AndReturn(
++                                    rpc.TopicAdapterConsumer)
++
++        rpc.FanoutAdapterConsumer(connection=mox.IgnoreArg(),
++                            topic=topic,
++                            proxy=mox.IsA(service.Service)).AndReturn(
++                                    rpc.FanoutAdapterConsumer)
++
++        def wait_func(self, limit=None):
++            return None
++
++        mock_cset = self.mox.CreateMock(rpc.ConsumerSet,
++                {'wait': wait_func})
++        rpc.ConsumerSet(mox.IgnoreArg(), mox.IsA(list)).AndReturn(mock_cset)
++        wait_func(mox.IgnoreArg())
++
+         self.mox.StubOutWithMock(serv.manager.driver,
+                                  'update_available_resource')
+         serv.manager.driver.update_available_resource(mox.IgnoreArg(), host)

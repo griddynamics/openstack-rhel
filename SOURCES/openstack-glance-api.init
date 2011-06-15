@@ -2,10 +2,10 @@
 #
 # glance-api	OpenStack Glance API Server
 #
-# chkconfig: 2345 20 81
+# chkconfig: 2345 96 81
 # description: OpenStack Glance API Server
 #
-# config: /etc/glance/glance.conf
+# config: /etc/glance/glance-api.conf
 # pidfile: /var/run/glance/glance-api.pid
 
 ### BEGIN INIT INFO
@@ -27,7 +27,7 @@
 
 prog="OpenStack Glance API Server"
 suffix="api"
-flgfile=/etc/glance/glance.conf
+flgfile=/etc/glance/glance-api.conf
 logconf=/etc/glance/logging-$suffix.conf
 pidfile=/var/run/glance/glance-$suffix.pid
 lckfile=/var/lock/subsys/openstack-glance-$suffix

@@ -6,13 +6,13 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.9.bzr1000%{?dist}
+Release:          0.d1.1%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr1000.tar.gz
+Source0:          http://launchpad.net/nova/diablo/diablo-1/+download/nova-%{version}~d1.tar.gz
 Source1:          %{name}-README.rhel6
 Source2:          %{name}-noVNC-snap2011.03.24.tgz
 Source6:          %{name}.logrotate
@@ -36,9 +36,10 @@ Patch1:           %{name}-rhel-config-paths.patch
 Patch2:           %{name}-guestfs-image-injects.patch
 Patch3:           %{name}-bexar-libvirt.xml.template.patch
 Patch4:           %{name}-rhel-netcat.patch
-Patch5:           %{name}-ajaxterm-path.patch
+Patch5:           %{name}-rhel-ajaxterm-path.patch
 Patch6:           %{name}-s3server-quickfix.patch
-Patch7:           %{name}-auto-floating-ips.patch
+Patch7:           %{name}-scsi-target-utils-support.patch
+Patch8:           %{name}-rpc-improvements.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -69,6 +70,18 @@ uses an LDAP server for users and groups, but also includes a fake LDAP server,
 that stores data in Redis. It has extensive test coverage, and uses the Sphinx
 toolkit (the same as Python itself) for code and user documentation.
 
+%package          noVNC
+Summary:          OpenStack Nova VNC console service
+Group:            Applications/System
+License:          LGPL v3 with exceptions
+URL:              https://github.com/openstack/noVNC
+
+Requires:         %{name} = %{version}-%{release}
+
+%description      noVNC
+This package contains noVNC code and daemon which is required for accessing
+instances's console using VNC.
+
 %package          node-full
 Summary:          OpenStack Nova full node installation
 Group:            Applications/System
@@ -79,6 +92,7 @@ Requires:         %{name}-api = %{version}-%{release}
 Requires:         %{name}-compute = %{version}-%{release}
 Requires:         %{name}-instancemonitor = %{version}-%{release}
 Requires:         %{name}-network = %{version}-%{release}
+Requires:         %{name}-noVNC = %{version}-%{release}
 Requires:         %{name}-objectstore = %{version}-%{release}
 Requires:         %{name}-scheduler = %{version}-%{release}
 Requires:         %{name}-volume = %{version}-%{release}
@@ -124,8 +138,10 @@ Requires:         python-eventlet >= 0.9.12-1.1.el6
 Requires:         python-gflags >= 1.3
 Requires:         python-lockfile = 0.8
 Requires:         python-mox >= 0.5.0
+Requires:         python-paste
+Requires:         python-paste-deploy
 Requires:         python-redis
-Requires:         python-routes
+Requires:         python-routes >= 1.12.3
 Requires:         python-sqlalchemy >= 0.6
 Requires:         python-suds >= 0.4.0
 Requires:         python-tornado
@@ -159,8 +175,6 @@ Group:            Applications/System
 
 Requires:         %{name} = %{version}-%{release}
 Requires:         start-stop-daemon
-Requires:         python-paste
-Requires:         python-paste-deploy
 
 %description      api
 Nova is a cloud computing fabric controller (the main part of an IaaS system)
@@ -281,7 +295,7 @@ BuildRequires:    python-eventlet
 BuildRequires:    python-gflags
 #BuildRequires:    python-mox
 #BuildRequires:    python-redis
-BuildRequires:    python-routes
+BuildRequires:    python-routes >= 1.12.3
 BuildRequires:    python-sqlalchemy
 BuildRequires:    python-tornado
 BuildRequires:    python-twisted-core
@@ -301,12 +315,13 @@ This package contains documentation files for %{name}.
 %setup -q -n nova-%{version}
 
 %patch1 -p1
-%patch2 -p1
+%patch2 -p0
 %patch3 -p1
-%patch4 -p1
-%patch5 -p1
+%patch4 -p0
+%patch5 -p0
 %patch6 -p1
 %patch7 -p1
+#patch8 -p1
 
 install %{SOURCE1} README.rhel6
 
@@ -544,13 +559,23 @@ fi
 %{_bindir}/nova-logspool
 %{_bindir}/nova-manage
 %{_bindir}/nova-spoolsentry
-%{_bindir}/nova-vncproxy
-%{_initrddir}/%{name}-vncproxy
 %{_bindir}/stack
 %{_datarootdir}/nova
 %defattr(-,nova,nobody,-)
-%{_sharedstatedir}/nova
-%{_datarootdir}/nova/setup_iptables.sh
+%dir %{_sharedstatedir}/nova
+%{_sharedstatedir}/nova/CA
+%{_sharedstatedir}/nova/images
+%{_sharedstatedir}/nova/instances
+%{_sharedstatedir}/nova/keys
+%{_sharedstatedir}/nova/networks
+%{_sharedstatedir}/nova/tmp
+
+%files noVNC
+%{_bindir}/nova-vncproxy
+%{_initrddir}/%{name}-vncproxy
+%{_sharedstatedir}/nova/noVNC
+%doc %{_sharedstatedir}/nova/noVNC/LICENSE.txt
+%doc %{_sharedstatedir}/nova/noVNC/README.md
 
 %files -n python-nova
 %defattr(-,root,root,-)
@@ -615,6 +640,273 @@ fi
 %files node-compute
 
 %changelog
+* Thu Jun 02 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.d1.1
+- Diablo-1 release
+
+* Wed Jun 01 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.96.bzr1130
+- Update to bzr1130
+
+* Wed Jun 01 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.95.bzr1129
+- Update to bzr1129
+
+* Wed Jun 01 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.94.bzr1128
+- Update to bzr1128
+
+* Wed Jun 01 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.93.bzr1127
+- Update to bzr1127
+
+* Wed Jun 01 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.92.bzr1126
+- Update to bzr1126
+
+* Wed Jun 01 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.91.bzr1125
+- Update to bzr1125
+
+* Tue May 31 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.90.bzr1124
+- Update to bzr1124
+
+* Tue May 31 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.89.bzr1123
+- Update to bzr1123
+
+* Tue May 31 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.88.bzr1122
+- Update to bzr1122
+
+* Tue May 31 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.87.bzr1121
+- Update to bzr1121
+
+* Tue May 31 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.86.bzr1120
+- Update to bzr1120
+
+* Tue May 31 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.85.bzr1119
+- Update to bzr1119
+
+* Sat May 28 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.84.bzr1118
+- Update to bzr1118
+
+* Sat May 28 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.83.bzr1117
+- Update to bzr1117
+
+* Fri May 27 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.82.bzr1116
+- Update to bzr1116
+
+* Wed May 25 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.81.bzr1109
+- Update to bzr1109
+
+* Wed May 25 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.80.bzr1108
+- Update to bzr1108
+
+* Wed May 25 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.79.bzr1107
+- Update to bzr1107
+
+* Wed May 25 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.78.bzr1105
+- Update to bzr1105
+
+* Tue May 24 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.77.bzr1104
+- Update to bzr1104
+
+* Tue May 24 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.76.bzr1103
+- Update to bzr1103
+
+* Tue May 24 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.75.bzr1102
+- Update to bzr1102
+
+* Mon May 23 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.74.bzr1101
+- Update to bzr1101
+
+* Sat May 21 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.73.bzr1099
+- Update to bzr1099
+
+* Sat May 21 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.72.bzr1098
+- Update to bzr1098
+
+* Fri May 20 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.71.bzr1097
+- Update to bzr1097
+
+* Fri May 20 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.70.bzr1096
+- Update to bzr1096
+
+* Fri May 20 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.69.bzr1095
+- Update to bzr1095
+
+* Fri May 20 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.68.bzr1094
+- Update to bzr1094
+
+* Fri May 20 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.67.bzr1092
+- Update to bzr1092
+
+* Fri May 20 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.66.bzr1090
+- Update to bzr1090
+
+* Fri May 20 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.65.bzr1089
+- Update to bzr1089
+
+* Fri May 20 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.64.bzr1088
+- Update to bzr1088
+
+* Thu May 19 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.63.bzr1087
+- Update to bzr1087
+
+* Wed May 18 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.62.bzr1086
+- Update to bzr1086
+
+* Wed May 18 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.61.bzr1085
+- Update to bzr1085
+
+* Wed May 18 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.60.bzr1084
+- Update to bzr1084
+
+* Wed May 18 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.59.bzr1083
+- Update to bzr1083
+
+* Wed May 18 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.58.bzr1082
+- Update to bzr1082
+
+* Tue May 17 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.57.bzr1081
+- Update to bzr1081
+
+* Tue May 17 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.56.bzr1080
+- Update to bzr1080
+
+* Tue May 17 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.55.bzr1079
+- Update to bzr1079
+
+* Tue May 17 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.54.bzr1078
+- Update to bzr1078
+
+* Tue May 17 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.53.bzr1077
+- Update to bzr1077
+
+* Tue May 17 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.52.bzr1076
+- Update to bzr1076
+
+* Tue May 17 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.51.bzr1075
+- Update to bzr1075
+
+* Mon May 16 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.50.bzr1073
+- Update to bzr1073
+
+* Sat May 14 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.49.bzr1072
+- Update to bzr1072
+
+* Thu May 12 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.48.bzr1066
+- Update to bzr1066
+
+* Wed May 11 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.47.bzr1065
+- Update to bzr1065
+
+* Wed May 11 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.46.bzr1064
+- Update to bzr1064
+
+* Wed May 11 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.45.bzr1063
+- Update to bzr1063
+
+* Wed May 11 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.44.bzr1062
+- Update to bzr1062
+
+* Tue May 10 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.43.bzr1061
+- Update to bzr1061
+
+* Sat May 07 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.42.bzr1058
+- Update to bzr1058
+
+* Sat May 07 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.41.bzr1057
+- Update to bzr1057
+
+* Sat May 07 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.40.bzr1056
+- Update to bzr1056
+
+* Fri May 06 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.39.bzr1055
+- Update to bzr1055
+
+* Thu May 05 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.38.bzr1054
+- Update to bzr1054
+
+* Thu May 05 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.37.bzr1053
+- Update to bzr1053
+
+* Tue May 03 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.36.bzr1052
+- Added support for scsi-target-utils
+
+* Tue May 03 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.35.bzr1052
+- Update to bzr1052
+
+* Tue May 03 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.34.bzr1051
+- Update to bzr1051
+
+* Tue May 03 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.33.bzr1050
+- Update to bzr1050
+
+* Tue May 03 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.32.bzr1049
+- Update to bzr1049
+
+* Tue May 03 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.31.bzr1048
+- Update to bzr1048
+
+* Mon May 02 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.30.bzr1047
+- Update to bzr1047
+
+* Mon May 02 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.29.bzr1046
+- Update to bzr1046
+
+* Mon May 02 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.28.bzr1043
+- Update to bzr1043
+
+* Sun May 01 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.27.bzr1039
+- Update to bzr1039
+
+* Fri Apr 29 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.26.bzr1035
+- Update to bzr1035
+
+* Thu Apr 28 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.25.bzr1034
+- Update to bzr1034
+
+* Thu Apr 28 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.24.bzr1033
+- Update to bzr1033
+
+* Wed Apr 27 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.23.bzr1032
+- created separate package for noVNC due licensing issue
+
+* Wed Apr 27 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.22.bzr1032
+- Update to bzr1032
+
+* Tue Apr 26 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.21.bzr1031
+- Updated patch6
+
+* Tue Apr 26 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.20.bzr1031
+- Update to bzr1031
+
+* Mon Apr 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.19.bzr1030
+- Floating IPs merged to trunk
+
+* Thu Apr 21 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.18.bzr1010
+- Update to bzr1010
+
+* Thu Apr 21 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.17.bzr1009
+- Update to bzr1009
+
+* Thu Apr 21 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.16.bzr1008
+- Update to bzr1008
+
+* Wed Apr 20 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.15.bzr1007
+- Update to bzr1007
+
+* Wed Apr 20 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.14.bzr1006
+- Update to bzr1006
+
+* Tue Apr 19 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.13.bzr1005
+- Update to bzr1005
+
+* Tue Apr 19 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.12.bzr1004
+- Update to bzr1004
+
+* Tue Apr 19 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.11.bzr1000
+- Updated dependency on python-routes with version 1.12.3
+
+* Tue Apr 19 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.11.bzr1003
+- Update to bzr1003
+
+* Tue Apr 19 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.10.bzr1000
+- Updated floating IP patch, kudos to Ilya Alekseyev
+
 * Tue Apr 19 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.9.bzr1000
 - Update to bzr1000
 

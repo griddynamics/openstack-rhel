@@ -5,20 +5,28 @@
 %endif
 
 Name:             openstack-swift
-Version:          1.4
-Release:          0.1.bzr268%{?dist}
+Version:          1.4.0
+Release:          0.d1.1%{?dist}
 Summary:          OpenStack Object Storage (swift)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://launchpad.net/swift
-Source0:          http://launchpad.net/swift/1.3/1.3.0/+download/swift-1.3.0.tar.gz
+Source0:          http://swift.openstack.org/tarballs/swift-%{version}.tar.gz
 Source1:          %{name}-functions
-Source2:          %{name}-account.init
-Source3:          %{name}-auth.init
-Source4:          %{name}-container.init
-Source5:          %{name}-object.init
-Source6:          %{name}-proxy.init
+Source2:          %{name}-account-auditor.init
+Source3:          %{name}-account-reaper.init
+Source4:          %{name}-account-replicator.init
+Source5:          %{name}-account-server.init
+Source7:          %{name}-container-auditor.init
+Source8:          %{name}-container-replicator.init
+Source9:          %{name}-container-server.init
+Source10:          %{name}-container-updater.init
+Source11:          %{name}-object-auditor.init
+Source12:          %{name}-object-replicator.init
+Source13:          %{name}-object-server.init
+Source14:          %{name}-object-updater.init
+Source15:          %{name}-proxy.init
 BuildRoot:        %{_tmppath}/swift-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildArch:        noarch
@@ -33,6 +41,8 @@ Requires:         python-simplejson
 Requires:         python-webob >= 0.9.8
 Requires:         python-nose
 Requires:         pyxattr
+Requires:         python-netifaces
+Requires:         python-paste-deploy
 
 Requires(post):   chkconfig
 Requires(postun): initscripts
@@ -131,7 +141,7 @@ This package contains documentation files for %{name}.
 %endif
 
 %prep
-%setup -q -n swift-%{version}-dev
+%setup -q -n swift-%{version}
 # Fix wrong-file-end-of-line-encoding warning
 dos2unix LICENSE
 
@@ -151,11 +161,19 @@ rm -rf %{buildroot}
 # Init helper functions
 install -p -D -m 644 %{SOURCE1} %{buildroot}%{_datarootdir}/%{name}/functions
 # Init scripts
-install -p -D -m 755 %{SOURCE2} %{buildroot}%{_initrddir}/%{name}-account
-install -p -D -m 755 %{SOURCE3} %{buildroot}%{_initrddir}/%{name}-auth
-install -p -D -m 755 %{SOURCE4} %{buildroot}%{_initrddir}/%{name}-container
-install -p -D -m 755 %{SOURCE5} %{buildroot}%{_initrddir}/%{name}-object
-install -p -D -m 755 %{SOURCE6} %{buildroot}%{_initrddir}/%{name}-proxy
+install -p -D -m 755 %{SOURCE2} %{buildroot}%{_initrddir}/%{name}-account-auditor
+install -p -D -m 755 %{SOURCE3} %{buildroot}%{_initrddir}/%{name}-account-reaper
+install -p -D -m 755 %{SOURCE4} %{buildroot}%{_initrddir}/%{name}-account-replicator
+install -p -D -m 755 %{SOURCE5} %{buildroot}%{_initrddir}/%{name}-account-server
+install -p -D -m 755 %{SOURCE7} %{buildroot}%{_initrddir}/%{name}-container-auditor
+install -p -D -m 755 %{SOURCE8} %{buildroot}%{_initrddir}/%{name}-container-replicator
+install -p -D -m 755 %{SOURCE9} %{buildroot}%{_initrddir}/%{name}-container-server
+install -p -D -m 755 %{SOURCE10} %{buildroot}%{_initrddir}/%{name}-container-updater
+install -p -D -m 755 %{SOURCE11} %{buildroot}%{_initrddir}/%{name}-object-auditor
+install -p -D -m 755 %{SOURCE12} %{buildroot}%{_initrddir}/%{name}-object-replicator
+install -p -D -m 755 %{SOURCE13} %{buildroot}%{_initrddir}/%{name}-object-server
+install -p -D -m 755 %{SOURCE14} %{buildroot}%{_initrddir}/%{name}-object-updater
+install -p -D -m 755 %{SOURCE15} %{buildroot}%{_initrddir}/%{name}-proxy
 # Install man stubs
 for name in $( ls ./man ); do
     mkdir -p "%{buildroot}%{_mandir}/$name"
@@ -165,18 +183,8 @@ done
 rm -fr %{buildroot}/%{python_sitelib}/test
 # Misc other
 install -d -m 755 %{buildroot}%{_sysconfdir}/swift
-install -d -m 755 %{buildroot}%{_sysconfdir}/swift/account-server
-install -d -m 755 %{buildroot}%{_sysconfdir}/swift/auth-server
-install -d -m 755 %{buildroot}%{_sysconfdir}/swift/container-server
-install -d -m 755 %{buildroot}%{_sysconfdir}/swift/object-server
-install -d -m 755 %{buildroot}%{_sysconfdir}/swift/proxy-server
 # Install pid directory
 install -d -m 755 %{buildroot}%{_localstatedir}/run/swift
-install -d -m 755 %{buildroot}%{_localstatedir}/run/swift/account-server
-install -d -m 755 %{buildroot}%{_localstatedir}/run/swift/auth-server
-install -d -m 755 %{buildroot}%{_localstatedir}/run/swift/container-server
-install -d -m 755 %{buildroot}%{_localstatedir}/run/swift/object-server
-install -d -m 755 %{buildroot}%{_localstatedir}/run/swift/proxy-server
 
 %clean
 rm -rf %{buildroot}
@@ -189,59 +197,81 @@ useradd -r -g swift -d %{_sharedstatedir}/swift -s /sbin/nologin \
 exit 0
 
 %post account
-/sbin/chkconfig --add %{name}-account
+/sbin/chkconfig --add %{name}-account-auditor
+/sbin/chkconfig --add %{name}-account-reaper
+/sbin/chkconfig --add %{name}-account-replicator
+/sbin/chkconfig --add %{name}-account-server
 
 %preun account
 if [ $1 = 0 ] ; then
-    /sbin/service %{name}-account stop >/dev/null 2>&1
-    /sbin/chkconfig --del %{name}-account
+    /sbin/service %{name}-account-auditor stop >/dev/null 2>&1
+    /sbin/service %{name}-account-reaper stop >/dev/null 2>&1
+    /sbin/service %{name}-account-replicator stop >/dev/null 2>&1
+    /sbin/service %{name}-account-server stop >/dev/null 2>&1
+    /sbin/chkconfig --del %{name}-account-auditor
+    /sbin/chkconfig --del %{name}-account-reaper
+    /sbin/chkconfig --del %{name}-account-replicator
+    /sbin/chkconfig --del %{name}-account-server
 fi
 
 %postun account
 if [ "$1" -ge "1" ] ; then
-    /sbin/service %{name}-account condrestart >/dev/null 2>&1 || :
-fi
-
-%post auth
-/sbin/chkconfig --add %{name}-auth
-
-%preun auth
-if [ $1 = 0 ] ; then
-    /sbin/service %{name}-auth stop >/dev/null 2>&1
-    /sbin/chkconfig --del %{name}-auth
-fi
-
-%postun auth
-if [ "$1" -ge "1" ] ; then
-    /sbin/service %{name}-auth condrestart >/dev/null 2>&1 || :
+    /sbin/service %{name}-account-auditor condrestart >/dev/null 2>&1 || :
+    /sbin/service %{name}-account-reaper condrestart >/dev/null 2>&1 || :
+    /sbin/service %{name}-account-replicator condrestart >/dev/null 2>&1 || :
+    /sbin/service %{name}-account-server condrestart >/dev/null 2>&1 || :
 fi
 
 %post container
-/sbin/chkconfig --add %{name}-container
+/sbin/chkconfig --add %{name}-container-auditor
+/sbin/chkconfig --add %{name}-container-replicator
+/sbin/chkconfig --add %{name}-container-server
+/sbin/chkconfig --add %{name}-container-updater
 
 %preun container
 if [ $1 = 0 ] ; then
-    /sbin/service %{name}-container stop >/dev/null 2>&1
-    /sbin/chkconfig --del %{name}-container
+    /sbin/service %{name}-container-auditor stop >/dev/null 2>&1
+    /sbin/service %{name}-container-replicator stop >/dev/null 2>&1
+    /sbin/service %{name}-container-server stop >/dev/null 2>&1
+    /sbin/service %{name}-container-updater stop >/dev/null 2>&1
+    /sbin/chkconfig --del %{name}-container-auditor
+    /sbin/chkconfig --del %{name}-container-replicator
+    /sbin/chkconfig --del %{name}-container-server
+    /sbin/chkconfig --del %{name}-container-updater
 fi
 
 %postun container
 if [ "$1" -ge "1" ] ; then
-    /sbin/service %{name}-container condrestart >/dev/null 2>&1 || :
+    /sbin/service %{name}-container-auditor condrestart >/dev/null 2>&1 || :
+    /sbin/service %{name}-container-replicator condrestart >/dev/null 2>&1 || :
+    /sbin/service %{name}-container-server condrestart >/dev/null 2>&1 || :
+    /sbin/service %{name}-container-updater condrestart >/dev/null 2>&1 || :
 fi
 
 %post object
-/sbin/chkconfig --add %{name}-object
+/sbin/chkconfig --add %{name}-object-auditor
+/sbin/chkconfig --add %{name}-object-replicator
+/sbin/chkconfig --add %{name}-object-server
+/sbin/chkconfig --add %{name}-object-updater
 
 %preun object
 if [ $1 = 0 ] ; then
-    /sbin/service %{name}-object stop >/dev/null 2>&1
-    /sbin/chkconfig --del %{name}-object
+    /sbin/service %{name}-object-auditor stop >/dev/null 2>&1
+    /sbin/service %{name}-object-replicator stop >/dev/null 2>&1
+    /sbin/service %{name}-object-server stop >/dev/null 2>&1
+    /sbin/service %{name}-object-updater stop >/dev/null 2>&1
+    /sbin/chkconfig --del %{name}-object-auditor
+    /sbin/chkconfig --del %{name}-object-replicator
+    /sbin/chkconfig --del %{name}-object-server
+    /sbin/chkconfig --del %{name}-object-updater
 fi
 
 %postun object
 if [ "$1" -ge "1" ] ; then
-    /sbin/service %{name}-object condrestart >/dev/null 2>&1 || :
+    /sbin/service %{name}-object-auditor condrestart >/dev/null 2>&1 || :
+    /sbin/service %{name}-object-replicator condrestart >/dev/null 2>&1 || :
+    /sbin/service %{name}-object-server condrestart >/dev/null 2>&1 || :
+    /sbin/service %{name}-object-updater condrestart >/dev/null 2>&1 || :
 fi
 
 %post proxy
@@ -261,10 +291,10 @@ fi
 %files
 %defattr(-,root,root,-)
 %doc AUTHORS LICENSE README
-%dir %{_datarootdir}/%{name}/functions
 %dir %attr(0755, swift, root) %{_localstatedir}/run/swift
 %dir %{_sysconfdir}/swift
 %dir %{python_sitelib}/swift
+%{_datarootdir}/%{name}/functions
 %{_bindir}/st
 %{_bindir}/swift-account-audit
 %{_bindir}/swift-account-stats-logger
@@ -276,17 +306,17 @@ fi
 %{_bindir}/swift-ring-builder
 %{_bindir}/swift-stats-populate
 %{_bindir}/swift-stats-report
+%{_bindir}/swift-dispersion-populate
+%{_bindir}/swift-dispersion-report
 %{python_sitelib}/swift/*.py*
 %{python_sitelib}/swift/common
 %{python_sitelib}/swift/stats
-%{python_sitelib}/swift-%{version}_dev-*.egg-info
+%{python_sitelib}/swift-%{version}-*.egg-info
 
 %files account
 %defattr(-,root,root,-)
 %doc etc/account-server.conf-sample
-%dir %{_initrddir}/%{name}-account
-%dir %attr(0755, swift, root) %{_localstatedir}/run/swift/account-server
-%dir %{_sysconfdir}/swift/account-server
+%{_initrddir}/%{name}-account-*
 %{_bindir}/swift-account-auditor
 %{_bindir}/swift-account-reaper
 %{_bindir}/swift-account-replicator
@@ -295,9 +325,6 @@ fi
 
 %files auth
 %defattr(-,root,root,-)
-%dir %{_initrddir}/%{name}-auth
-%dir %attr(0755, swift, root) %{_localstatedir}/run/swift/auth-server
-%dir %{_sysconfdir}/swift/auth-server
 %{_bindir}/swauth-add-account
 %{_bindir}/swauth-add-user
 %{_bindir}/swauth-cleanup-tokens
@@ -310,22 +337,19 @@ fi
 %files container
 %defattr(-,root,root,-)
 %doc etc/container-server.conf-sample
-%dir %{_initrddir}/%{name}-container
-%dir %attr(0755, swift, root) %{_localstatedir}/run/swift/container-server
-%dir %{_sysconfdir}/swift/container-server
+%{_initrddir}/%{name}-container-*
 %{_bindir}/swift-bench
 %{_bindir}/swift-container-auditor
 %{_bindir}/swift-container-server
 %{_bindir}/swift-container-replicator
+%{_bindir}/swift-container-stats-logger
 %{_bindir}/swift-container-updater
 %{python_sitelib}/swift/container
 
 %files object
 %defattr(-,root,root,-)
 %doc etc/account-server.conf-sample etc/rsyncd.conf-sample
-%dir %{_initrddir}/%{name}-object
-%dir %attr(0755, swift, root) %{_localstatedir}/run/swift/object-server
-%dir %{_sysconfdir}/swift/object-server
+%{_initrddir}/%{name}-object-*
 %{_bindir}/swift-object-auditor
 %{_bindir}/swift-object-info
 %{_bindir}/swift-object-replicator
@@ -336,9 +360,7 @@ fi
 %files proxy
 %defattr(-,root,root,-)
 %doc etc/proxy-server.conf-sample
-%dir %{_initrddir}/%{name}-proxy
-%dir %attr(0755, swift, root) %{_localstatedir}/run/swift/proxy-server
-%dir %{_sysconfdir}/swift/proxy-server
+%{_initrddir}/%{name}-proxy
 %{_bindir}/swift-proxy-server
 %{python_sitelib}/swift/proxy
 
@@ -349,6 +371,68 @@ fi
 %endif
 
 %changelog
+* Thu Jun 02 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.4.0-0.d1.1
+- Diablo-1 release
+
+* Wed May 25 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.18.bzr300
+- Update to bzr300
+
+* Tue May 24 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.17.bzr299
+- Update to bzr299
+
+* Tue May 24 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.16.bzr298
+- Update to bzr298
+
+* Fri May 20 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.15.bzr297
+- Update to bzr297
+
+* Thu May 19 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.14.bzr296
+- Update to bzr296
+
+* Thu May 19 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.13.bzr295
+- Update to bzr295
+
+* Wed May 18 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.12.bzr293
+- Update to bzr293
+
+* Tue May 17 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.11.bzr292
+- Update to bzr292
+
+* Tue May 17 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.10.bzr291
+- Update to bzr291
+
+* Fri May 13 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.9.bzr290
+- Update to bzr290
+
+* Thu May 12 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.8.bzr289
+- Update to bzr289
+
+* Sat May 07 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.7.bzr288
+- Update to bzr288
+
+* Fri May 06 2011 Jasper Capel <jasper.capel@spilgames.com> - 1.4.0-6.bzr287
+- Changed init-functions script to accomodate extra init scripts
+- Removed auth init script (there only is swauth now, which is loaded from
+  proxy)
+- Fixed proxy init script so it will still start with the changes to the
+  function script
+
+* Fri May 06 2011 Jasper Capel <jasper.capel@spilgames.com> - 1.4-0.5.bzr287
+- Added dependency on python-netifaces
+- Added dependency on python-paste-deploy
+- Added init scripts for swift-{container,object,account}-*
+- Removed unnecessary direcories
+- Removed %dir definition for components that are not directories 
+
+* Fri May 06 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.4.bzr287
+- Update to bzr287
+
+* Mon Apr 25 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.3.bzr286
+- Update to bzr286
+
+* Tue Apr 19 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.2.bzr281
+- Update to bzr281
+
 * Fri Apr 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.4-0.1.bzr268
 - Diablo versioning
 

@@ -2,7 +2,7 @@
 
 prj="nova"
 jenkins="localhost:8080"
-GithubUserProject="abrindeyev/openstack-nova-rhel6"
+GithubUserProject="griddynamics/openstack-rhel"
 TarballsHome="http://$prj.openstack.org/tarballs"
 SpecOrig="openstack-$prj.spec"
 

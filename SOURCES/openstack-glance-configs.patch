@@ -1,7 +1,25 @@
-diff -Naur glance-2011.2.orig/etc/glance.conf.sample glance-2011.2/etc/glance.conf.sample
---- glance-2011.2.orig/etc/glance.conf.sample	2011-03-15 20:47:15.000000000 +0300
-+++ glance-2011.2/etc/glance.conf.sample	2011-03-16 19:37:17.341493237 +0300
-@@ -64,7 +64,7 @@
+diff -Naur glance-2011.3/etc/glance-api.conf glance-2011.3.new/etc/glance-api.conf
+--- glance-2011.3/etc/glance-api.conf	2011-05-14 06:46:30.000000000 +0400
++++ glance-2011.3.new/etc/glance-api.conf	2011-05-17 16:53:35.000000000 +0400
+@@ -24,7 +24,7 @@
+ 
+ # Log to this file. Make sure you do not set the same log
+ # file for both the API and registry servers!
+-log_file = /var/log/glance/api.log
++log_file = /var/log/glance/glance-api.log
+ 
+ # ============ Filesystem Store Options ========================
+ 
+diff -Naur glance-2011.3/etc/glance-registry.conf glance-2011.3.new/etc/glance-registry.conf
+--- glance-2011.3/etc/glance-registry.conf	2011-05-14 06:46:30.000000000 +0400
++++ glance-2011.3.new/etc/glance-registry.conf	2011-05-17 16:53:50.000000000 +0400
+@@ -13,12 +13,12 @@
+ 
+ # Log to this file. Make sure you do not set the same log
+ # file for both the API and registry servers!
+-log_file = /var/log/glance/registry.log
++log_file = /var/log/glance/glance-registry.log
+ 
  # SQLAlchemy connection string for the reference implementation
  # registry server. Any valid SQLAlchemy connection string is fine.
  # See: http://www.sqlalchemy.org/docs/05/reference/sqlalchemy/connections.html#sqlalchemy.create_engine
