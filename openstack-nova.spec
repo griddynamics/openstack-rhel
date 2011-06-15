@@ -640,7 +640,7 @@ fi
 %files node-compute
 
 %changelog
-* Thu Jun 02 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.d1.1
+* Wed Jun 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110601.1130.1
 - Diablo-1 release
 
 * Wed Jun 01 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 2011.3-0.96.bzr1130
