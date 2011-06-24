@@ -7,7 +7,7 @@
 
 Name:             openstack-%{prj}
 Version:          2011.3
-Release:          0.20110601.139.1%{?dist}
+Release:          0.20110601.139.2%{?dist}
 Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages
@@ -54,7 +54,7 @@ Requires:         python-lockfile = 0.8
 Requires:         python-mox >= 0.5.0
 Requires:         python-routes
 Requires:         python-sqlalchemy >= 0.6.3
-Requires:         python-webob >= 1.0.7
+Requires:         python-webob >= 1.0.8
 
 %description -n   python-%{prj}
 The Glance project provides services for discovering, registering, and
@@ -186,6 +186,9 @@ fi
 %endif
 
 %changelog
+* Fri Jun 24 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110601.139.2
+- Fixed dependency on WebOb based on https://bugs.launchpad.net/glance/+bug/799008
+
 * Wed Jun 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110601.139.1
 - Diablo-1 release
 
