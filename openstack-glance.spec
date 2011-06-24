@@ -54,7 +54,7 @@ Requires:         python-lockfile = 0.8
 Requires:         python-mox >= 0.5.0
 Requires:         python-routes
 Requires:         python-sqlalchemy >= 0.6.3
-Requires:         python-webob
+Requires:         python-webob >= 1.0.8
 
 %description -n   python-%{prj}
 The Glance project provides services for discovering, registering, and
