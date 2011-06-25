@@ -1,13 +1,13 @@
-[openstack-nova]
-name=OpenStack Nova Compute
+[openstack]
+name=OpenStack Compute
 baseurl=http://yum.griddynamics.net/yum/diablo-1/openstack
 enabled=1
 gpgcheck=1
 metadata_expire=90
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-OPENSTACK
 
-[openstack-nova-deps]
-name=OpenStack Nova Compute Dependencies
+[openstack-deps]
+name=OpenStack Dependencies
 baseurl=http://yum.griddynamics.net/yum/master/deps
 enabled=1
 gpgcheck=1

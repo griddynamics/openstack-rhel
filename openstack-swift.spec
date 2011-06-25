@@ -6,7 +6,7 @@
 
 Name:             openstack-swift
 Version:          1.4.0
-Release:          0.d1.1%{?dist}
+Release:          0.20110531.303.1%{?dist}
 Summary:          OpenStack Object Storage (swift)
 
 Group:            Development/Languages
@@ -371,7 +371,7 @@ fi
 %endif
 
 %changelog
-* Thu Jun 02 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.4.0-0.d1.1
+* Wed Jun 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.4.0-0.20110531.303.1
 - Diablo-1 release
 
 * Wed May 25 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.18.bzr300
