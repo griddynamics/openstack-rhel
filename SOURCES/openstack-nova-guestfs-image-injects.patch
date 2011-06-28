@@ -214,10 +214,13 @@ diff -Naur nova-2011.3.orig/nova/virt/disk.py nova-2011.3/nova/virt/disk.py
 -    utils.execute('sudo', 'tee', netfile, process_input=net)
 diff -Naur nova-2011.3.orig/nova/virt/libvirt/connection.py nova-2011.3/nova/virt/libvirt/connection.py
 --- nova-2011.3.orig/nova/virt/libvirt/connection.py	2011-06-01 12:51:40.000000000 +0400
-+++ nova-2011.3/nova/virt/libvirt/connection.py	2011-06-15 14:11:49.000000000 +0400
-@@ -874,17 +874,21 @@
++++ nova-2011.3/nova/virt/libvirt/connection.py	2011-06-25 06:04:43.000000000 +0400
+@@ -873,18 +873,24 @@
+                    'netmask_v6': network_ref['netmask_v6']}
              nets.append(net_info)
  
++        net = []
++
          if have_injected_networks:
 -            net = str(Template(ifc_template,
 -                               searchList=[{'interfaces': nets,
