@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.20110601.1130.2%{?dist}
+Release:          0.20110601.1130.3%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -640,6 +640,9 @@ fi
 %files node-compute
 
 %changelog
+* Tue Jun 28 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110601.1130.3
+- Updated guestfs patch, kudos to Ilya Alekseyev.
+
 * Thu Jun 16 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110601.1130.2
 - Relaxed python-webob dep for python-nova package
 
