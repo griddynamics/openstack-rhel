@@ -430,18 +430,43 @@ if rpmquery openstack-nova-cc-config 1>&2 >/dev/null; then
 	
 	# Database init/migration
 	if [ $1 -gt 1 ]; then
-		current_version=$(%{_bindir}/nova-manage db version 2>/dev/null)
-		updated_version=$(cd %{python_sitelib}/nova/db/sqlalchemy/migrate_repo; %{__python} manage.py version)
-		if [ "$current_version" -ne "$updated_version" ]; then
-			echo "Performing Nova database upgrade"
-			%{_bindir}/nova-manage db sync
-		fi
+		db_sync
 	else
-		echo "DB init code, new installation"
-		%{_bindir}/nova-manage db sync
+		echo "New installation"
+		db_sync
 		echo "Please refer http://wiki.openstack.org/NovaInstall/RHEL6Notes for instructions"
 	fi
 fi
+
+db_sync() {
+	upgrade_db = 0
+	if   nova_option 'sql_connection' 'mysql://'; then
+		# Assuming that we have MySQL server on the same node with Cloud Controller
+		echo "Nova database: MySQL"
+		service mysqld status 2>&1 >/dev/null
+		if [ "$?" = 0 ]; then
+			upgrade_db = 1
+		else
+			echo "mysqld is not running, skipping Nova db sync"
+		fi
+	elif nova_option 'sql_connection' 'sqlite://'; then
+		echo "Nova database: SQLite"
+		upgrage_db = 1
+	else
+		echo "Nova database: UNSUPPORTED by this RPM postscript"
+		echo "Please ensure that it's running and migrate db"	
+	fi
+
+	if [ "$upgrade_db" -eq "1" ]; then
+		echo "Performing Nova database upgrade:"
+		%{_bindir}/nova-manage db sync
+	fi
+}
+
+nova_option () {
+	grep "$1" %{_sysconfdir}/nova/nova.conf | cut -d= -f2 | grep "$2" >/dev/null
+	return $?
+}
 
 # api
 
