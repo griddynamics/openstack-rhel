@@ -413,7 +413,7 @@ exit 0
 if ! fgrep '#includedir /etc/sudoers.d' /etc/sudoers 2>&1 >/dev/null; then
         echo '#includedir /etc/sudoers.d' >> /etc/sudoers
 fi
-if /usr/sbin/selinuxenabled; then
+if %{_sbindir}/selinuxenabled; then
 	echo -e "\033[47m\033[1;31m***************************************************\033[0m"
 	echo -e "\033[47m\033[1;31m*\033[0m \033[40m\033[1;31m                                                \033[47m\033[1;31m*\033[0m"
 	echo -e "\033[47m\033[1;31m*\033[0m \033[40m\033[1;31m >> \033[5mYou have SELinux enabled on your host !\033[25m <<  \033[47m\033[1;31m*\033[0m"
@@ -430,15 +430,15 @@ if rpmquery openstack-nova-cc-config 1>&2 >/dev/null; then
 	
 	# Database init/migration
 	if [ $1 -gt 1 ]; then
-		current_version=$(nova-manage db version 2>/dev/null)
+		current_version=$(%{_bindir}/nova-manage db version 2>/dev/null)
 		updated_version=$(cd %{python_sitelib}/nova/db/sqlalchemy/migrate_repo; %{__python} manage.py version)
 		if [ "$current_version" -ne "$updated_version" ]; then
 			echo "Performing Nova database upgrade"
-			/usr/bin/nova-manage db sync
+			%{_bindir}/nova-manage db sync
 		fi
 	else
 		echo "DB init code, new installation"
-		/usr/bin/nova-manage db sync
+		%{_bindir}/nova-manage db sync
 		echo "Please refer http://wiki.openstack.org/NovaInstall/RHEL6Notes for instructions"
 	fi
 fi
