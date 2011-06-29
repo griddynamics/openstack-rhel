@@ -39,8 +39,7 @@ install -p -D -m 600 %{SOURCE0} %{buildroot}%{_sysconfdir}/nova/nova.conf
 rm -rf %{buildroot}
 
 %files
-%defattr(-,nova,nobody,-)
-%config(noreplace) %{_sysconfdir}/nova/nova.conf
+%config(noreplace) %attr(0600, nova, nobody) %{_sysconfdir}/nova/nova.conf
 
 %changelog
 * Wed Apr 27 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-1
