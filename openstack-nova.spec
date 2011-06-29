@@ -6,13 +6,13 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.96.bzr1130%{?dist}
+Release:          0.20110629.1225.1%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-%{version}~bzr1130.tar.gz
+Source0:          http://nova.openstack.org/tarballs/nova-2011.3~d3~20110629.1225.tar.gz
 Source1:          %{name}-README.rhel6
 Source2:          %{name}-noVNC-snap2011.03.24.tgz
 Source6:          %{name}.logrotate
@@ -32,7 +32,7 @@ Source20:         %{name}-sudoers
 Source21:         %{name}-polkit.pkla
 Source22:         %{name}-rhel-ifc-template
 
-Patch1:           %{name}-rhel-config-paths.patch
+#Patch1:           %{name}-rhel-config-paths.patch
 Patch2:           %{name}-guestfs-image-injects.patch
 Patch3:           %{name}-bexar-libvirt.xml.template.patch
 Patch4:           %{name}-rhel-netcat.patch
@@ -314,7 +314,7 @@ This package contains documentation files for %{name}.
 %prep
 %setup -q -n nova-%{version}
 
-%patch1 -p1
+#patch1 -p1
 %patch2 -p1
 %patch3 -p1
 %patch4 -p0
@@ -579,6 +579,7 @@ fi
 %config(noreplace) %{_sysconfdir}/sudoers.d/%{name}
 %dir %attr(0755, nova, root) %{_localstatedir}/log/nova
 %dir %attr(0755, nova, root) %{_localstatedir}/run/nova
+%{_bindir}/instance-usage-audit
 %{_bindir}/nova-console
 %{_bindir}/nova-debug
 %{_bindir}/nova-logspool
