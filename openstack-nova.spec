@@ -147,7 +147,7 @@ Requires:         python-suds >= 0.4.0
 Requires:         python-tornado
 Requires:         python-twisted-core >= 10.1.0
 Requires:         python-twisted-web >= 10.1.0
-Requires:         python-webob = 0.9.8
+Requires:         python-webob
 Requires:         python-netaddr
 Requires:         python-glance
 Requires:         python-novaclient
