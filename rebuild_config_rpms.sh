@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ ! -d ".git" ]; then
-	echo "Need to run from Git repo openstack-nova-rhel6 !"
+	echo "Need to run from Git repo openstack-rhel !"
 	exit -1
 fi
 sandbox='/home/build/rpmbuild/RPMS/noarch'
