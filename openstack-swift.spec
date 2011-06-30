@@ -5,14 +5,14 @@
 %endif
 
 Name:             openstack-swift
-Version:          1.4
-Release:          0.18.bzr300%{?dist}
+Version:          1.4.1
+Release:          0.20110620.305.1%{?dist}
 Summary:          OpenStack Object Storage (swift)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://launchpad.net/swift
-Source0:          http://swift.openstack.org/tarballs/swift-%{version}-dev+bzr300.tar.gz
+Source0:          http://launchpad.net/swift/diablo/1.4.1/+download/swift-1.4.1.tar.gz
 Source1:          %{name}-functions
 Source2:          %{name}-account-auditor.init
 Source3:          %{name}-account-reaper.init
@@ -371,6 +371,9 @@ fi
 %endif
 
 %changelog
+* Fri Jul 01 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.4.1-0.20110620.305.1
+- Diablo-2 versioning
+
 * Wed May 25 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.18.bzr300
 - Update to bzr300
 
