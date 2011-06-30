@@ -73,18 +73,6 @@ in clusters for reliable, redundant, and large-scale storage of static objects.
 
 This package contains the %{name} account server.
 
-%package          auth
-Summary:          A swift auth server
-Group:            Applications/System
-
-Requires:         %{name} = %{version}-%{release}
-
-%description      auth
-OpenStack Object Storage (swift) aggregates commodity servers to work together
-in clusters for reliable, redundant, and large-scale storage of static objects.
-
-This package contains the %{name} auth server.
-
 %package          container
 Summary:          A swift container server
 Group:            Applications/System
@@ -295,7 +283,7 @@ fi
 %dir %{_sysconfdir}/swift
 %dir %{python_sitelib}/swift
 %{_datarootdir}/%{name}/functions
-%{_bindir}/st
+%{_bindir}/swift
 %{_bindir}/swift-account-audit
 %{_bindir}/swift-account-stats-logger
 %{_bindir}/swift-drive-audit
@@ -322,17 +310,6 @@ fi
 %{_bindir}/swift-account-replicator
 %{_bindir}/swift-account-server
 %{python_sitelib}/swift/account
-
-%files auth
-%defattr(-,root,root,-)
-%{_bindir}/swauth-add-account
-%{_bindir}/swauth-add-user
-%{_bindir}/swauth-cleanup-tokens
-%{_bindir}/swauth-delete-account
-%{_bindir}/swauth-delete-user
-%{_bindir}/swauth-list
-%{_bindir}/swauth-prep
-%{_bindir}/swauth-set-account-service
 
 %files container
 %defattr(-,root,root,-)
