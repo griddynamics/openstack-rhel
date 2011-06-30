@@ -1,6 +1,6 @@
 [openstack]
 name=OpenStack
-baseurl=http://yum.griddynamics.net/yum/master/openstack
+baseurl=http://yum.griddynamics.net/yum/diablo-2/openstack
 enabled=1
 gpgcheck=1
 metadata_expire=90
