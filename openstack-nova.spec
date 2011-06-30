@@ -579,7 +579,6 @@ fi
 %config(noreplace) %{_sysconfdir}/sudoers.d/%{name}
 %dir %attr(0755, nova, root) %{_localstatedir}/log/nova
 %dir %attr(0755, nova, root) %{_localstatedir}/run/nova
-%{_bindir}/instance-usage-audit
 %{_bindir}/nova-console
 %{_bindir}/nova-debug
 %{_bindir}/nova-logspool
