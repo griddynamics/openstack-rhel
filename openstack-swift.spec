@@ -141,7 +141,7 @@ This package contains documentation files for %{name}.
 %endif
 
 %prep
-%setup -q -n swift-%{version}-dev
+%setup -q -n swift-%{version}
 # Fix wrong-file-end-of-line-encoding warning
 dos2unix LICENSE
 
@@ -311,7 +311,7 @@ fi
 %{python_sitelib}/swift/*.py*
 %{python_sitelib}/swift/common
 %{python_sitelib}/swift/stats
-%{python_sitelib}/swift-%{version}_dev-*.egg-info
+%{python_sitelib}/swift-%{version}-*.egg-info
 
 %files account
 %defattr(-,root,root,-)
