@@ -40,6 +40,13 @@ install -p -D -m 600 %{SOURCE0} %{buildroot}%{_sysconfdir}/nova/nova.conf
 %clean
 rm -rf %{buildroot}
 
+%pre
+getent group nova >/dev/null || groupadd -r nova
+getent passwd nova >/dev/null || \
+useradd -r -g nova -G nova,nobody,qemu -d %{_sharedstatedir}/nova -s /sbin/nologin \
+-c "OpenStack Nova Daemons" nova
+exit 0
+
 %files
 %config(noreplace) %attr(0600, nova, nobody) %{_sysconfdir}/nova/nova.conf
 
