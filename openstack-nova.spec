@@ -434,7 +434,7 @@ if rpmquery openstack-nova-cc-config 1>&2 >/dev/null; then
 		echo "Please refer http://wiki.openstack.org/NovaInstall/RHEL6Notes for instructions"
 	fi
 
-	upgrade_db = 0
+	upgrade_db=0
 	if   nova_option 'sql_connection' 'mysql://'; then
 		# Assuming that we have MySQL server on the same node with Cloud Controller
 		echo "Nova database: MySQL"
