@@ -446,13 +446,13 @@ if rpmquery openstack-nova-cc-config 1>&2 >/dev/null; then
 		echo "Nova database: MySQL"
 		service mysqld status 2>&1 >/dev/null
 		if [ "$?" = 0 ]; then
-			upgrade_db = 1
+			upgrade_db=1
 		else
 			echo "mysqld is not running, skipping Nova db sync"
 		fi
 	elif nova_option 'sql_connection' 'sqlite://'; then
 		echo "Nova database: SQLite"
-		upgrage_db = 1
+		upgrage_db=1
 	else
 		echo "Nova database: UNSUPPORTED by this RPM postscript"
 		echo "Please ensure that it's running and migrate db"	
