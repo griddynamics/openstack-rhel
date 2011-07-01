@@ -410,6 +410,12 @@ useradd -r -g nova -G nova,nobody,qemu -d %{_sharedstatedir}/nova -s /sbin/nolog
 exit 0
 
 %post -p /bin/bash
+
+nova_option () {
+	grep "$1" %{_sysconfdir}/nova/nova.conf | cut -d= -f2 | grep "$2" >/dev/null
+	return $?
+}
+
 if ! fgrep '#includedir /etc/sudoers.d' /etc/sudoers 2>&1 >/dev/null; then
         echo '#includedir /etc/sudoers.d' >> /etc/sudoers
 fi
@@ -457,11 +463,6 @@ if rpmquery openstack-nova-cc-config 1>&2 >/dev/null; then
 		%{_bindir}/nova-manage db sync
 	fi
 fi
-
-nova_option () {
-	grep "$1" %{_sysconfdir}/nova/nova.conf | cut -d= -f2 | grep "$2" >/dev/null
-	return $?
-}
 
 # api
 
