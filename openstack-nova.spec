@@ -429,16 +429,11 @@ if rpmquery openstack-nova-cc-config 1>&2 >/dev/null; then
 	# Cloud controller node detected, assuming that is contains database
 	
 	# Database init/migration
-	if [ $1 -gt 1 ]; then
-		db_sync
-	else
+	if [ $1 -lt 2 ]; then
 		echo "New installation"
-		db_sync
 		echo "Please refer http://wiki.openstack.org/NovaInstall/RHEL6Notes for instructions"
 	fi
-fi
 
-db_sync() {
 	upgrade_db = 0
 	if   nova_option 'sql_connection' 'mysql://'; then
 		# Assuming that we have MySQL server on the same node with Cloud Controller
@@ -461,7 +456,7 @@ db_sync() {
 		echo "Performing Nova database upgrade:"
 		%{_bindir}/nova-manage db sync
 	fi
-}
+fi
 
 nova_option () {
 	grep "$1" %{_sysconfdir}/nova/nova.conf | cut -d= -f2 | grep "$2" >/dev/null
