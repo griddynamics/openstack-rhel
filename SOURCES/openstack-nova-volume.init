@@ -2,7 +2,7 @@
 #
 # nova-volume	OpenStack Nova Volume Worker
 #
-# chkconfig: 2345 96 81
+# chkconfig: 2345 96 04
 # description:	Volume Workers interact with iSCSI storage to manage    \
 #		LVM-based instance volumes. Specific functions include: \
 #		* Create Volumes                                        \

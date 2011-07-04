@@ -2,7 +2,7 @@
 #
 # nova-vncproxy	OpenStack Nova Console VNC Proxy
 #
-# chkconfig: 2345 96 81
+# chkconfig: 2345 96 04
 # description: OpenStack Nova Console VNC Proxy Server
 #
 # config: /etc/nova/nova.conf
