@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.20110629.1133.1%{?dist}
+Release:          0.20110629.1133.2%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -661,6 +661,9 @@ fi
 %files node-compute
 
 %changelog
+* Mon Jul 04 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110629.1133.2
+- Fixed initscripts for Nova services
+
 * Fri Jul 01 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110629.1133.1
 - Diablo-2 versioning
 
