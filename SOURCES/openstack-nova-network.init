@@ -2,7 +2,7 @@
 #
 # nova-network	OpenStack Nova Network Controller
 #
-# chkconfig: 2345 96 81
+# chkconfig: 2345 96 04
 # description: The Network Controller manages the networking resources \
 #              on host machines. The API server dispatches commands    \
 #              through the message queue, which are subsequently       \
