@@ -2,7 +2,7 @@
 #
 # glance-api	OpenStack Glance API Server
 #
-# chkconfig: 2345 96 81
+# chkconfig: 2345 96 04
 # description: OpenStack Glance API Server
 #
 # config: /etc/glance/glance-api.conf

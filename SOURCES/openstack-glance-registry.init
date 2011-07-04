@@ -2,7 +2,7 @@
 #
 # glance-registry	OpenStack Glance Registry reference server implementation
 #
-# chkconfig: 2345 96 81
+# chkconfig: 2345 96 04
 # description: OpenStack Glance Registry reference server implementation
 #
 # config: /etc/glance/glance-registry.conf

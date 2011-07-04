@@ -2,7 +2,7 @@
 #
 # nova-scheduler	OpenStack Nova Scheduler
 #
-# chkconfig: 2345 96 81
+# chkconfig: 2345 96 04
 # description: Determines which physical hardware to allocate to a virtual resource
 #
 # config: /etc/nova/nova.conf
