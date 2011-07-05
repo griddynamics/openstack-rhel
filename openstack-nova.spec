@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.20110629.1133.2%{?dist}
+Release:          0.20110629.1133.3%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -40,6 +40,7 @@ Patch5:           %{name}-rhel-ajaxterm-path.patch
 Patch6:           %{name}-s3server-quickfix.patch
 Patch7:           %{name}-scsi-target-utils-support.patch
 Patch8:           %{name}-rpc-improvements.patch
+Patch9:           %{name}-api-graceful-shutdown.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -322,6 +323,7 @@ This package contains documentation files for %{name}.
 %patch6 -p1
 %patch7 -p1
 #patch8 -p1
+%patch9 -p0
 
 install %{SOURCE1} README.rhel6
 
@@ -661,6 +663,9 @@ fi
 %files node-compute
 
 %changelog
+* Wed Jul 06 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110629.1133.3
+- Backported nova-api-graceful-shutdown patch LP#805604
+
 * Mon Jul 04 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110629.1133.2
 - Fixed initscripts for Nova services
 
