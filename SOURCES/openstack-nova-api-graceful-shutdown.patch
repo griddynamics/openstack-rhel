@@ -1,0 +1,52 @@
+=== modified file 'Authors'
+--- Authors	2011-06-28 00:23:19 +0000
++++ Authors	2011-07-05 09:54:30 +0000
+@@ -93,3 +93,4 @@
+ Youcef Laribi <Youcef.Laribi@eu.citrix.com>
+ Yuriy Taraday <yorik.sar@gmail.com>
+ Zhixue Wu <Zhixue.Wu@citrix.com>
++Nikolay Sokolov <nsokolov@griddynamics.com>
+
+=== modified file 'bin/nova-api'
+--- bin/nova-api	2011-06-28 22:26:08 +0000
++++ bin/nova-api	2011-07-05 09:54:30 +0000
+@@ -24,6 +24,7 @@
+ """
+ 
+ import os
++import signal
+ import sys
+ 
+ possible_topdir = os.path.normpath(os.path.join(os.path.abspath(
+@@ -34,11 +35,15 @@
+ import nova.service
+ import nova.utils
+ 
++def create_kill_handler(launcher):
++    def handle(signal, frame):
++        launcher.stop()
++    return handle
+ 
+ def main():
+     """Launch EC2 and OSAPI services."""
+     nova.utils.Bootstrapper.bootstrap_binary(sys.argv)
+-
++    
+     ec2 = nova.service.WSGIService("ec2")
+     osapi = nova.service.WSGIService("osapi")
+ 
+@@ -46,10 +51,9 @@
+     launcher.launch_service(ec2)
+     launcher.launch_service(osapi)
+ 
+-    try:
+-        launcher.wait()
+-    except KeyboardInterrupt:
+-        launcher.stop()
++    signal.signal(signal.SIGTERM, create_kill_handler(launcher))
++
++    launcher.wait()
+ 
+ 
+ if __name__ == '__main__':
+
