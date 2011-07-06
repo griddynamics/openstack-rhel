@@ -301,9 +301,6 @@ BuildRequires:    python-tornado
 BuildRequires:    python-twisted-core
 BuildRequires:    python-twisted-web
 BuildRequires:    python-webob
-BuildRequires:    python-lockfile
-BuildRequires:    intltool
-
 
 %description      doc
 Nova is a cloud computing fabric controller (the main part of an IaaS system)
