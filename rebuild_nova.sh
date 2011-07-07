@@ -1,5 +1,7 @@
 #!/bin/sh
 
+# test for git
+
 # If you need to build a specific version - specify it as bzr build # (digits only).
 # If build # is not specified, latest available tarball will be built
 
