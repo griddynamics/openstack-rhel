@@ -1,1 +1,3 @@
-Just for git test another
+#!/bin/bash
+
+echo "---------------- -jenkins started- -----------------"
