@@ -74,18 +74,20 @@ start() {
 
 stop() {
         echo -n "Stopping $prog: "
-#       if [ -n "`pidofproc -p $pidfile $binfile`" ] ; then
-#	killproc -p $pidfile $binfile
-
+    if [ -n "`pidofproc -p $pidfile $binfile`" ] ; then
+        killproc $pidfile
 #dirty fix. old script do not kill all processes
-    `killall -QUIT nova-api` && success ||  failure $"Stopping $prog";
+        killproc $binfile
 
+    else
+	failure $"Stopping $prog"
+    fi
     retval=$?
     [ $retval -eq 0 ] && rm -f $lckfile
     echo
     return $retval
 }
-
+                                                                                        
 rh_status() {
 	status -p $pidfile $binfile
 }
