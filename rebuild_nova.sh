@@ -3,11 +3,11 @@
 # If you need to build a specific version - specify it as ./build # (digits only).
 # If build # is not specified, latest available tarball will be built
 
-NOACTION=1
+NOACTION=n
 DEBUG=y
 
 TARBALLSHOME="http://nova.openstack.org/tarballs"
-CURVERSION=(`curl -s $TARBALLSHOME/?C=M\;O=D | grep -m 1 'nova-[0-9]' | perl -p -e 's!^.*nova-(\d+\.\d+~\w+)~(\d+\.\d+)\.tar\.gz.*$!\n$1 $2 $3 $4 $5\n!i'`)
+CURVERSION=(`curl -s $TARBALLSHOME/?C=M\;O=D | grep -m 1 'nova-[0-9]' | perl -p -e 's!^.*nova-(\d+\.\d+)~(\w+)~(\d+\.\d+)\.tar\.gz.*$!\n$1 $2 $3 $4 $5\n!i'`)
 
 if [ ! -d ".git" ]; then
         echo "Need to run from Git repo openstack-nova-rhel6 !"
@@ -17,7 +17,7 @@ fi
 if [ $1 ]; then
         BUILD=$1
 else
-        BUILD=${CURVERSION[1]}
+        BUILD=${CURVERSION[2]}
 fi
 
 
@@ -28,6 +28,7 @@ RPMSANDBOX=`grep topdir $HOME/.rpmmacros 2>/dev/null | awk '{print ($2)}'`
 
 ##  --- MY VARS --
 
+RPMMOCK=$RPMSANDBOX/MOCK
 
 OLDSPEC="openstack-nova.spec"
 OLDVER=$(grep '^Version:' $OLDSPEC | sed 's/^Version:\s\+//')
@@ -35,18 +36,19 @@ OLDRELEASE=$(grep '^Release:' $OLDSPEC | sed 's/^Release:\s\+//' | sed 's/%{?dis
 
 BUILDSPEC="$RPMSANDBOX/SPECS/$OLDSPEC"
 NEWVER=${CURVERSION[0]}
-NEWRELEASE=${CURVERSION[1]}
+BR=${CURVERSION[1]}
+NEWRELEASE=${CURVERSION[2]}
 
-NEWBUILDFILE="nova-$NEWVER~$BUILD.tar.gz"
+NEWBUILDFILE="nova-$NEWVER~$BR~$BUILD.tar.gz"
 RPMSRC="$RPMSANDBOX/SOURCES/$NEWBUILDFILE"
 TARBALLURL="$TARBALLSHOME/$NEWBUILDFILE"
-BUILDLOG=/tmp/nova-trunk-build-$BUILD.log
+BUILDLOG='mktemp'
 
 [ $DEBUG ] && echo "CURVERSION=${CURVERSION[@]}"
 [ $DEBUG ] && echo "RPMSANDBOX = $RPMSANDBOX"
 [ $DEBUG ] && echo "OLDVER = $OLDVER"
 [ $DEBUG ] && echo "OLDRELEASE = $OLDRELEASE"
-[ $DEBUG ] && echo "NEWVER = $NEWVER"
+[ $DEBUG ] && echo "NEWVER = 0.$NEWVER"
 [ $DEBUG ] && echo "NEWRELEASE = $NEWRELEASE"
 [ $DEBUG ] && echo "TARBALLURL = $TARBALLURL"
 
@@ -80,6 +82,7 @@ if [ "$GITDEVBRANCH" == "$GITCURBRANCH" ]; then
 #       if [ "$SPECBUILD" -ne "$BUILD" ]; then
 #               # Need to increase build in specfile and update changelog
 #               [ $NOACTION ] && perl -pi -e 's,^(Release:.+bzr)\d+,${1}'$BUILD',' $NOVASPECORIG
+                perl -pi -e 's,^(Version:).*$,${1}\t'0\.$NEWVER'%{\?dist},' $OLDSPEC
                 perl -pi -e 's,^(Release:).*%{\?dist}$,${1}\t'$BUILD'%{\?dist},' $OLDSPEC
 #               [ $NOACTION ] && rpmdev-bumpspec --comment="- Update to bzr$BUILD" $NOVASPECORIG
 #               [ $DEBUG ] && echo "Comment to spec =  Update to bzr$BUILD"
@@ -141,7 +144,7 @@ else
 fi
 
 [ $DEBUG ] &&  echo "Building SRPM.."
-[ $NOACTION ] && rpmbuild --quiet -bs $OLDSPEC |grep Wrote:
+[ $NOACTION ] && rpmbuild --quiet -bs $OLDSPEC
 
 [ $DEBUG ] &&  echo "Signing RPM.."
 # fix it. Neet rpmbuild output
@@ -156,3 +159,8 @@ fi
 [ $NOACTION ] && rm -fr $REPOPATH/python-nova-$OLDVER-*.rpm $REPOPATH/openstack-nova-$OLDVER-*.rpm $REPOPATH/openstack-nova-{api,compute,doc,instancemonitor,network,noVNC,objectstore,scheduler,volume}-$OLDVER-*.rpm $REPOPATH/openstack-nova-node-*-$OLDVER-*.rpm
 
 [ $NOACTION ] && for FILE in $DONERPM; do  mv $FILE "$REPOPATH";  done;
+
+[ $DEBUG ] &&  echo "Generating RPM for RHEL 6.1.."
+
+cp $RPMSANDBOX/SRPMS/openstack-nova-*-$NEWRELEASE.*.src.rpm /tmp/
+[ $NOACTION ] && sudo  mock /tmp/openstack-nova-*-$NEWRELEASE.*.src.rpm
