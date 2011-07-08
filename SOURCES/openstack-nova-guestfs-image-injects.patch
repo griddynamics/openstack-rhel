@@ -35,7 +35,7 @@ diff -Naur nova-2011.3.orig/nova/virt/disk.py nova-2011.3/nova/virt/disk.py
  
  
 -def inject_data(image, key=None, net=None, partition=None, nbd=False):
-+def inject_data(image, key=None, net=[], partition=None, nbd=False):
++def inject_data(image, key=None, nets=[], partition=None, nbd=False):
      """Injects a ssh key and optionally net data into a disk image.
 -
 -    it will mount the image as a fully partitioned disk and attempt to inject
