@@ -79,14 +79,14 @@ if [ "$GITDEVBRANCH" == "$GITCURBRANCH" ]; then
 #       SPECBUILD=$(echo "$SPECRELEASE" | cut -d. -f3 | sed 's/bzr//')
 #       [ $DEBUG ] && echo "SPECRELEASE = $SPECRELEASE"
 #       [ $DEBUG ] && echo "SPECBUILD = $SPECBUILD"
-#       if [ "$SPECBUILD" -ne "$BUILD" ]; then
+       if [ "$OLDVER" -ne "$NEWVER" ]; then
 #               # Need to increase build in specfile and update changelog
 #               [ $NOACTION ] && perl -pi -e 's,^(Release:.+bzr)\d+,${1}'$BUILD',' $NOVASPECORIG
                 perl -pi -e 's,^(Version:).*$,${1}\t'$NEWVER',' $OLDSPEC
                 perl -pi -e 's,^(Release:).*%{\?dist}$,${1}\t'0\.$BUILD'%{\?dist},' $OLDSPEC
-#               [ $NOACTION ] && rpmdev-bumpspec --comment="- Update to bzr$BUILD" $NOVASPECORIG
+               [ $NOACTION ] && rpmdev-bumpspec --comment="- Update to $BUILD" $OLDSPEC
 #               [ $DEBUG ] && echo "Comment to spec =  Update to bzr$BUILD"
-#       fi
+       fi
 else
         [ $DEBUG ] && echo "There is NO new build - $BUILD"
         have_trunk=0
@@ -113,10 +113,10 @@ if [ "$?" != "0" ]; then
 else
     # Build success
     [ $DEBUG ] &&  echo "Build success. Commiting new SPEC."
-#    [ $NOACTION ] && git add "$OLDSPEC"
-#    [ $NOACTION ] && git commit -m "Update to $BUILD"
+    [ $NOACTION ] && git add "$OLDSPEC"
+    [ $NOACTION ] && git commit -m "Update to $BUILD"
         if [ "$?" != "1" ]; then
-#       [ $NOACTION ] && git push
+       [ $NOACTION ] && git push
                 if [ "$?" != "0" ]; then
                         # Somebody pushed a commit to origin since we last time pulled.
                         # Need to check - if that commit was to our file or to some other file?
@@ -126,16 +126,16 @@ else
                         if [[ "$LastRepoCommit" != "$LastSpecCommit" ]]; then
                                 # Last Git repo commit was not to our specfile
                                 # Probably we can safely do git pull to merge following by git push
-#                               [ $NOACTION ] && git pull
+                               [ $NOACTION ] && git pull
                                 if [ "$?" != "0" ]; then
                                         echo "Sorry, automatic merge failed"
                                         echo "Human intervention required, giving up here"
                                         exit -1
                                 fi
-#                               [ $NOACTION ] && git push
+                               [ $NOACTION ] && git push
                         else
                                 # Last commit was to our specfile
-#                               [ $NOACTION ] && git pull
+                               [ $NOACTION ] && git pull
                                 echo "There should be a conflict above, please fix by hands and commit"
                                 exit -1
                         fi
