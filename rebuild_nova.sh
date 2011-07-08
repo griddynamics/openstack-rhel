@@ -82,8 +82,8 @@ if [ "$GITDEVBRANCH" == "$GITCURBRANCH" ]; then
 #       if [ "$SPECBUILD" -ne "$BUILD" ]; then
 #               # Need to increase build in specfile and update changelog
 #               [ $NOACTION ] && perl -pi -e 's,^(Release:.+bzr)\d+,${1}'$BUILD',' $NOVASPECORIG
-                perl -pi -e 's,^(Version:).*$,${1}\t'$NEWVER'%{\?dist},' $OLDSPEC
-                perl -pi -e 's,^(Release:).*%{\?dist}$,${1}\t0\.'$BUILD'%{\?dist},' $OLDSPEC
+                perl -pi -e 's,^(Version:).*$,${1}\t'$NEWVER',' $OLDSPEC
+                perl -pi -e 's,^(Release:).*%{\?dist}$,${1}\t'0\.$BUILD'%{\?dist},' $OLDSPEC
 #               [ $NOACTION ] && rpmdev-bumpspec --comment="- Update to bzr$BUILD" $NOVASPECORIG
 #               [ $DEBUG ] && echo "Comment to spec =  Update to bzr$BUILD"
 #       fi
@@ -162,5 +162,6 @@ fi
 
 [ $DEBUG ] &&  echo "Generating RPM for RHEL 6.1.."
 
-cp $RPMSANDBOX/SRPMS/openstack-nova-*-$NEWRELEASE.*.src.rpm /tmp/
-[ $NOACTION ] && sudo  mock /tmp/openstack-nova-*-$NEWRELEASE.*.src.rpm
+rm -f /tmp/openstack-nova-*-0.$NEWRELEASE.*.src.rpm
+cp $RPMSANDBOX/SRPMS/openstack-nova-*-0.$NEWRELEASE.*.src.rpm /tmp/
+[ $NOACTION ] && sudo  mock /tmp/openstack-nova-*-0.$NEWRELEASE.*.src.rpm
