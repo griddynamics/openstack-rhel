@@ -9,5 +9,5 @@ SpecOrig="openstack-$prj.spec"
 abspath="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
 dirname="$(dirname $abspath)"
 cd "$dirname" || exit -1
-source triggers
+source new_triggers
 run_trigger
