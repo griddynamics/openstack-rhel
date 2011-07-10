@@ -1,0 +1,22 @@
+#!/bin/bash
+
+source nova.trigger.conf
+source build_helpers
+
+
+# If you need to build a specific version - specify it as ./build release_num (digits only).
+# If build # is not specified, latest available tarball will be built
+
+[ $1 ] && ActualRelease=$1
+
+check_for_update
+check_enviroment
+update_spec
+
+get_tarball
+create_srpm
+create_rpm || undo_changes
+sign_rpm
+update_repo
+#do_mock
+#|| undo
