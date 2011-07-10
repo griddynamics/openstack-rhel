@@ -1,7 +1,14 @@
 #!/bin/bash
 
-prj="nova"
+prj="swift"
 source trigger.conf
+
+CurTarballVer=(`curl -s $TarballsHome/?C=M\;O=D| grep -m 1 swift-[0-9] | perl -p -e 's!^.*swift-(\d+\.\d+\.\d+)~(\d+\.\d+)\.tar\.gz.*$!\n$1 $2 $3 $4 $5\n!i'`)
+
+ActualVersion=${CurTarballVer[0]}
+ActualRelease=$ReleasePreSymbol${CurTarballVer[1]}
+ActualTarBall="$prj-$ActualVersion~${CurTarballVer[1]}.tar.gz"
+
 source build_helpers
 
 
@@ -26,7 +33,7 @@ case "$1" in
     check)
 	check_for_update 
 	curl -s "http://$jenkins/job/$JobName/build"
-	[ $Debug ] && echo "Fire jenkins to build  $JobName"
+	[ $Debug ] && echo "Fire jenkins to build $JobName"
 	 exit 0
         ;;
     release)

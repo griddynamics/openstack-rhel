@@ -5,14 +5,14 @@
 %endif
 
 Name:             openstack-swift
-Version:          1.4
-Release:          0.18.bzr300%{?dist}
+Version:	1.4.2
+Release:	20110630.322%{?dist}
 Summary:          OpenStack Object Storage (swift)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://launchpad.net/swift
-Source0:          http://swift.openstack.org/tarballs/swift-%{version}-dev+bzr300.tar.gz
+Source0:          http://swift.openstack.org/tarballs/swift-1.4.2~20110630.322.tar.gz  
 Source1:          %{name}-functions
 Source2:          %{name}-account-auditor.init
 Source3:          %{name}-account-reaper.init
@@ -129,7 +129,7 @@ This package contains documentation files for %{name}.
 %endif
 
 %prep
-%setup -q -n swift-%{version}-dev
+%setup -q -n swift-%{version}
 # Fix wrong-file-end-of-line-encoding warning
 dos2unix LICENSE
 
@@ -285,12 +285,12 @@ fi
 %{_datarootdir}/%{name}/functions
 %{_bindir}/swift
 %{_bindir}/swift-account-audit
-%{_bindir}/swift-account-stats-logger
+#%{_bindir}/swift-account-stats-logger
 %{_bindir}/swift-drive-audit
 %{_bindir}/swift-get-nodes
 %{_bindir}/swift-init
-%{_bindir}/swift-log-stats-collector
-%{_bindir}/swift-log-uploader
+#%{_bindir}/swift-log-stats-collector
+#%{_bindir}/swift-log-uploader
 %{_bindir}/swift-ring-builder
 %{_bindir}/swift-stats-populate
 %{_bindir}/swift-stats-report
@@ -298,8 +298,8 @@ fi
 %{_bindir}/swift-dispersion-report
 %{python_sitelib}/swift/*.py*
 %{python_sitelib}/swift/common
-%{python_sitelib}/swift/stats
-%{python_sitelib}/swift-%{version}_dev-*.egg-info
+#%{python_sitelib}/swift/stats
+%{python_sitelib}/swift-%{version}-*.egg-info
 
 %files account
 %defattr(-,root,root,-)
@@ -319,7 +319,7 @@ fi
 %{_bindir}/swift-container-auditor
 %{_bindir}/swift-container-server
 %{_bindir}/swift-container-replicator
-%{_bindir}/swift-container-stats-logger
+#%{_bindir}/swift-container-stats-logger
 %{_bindir}/swift-container-updater
 %{python_sitelib}/swift/container
 
