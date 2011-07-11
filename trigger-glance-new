@@ -1,8 +1,8 @@
 #!/bin/bash
 
 prj="glance"
-source trigger.conf
-source build_helpers
+source /var/lib/jenkins/jobs/nova-trunk/workspace/trigger.conf
+source /var/lib/jenkins/jobs/nova-trunk/workspace/build_helpers
 
 
 # If you need to build a specific version - specify it as ./build release_num (digits only).
