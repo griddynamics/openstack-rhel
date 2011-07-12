@@ -1,4 +1,6 @@
+
 run_trigger() {
+
 	GitDevBranchName="master"
 	if [[ "$dirname" =~ /jobs/.*/workspace$ ]]
 	then
@@ -40,16 +42,29 @@ run_trigger() {
 		FireNewBuild=1
 	fi
 
+	
+	
 	if [[ "$GitCurBranch" == "$GitDevBranchName" ]]; then
+		CurTarballVer=(`curl -s $TarballsHome/?C=M\;O=D | grep -m 1 'nova-[0-9]' | perl -p -e 's!^.*nova-(\d+\.\d+)~(\w+)~(\d+\.\d+)\.tar\.gz.*$!\n$1 $2 $3 $4 $5\n!i'`)
+
 		# We are on development version (trunk)
 		# That means that we need also to consider
 		# upstream tarballs as trigger for build
-		SpecVer=$(grep '^Version:' $SpecOrig | sed 's/^Version:\s\+//')
-		SpecRelease=$(grep '^Release:' $SpecOrig | sed 's/^Release:\s\+//' | sed 's/%{?dist}$//')
+		#SpecVer=$(grep '^Version:' $SpecOrig | sed 's/^Version:\s\+//')
+		#SpecRelease=$(grep '^Release:' $SpecOrig | sed 's/^Release:\s\+//' | sed 's/%{?dist}$//')
 
-		Build="$(curl -s $TarballsHome'/?C=M;O=D' | grep $SpecVer | grep bzr | perl -pi -e 's/^.*bzr(\d+).*$/$1/' | head -n 1)"
-		OurBuild=$(echo "$SpecRelease" | cut -d. -f3 | sed 's/bzr//')
-		if [[ "$Build" -ne "$OurBuild" ]]; then
+		#Build="$(curl -s $TarballsHome'/?C=M;O=D' | grep $SpecVer | grep bzr | perl -pi -e 's/^.*bzr(\d+).*$/$1/' | head -n 1)"
+		#OurBuild=$(echo "$SpecRelease" | cut -d. -f3 | sed 's/bzr//')
+		
+		NewRelease=${CurTarballVer[2]}
+		OldRelease=$(grep '^Release:' $SpecOrig | sed 's/^Release:\s\+//' | sed 's/%{?dist}$//')
+		
+		
+		echo "OldRelease = $OldRelease"
+		echo "NewRelease = $NewRelease"
+		
+		
+		if [[ "$OldRelease" != 0."$NewRelease" ]]; then
 			# We are behind trunk - need to fire a new build
 			FireNewBuild=1
 		fi
@@ -58,5 +73,6 @@ run_trigger() {
 	if [[ "$FireNewBuild" == 1 ]];
 	then
 		curl -s "http://$jenkins/job/$JobName/build"
+		echo "Fire jenkins!"
 	fi
 }
