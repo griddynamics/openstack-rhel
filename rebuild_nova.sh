@@ -79,7 +79,7 @@ if [ "$GITDEVBRANCH" == "$GITCURBRANCH" ]; then
 #       SPECBUILD=$(echo "$SPECRELEASE" | cut -d. -f3 | sed 's/bzr//')
 #       [ $DEBUG ] && echo "SPECRELEASE = $SPECRELEASE"
 #       [ $DEBUG ] && echo "SPECBUILD = $SPECBUILD"
-       if [ "$OLDVER" -ne "$NEWVER" ]; then
+       if [ "$OLDVER" != "$NEWVER" ]; then
 #               # Need to increase build in specfile and update changelog
 #               [ $NOACTION ] && perl -pi -e 's,^(Release:.+bzr)\d+,${1}'$BUILD',' $NOVASPECORIG
                 perl -pi -e 's,^(Version:).*$,${1}\t'$NEWVER',' $OLDSPEC
