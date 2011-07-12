@@ -5,14 +5,14 @@
 %endif
 
 Name:             openstack-nova
-Version:          2011.3
-Release:          0.20110629.1225.1%{?dist}
+Version:	2011.3
+Release:	0.20110711.1265%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-2011.3~d3~20110629.1225.tar.gz
+Source0:          http://nova.openstack.org/tarballs/nova-2011.3~d3~20110711.1265.tar.gz
 Source1:          %{name}-README.rhel6
 Source2:          %{name}-noVNC-snap2011.03.24.tgz
 Source6:          %{name}.logrotate
@@ -304,7 +304,6 @@ BuildRequires:    python-webob
 BuildRequires:    python-lockfile
 BuildRequires:    intltool
 
-
 %description      doc
 Nova is a cloud computing fabric controller (the main part of an IaaS system)
 built to match the popular AWS EC2 and S3 APIs. It is written in Python, using
@@ -318,7 +317,7 @@ This package contains documentation files for %{name}.
 %setup -q -n nova-%{version}
 
 #patch1 -p1
-%patch2 -p1
+#%patch2 -p1
 %patch3 -p1
 %patch4 -p0
 %patch5 -p0
@@ -412,13 +411,7 @@ useradd -r -g nova -G nova,nobody,qemu -d %{_sharedstatedir}/nova -s /sbin/nolog
 -c "OpenStack Nova Daemons" nova
 exit 0
 
-%post -p /bin/bash
-
-nova_option () {
-	grep "$1" %{_sysconfdir}/nova/nova.conf | cut -d= -f2 | grep "$2" >/dev/null
-	return $?
-}
-
+%post
 if ! fgrep '#includedir /etc/sudoers.d' /etc/sudoers 2>&1 >/dev/null; then
         echo '#includedir /etc/sudoers.d' >> /etc/sudoers
 fi
@@ -438,24 +431,29 @@ if rpmquery openstack-nova-cc-config 1>&2 >/dev/null; then
 	# Cloud controller node detected, assuming that is contains database
 	
 	# Database init/migration
-	if [ $1 -lt 2 ]; then
+	if [ $1 -gt 1 ]; then
+		db_sync
+	else
 		echo "New installation"
+		db_sync
 		echo "Please refer http://wiki.openstack.org/NovaInstall/RHEL6Notes for instructions"
 	fi
+fi
 
-	upgrade_db=0
+db_sync() {
+	upgrade_db = 0
 	if   nova_option 'sql_connection' 'mysql://'; then
 		# Assuming that we have MySQL server on the same node with Cloud Controller
 		echo "Nova database: MySQL"
 		service mysqld status 2>&1 >/dev/null
 		if [ "$?" = 0 ]; then
-			upgrade_db=1
+			upgrade_db = 1
 		else
 			echo "mysqld is not running, skipping Nova db sync"
 		fi
 	elif nova_option 'sql_connection' 'sqlite://'; then
 		echo "Nova database: SQLite"
-		upgrage_db=1
+		upgrage_db = 1
 	else
 		echo "Nova database: UNSUPPORTED by this RPM postscript"
 		echo "Please ensure that it's running and migrate db"	
@@ -465,7 +463,12 @@ if rpmquery openstack-nova-cc-config 1>&2 >/dev/null; then
 		echo "Performing Nova database upgrade:"
 		%{_bindir}/nova-manage db sync
 	fi
-fi
+}
+
+nova_option () {
+	grep "$1" %{_sysconfdir}/nova/nova.conf | cut -d= -f2 | grep "$2" >/dev/null
+	return $?
+}
 
 # api
 
@@ -584,6 +587,7 @@ fi
 %{_bindir}/nova-logspool
 %{_bindir}/nova-manage
 %{_bindir}/nova-spoolsentry
+%{_bindir}/instance-usage-audit
 %{_bindir}/stack
 %{_datarootdir}/nova
 %defattr(-,nova,nobody,-)
@@ -599,8 +603,8 @@ fi
 %{_bindir}/nova-vncproxy
 %{_initrddir}/%{name}-vncproxy
 %{_sharedstatedir}/nova/noVNC
-%doc %{_sharedstatedir}/nova/noVNC/LICENSE.txt
-%doc %{_sharedstatedir}/nova/noVNC/README.md
+#%doc %{_sharedstatedir}/nova/noVNC/LICENSE.txt
+#%doc %{_sharedstatedir}/nova/noVNC/README.md
 
 %files -n python-nova
 %defattr(-,root,root,-)
