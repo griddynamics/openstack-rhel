@@ -1,6 +1,6 @@
 #!/bin/bash
 
-prj="nova"
+prj="glance"
 source trigger.conf
 source build_helpers
 

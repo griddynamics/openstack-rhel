@@ -42,7 +42,6 @@ check_enviroment() {
 
     #Check if job is running or fail
     if [[ "$dirname" =~ /jobs/.*/workspace$ ]]; then
-        JobName="$(echo $dirname | sed 's/^.*\/jobs\/\([^/]\+\)\/workspace$/\1/')"
         # Query job status
         JobInQueue="$(curl -s http://$jenkins/job/$JobName/api/json | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'inQueue'}")"
         if [[ "$JobInQueue" == 1 ]]; then
@@ -109,8 +108,7 @@ create_rpm() {
 get_tarball() {
 	[ $Debug ] &&  echo "Retriving $TarballsHome/$ActualTarBall"
         if [ ! -f "$RpmTree/SOURCES/$ActualTarBall" ]; then
-    	    echo "SRC = $RpmTree/SOURCE/$ActualTarBall"
-            wget -O "$RpmTree/SOURCES" "$TarballsHome/$ActualTarBall"
+            wget -O "$RpmTree/SOURCES/$ActualTarBall" "$TarballsHome/$ActualTarBall" || ( echo "Retriving $TarballsHome/$ActualTarBall fail" ; exit 0 )
         fi
 }
 
