@@ -22,8 +22,8 @@
 #%define mod_name openstack-openstackx
 
 Name:           openstackx
-Release:        2011.07.13
-Version:        0.01
+Release:	0.20110714.21%{?dist}
+Version:	0.01
 Url:            http://github.com/cloudbuilders/openstackx/
 Summary:        Python bindings to the OS API
 License:        Apache 2.0
@@ -39,6 +39,19 @@ Requires:       python-prettytable python-httplib2 python-argparse
 %description
 Python bindings to the OS API
 
+%package django-extension
+Summary:	extension for openstack nova
+Group:		Application/System
+
+%description django-extension
+package dependancy for openstack-dashboard
+
+%package openstackx
+Summary:	extension for openstack nova
+Group:		Application/System
+
+%description openstackx
+package dependancy for openstack-dashboard
 
 %prep
 %setup -q -n %{name}-%{version}

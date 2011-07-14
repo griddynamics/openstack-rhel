@@ -99,6 +99,12 @@ create_rpm() {
         exit -1
     else
         [ $Debug ] && echo "Build success. Commiting new SPEC."
+    fi
+    DONERPM="$(cat $BuildLog |grep 'Wrote:' | sed 's/Wrote://')"
+    [ $Debug ] &&  echo "RPM Done: $DONERPM"
+}
+
+commit_spec() {
         git add "$OurSpec"
 	git commit -m "Update to $ActualRelease"
         if [ "$?" != "1" ]; then 
@@ -107,9 +113,7 @@ create_rpm() {
         if [ "$?" != "0" ]; then 
     	    check_changes 
 	fi
-    fi
-    DONERPM="$(cat $BuildLog |grep 'Wrote:' | sed 's/Wrote://')"
-    [ $Debug ] &&  echo "RPM Done: $DONERPM"
+
 }
 
 get_tarball() {
@@ -124,7 +128,6 @@ get_tarball() {
 sign_rpm() {
     [ $Debug ] &&  echo "Signing RPMs.."
     for fn in $RpmTree/RPMS/noarch/*$ActualRelease*.rpm; do ./sign_rpm $fn; done
-
 }
 
 
@@ -184,4 +187,9 @@ update_repo() {
 
 get_git() {
     [ $Debug ] &&  echo "Getting repo http://github.com/$GithubUserProject"
+    [ ! -f "/tmp/$prj-$ActualVersion" ] && mkdir "/tmp/$prj-$ActualVersion" ||exit -1
+    git clone "https://github.com/$GithubUserProject" "/tmp/$prj-$ActualVersion"
+    tar -czf "$RpmTree/SOURCES/$prj-$ActualVersion.tar.gz" -C "/tmp" --strip-components=1 "$prj-$ActualVersion"
+    rm -rf "/tmp/$prj-$ActualVersion"
+    [ $Debug ] && echo "TarBall= $RpmTree/SOURCES/$prj-$ActualVersion.tar.gz"
 }
