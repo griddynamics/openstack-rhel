@@ -1,5 +1,10 @@
 #!/bin/bash
 
+abspath="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
+dirname="$(dirname $abspath)"
+cd "$dirname" || exit -1
+
+
 prj="nova"
 source trigger.conf
 source build_helpers

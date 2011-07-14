@@ -1,5 +1,11 @@
 #!/bin/bash
 
+
+abspath="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
+dirname="$(dirname $abspath)"
+cd "$dirname" || exit -1
+
+
 prj="swift"
 source trigger.conf
 
