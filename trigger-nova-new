@@ -1,8 +1,13 @@
 #!/bin/bash
 
+abspath="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
+dirname="$(dirname $abspath)"
+cd "$dirname" || exit -1
+
+
 prj="nova"
-source /var/lib/jenkins/jobs/nova-trunk/workspace/trigger.conf
-source /var/lib/jenkins/jobs/nova-trunk/workspace/build_helpers
+source trigger.conf
+source build_helpers
 
 
 # If you need to build a specific version - specify it as ./build release_num (digits only).

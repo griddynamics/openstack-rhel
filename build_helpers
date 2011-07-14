@@ -181,3 +181,9 @@ update_repo() {
     for FILE in $DONERPM; do  mv $FILE "$RepoPath";  done;
 
 }
+
+get_git(){
+    
+
+
+}

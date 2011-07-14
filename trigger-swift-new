@@ -1,7 +1,13 @@
 #!/bin/bash
 
+
+abspath="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
+dirname="$(dirname $abspath)"
+cd "$dirname" || exit -1
+
+
 prj="swift"
-source /var/lib/jenkins/jobs/nova-trunk/workspace/trigger.conf
+source trigger.conf
 
 CurTarballVer=(`curl -s $TarballsHome/?C=M\;O=D| grep -m 1 swift-[0-9] | perl -p -e 's!^.*swift-(\d+\.\d+\.\d+)~(\d+\.\d+)\.tar\.gz.*$!\n$1 $2 $3 $4 $5\n!i'`)
 
@@ -9,7 +15,7 @@ ActualVersion=${CurTarballVer[0]}
 ActualRelease=$ReleasePreSymbol${CurTarballVer[1]}
 ActualTarBall="$prj-$ActualVersion~${CurTarballVer[1]}.tar.gz"
 
-source /var/lib/jenkins/jobs/nova-trunk/workspace/build_helpers
+source build_helpers
 
 
 # If you need to build a specific version - specify it as ./build release_num (digits only).
