@@ -99,11 +99,14 @@ create_rpm() {
         exit -1
     else
         [ $Debug ] && echo "Build success. Commiting new SPEC."
-#        git add "$OurSpec"
-#	git commit -m "Update to $ActualRelease"
-#        if [ "$?" != "1" ]; then git push
-#         if [ "$?" != "0" ]; then check_changes
-#         
+        git add "$OurSpec"
+	git commit -m "Update to $ActualRelease"
+        if [ "$?" != "1" ]; then 
+    	    git push
+    	fi
+        if [ "$?" != "0" ]; then 
+    	    check_changes 
+	fi
     fi
     DONERPM="$(cat $BuildLog |grep 'Wrote:' | sed 's/Wrote://')"
     [ $Debug ] &&  echo "RPM Done: $DONERPM"
@@ -148,8 +151,8 @@ check_changes() {
     # Somebody pushed a commit to origin since we last time pulled.
     # Need to check - if that commit was to our file or to some other file?
     GitHubUrl="http://github.com/api/v2/json/commits/list/$GithubUserProject/$GitCurBranch"
-#    LastRepoCommit="$(curl -s $GitHubUrl | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
-#    LastSpecCommit="$(curl -s $GitHubUrl/$OLDSPEC | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
+    LastRepoCommit="$(curl -s $GitHubUrl | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
+    LastSpecCommit="$(curl -s $GitHubUrl/$OLDSPEC | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
     if [[ "$LastRepoCommit" != "$LastSpecCommit" ]]; then
             # Last Git repo commit was not to our specfile
             # Probably we can safely do git pull to merge following by git push
