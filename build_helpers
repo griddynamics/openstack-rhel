@@ -91,25 +91,25 @@ create_srpm() {
 
 create_rpm() {
 
-    [ $Debug ] &&  echo "Building RPMs.."
-    rpmbuild -bb $OurSpec
+    [ $Debug ] &&  echo "Building RPMs..Logging to $BuildLog"
+    rpmbuild -bb $OurSpec > $BuildLog 2>&1
 
     if [ "$?" != "0" ]; then
         [ $Debug ] &&  echo "Build RPM fail. See logs in $BuildLog"
         exit -1
     else
-        [ $Debug ] &&  echo "Build success. Commiting new SPEC."
+        [ $Debug ] && echo "Build success. Commiting new SPEC."
         git add "$OurSpec"
 	git commit -m "Update to $ActualRelease"
-        if [ "$?" != "1" ]; then git push
-         if [ "$?" != "0" ]; then check_changes
-         
+        if [ "$?" != "1" ]; then 
+    	    git push
+    	fi
+        if [ "$?" != "0" ]; then 
+    	    check_changes 
+	fi
     fi
-    DONERPM=`cat $BuildLog |grep 'Wrote:' | sed 's/Wrote://'`
+    DONERPM="$(cat $BuildLog |grep 'Wrote:' | sed 's/Wrote://')"
     [ $Debug ] &&  echo "RPM Done: $DONERPM"
-
-
-    
 }
 
 get_tarball() {
@@ -182,8 +182,6 @@ update_repo() {
 
 }
 
-get_git(){
-    
-
-
+get_git() {
+    [ $Debug ] &&  echo "Getting repo http://github.com/$GithubUserProject"
 }
