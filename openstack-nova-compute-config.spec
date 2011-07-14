@@ -1,6 +1,6 @@
 Name:             openstack-nova-compute-config
 Version:          2011.3
-Release:          2
+Release:          3
 Summary:          OpenStack Compute (nova) - Compute node configuration
 
 Group:            Development/Languages
@@ -49,6 +49,9 @@ exit 0
 %config(noreplace) %attr(0600, nova, nobody) %{_sysconfdir}/nova/nova.conf
 
 %changelog
+* Thu Jul 14 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-3
+- Removed deprecated Glance flags, added a new one
+
 * Wed Jun 29 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-2
 - Version bump for diablo-2
 
