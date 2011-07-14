@@ -22,7 +22,7 @@ case "$1" in
 
 	get_tarball
 	create_srpm
-	create_rpm || undo_changes
+	create_rpm && commit_spec || undo_changes
 	sign_rpm
 	update_repo
 	#do_mock

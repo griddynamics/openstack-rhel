@@ -1,19 +1,21 @@
 #!/bin/bash
 
-
 abspath="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
 dirname="$(dirname $abspath)"
 cd "$dirname" || exit -1
 
+OurSpec="openstackx.spec"
+prj=$(grep '^Name:' $OurSpec | sed 's/^Name:\s\+//')
+echo "prj = $prj"
 
-prj="swift"
+
+
 source trigger.conf
 
-CurTarballVer=(`curl -s $TarballsHome/?C=M\;O=D| grep -m 1 swift-[0-9] | perl -p -e 's!^.*swift-(\d+\.\d+\.\d+)~(\d+\.\d+)\.tar\.gz.*$!\n$1 $2 $3 $4 $5\n!i'`)
 
-ActualVersion=${CurTarballVer[0]}
-ActualRelease=$ReleasePreSymbol${CurTarballVer[1]}
-ActualTarBall="$prj-$ActualVersion~${CurTarballVer[1]}.tar.gz"
+GithubUserProject="cloudbuilders/openstackx.git"
+ActualVersion="$(grep '^Version:' $OurSpec | sed 's/^Version:\s\+//')"
+ActualRelease="0.`date +%Y%m%d.%H`"
 
 source build_helpers
 
@@ -25,20 +27,21 @@ source build_helpers
 
 case "$1" in
     build)
-        check_for_update
-        check_enviroment
+	get_git
+#        check_for_update
+#        check_enviroment
         update_spec
-
-	get_tarball
+#
+#	get_tarball
 	create_srpm
-	create_rpm && commit_spec || undo_changes
+	create_rpm #&& commit_spec || undo_changes
 	sign_rpm
 	update_repo
-	#do_mock
+#	#do_mock
         ;;
     check)
 	check_for_update 
-	curl -s "http://$jenkins/job/$JobName/build"
+#	curl -s "http://$jenkins/job/$JobName/build"
 	[ $Debug ] && echo "Fire jenkins to build $JobName"
 	 exit 0
         ;;
