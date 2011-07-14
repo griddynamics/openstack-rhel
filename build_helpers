@@ -53,7 +53,7 @@ check_enviroment() {
         LastBuildFailed=$(curl -s http://$jenkins/job/$JobName/api/json | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'lastBuild'}{'number'} == \$d->{'lastUnsuccessfulBuild'}{'number'} ? 1 : 0")
         if [[ "$LastBuildFailed" == 1 ]];  then
 	    [ $Debug ] && echo "Last build fail. User intervention required"
-#            exit 0
+            exit 0
         fi
     else
         echo "This script is designed to run from within Jenkins workspace"
@@ -91,18 +91,29 @@ create_srpm() {
 
 create_rpm() {
 
-    [ $Debug ] &&  echo "Building RPMs.. Logging to $BuildLog"
+    [ $Debug ] &&  echo "Building RPMs..Logging to $BuildLog"
     rpmbuild -bb $OurSpec > $BuildLog 2>&1
 
     if [ "$?" != "0" ]; then
         [ $Debug ] &&  echo "Build RPM fail. See logs in $BuildLog"
         exit -1
+    else
+        [ $Debug ] && echo "Build success. Commiting new SPEC."
     fi
-    DONERPM=`cat $BuildLog |grep 'Wrote:' | sed 's/Wrote://'`
+    DONERPM="$(cat $BuildLog |grep 'Wrote:' | sed 's/Wrote://')"
     [ $Debug ] &&  echo "RPM Done: $DONERPM"
+}
 
+commit_spec() {
+        git add "$OurSpec"
+	git commit -m "Update to $ActualRelease"
+        if [ "$?" != "1" ]; then 
+    	    git push
+    	fi
+        if [ "$?" != "0" ]; then 
+    	    check_changes 
+	fi
 
-    
 }
 
 get_tarball() {
@@ -117,7 +128,6 @@ get_tarball() {
 sign_rpm() {
     [ $Debug ] &&  echo "Signing RPMs.."
     for fn in $RpmTree/RPMS/noarch/*$ActualRelease*.rpm; do ./sign_rpm $fn; done
-
 }
 
 
@@ -141,25 +151,24 @@ do_mock() {
 check_changes() {
 
     [ $Debug ] &&  echo "Checking for commits while building.."
-
     # Somebody pushed a commit to origin since we last time pulled.
     # Need to check - if that commit was to our file or to some other file?
     GitHubUrl="http://github.com/api/v2/json/commits/list/$GithubUserProject/$GitCurBranch"
-#    LastRepoCommit="$(curl -s $GitHubUrl | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
-#    LastSpecCommit="$(curl -s $GitHubUrl/$OLDSPEC | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
+    LastRepoCommit="$(curl -s $GitHubUrl | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
+    LastSpecCommit="$(curl -s $GitHubUrl/$OLDSPEC | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
     if [[ "$LastRepoCommit" != "$LastSpecCommit" ]]; then
             # Last Git repo commit was not to our specfile
             # Probably we can safely do git pull to merge following by git push
-#	    git pull
+	    git pull
             if [ "$?" != "0" ]; then
                 echo "Sorry, automatic merge failed"
                 echo "Human intervention required, giving up here"
                 exit -1
             fi
-#	git push
+	git push
     else
 	# Last commit was to our specfile
-#	git pull
+	git pull
         echo "There should be a conflict above, please fix by hands and commit"
         exit -1
     fi
@@ -174,4 +183,13 @@ update_repo() {
     rm -fr $RepoPath/python-nova-$SpecVersion-$SpecRelease.*.rpm $RepoPath/openstack-nova-$SpecVersion-$SpecRelease.*.rpm $RepoPath/openstack-nova-{api,compute,doc,instancemonitor,network,noVNC,objectstore,scheduler,volume}-$SpecVersion-$SpecRelease.*.rpm $RepoPath/openstack-nova-node-*-$SpecVersion-$SpecRelease.*.rpm
     for FILE in $DONERPM; do  mv $FILE "$RepoPath";  done;
 
+}
+
+get_git() {
+    [ $Debug ] &&  echo "Getting repo http://github.com/$GithubUserProject"
+    [ ! -f "/tmp/$prj-$ActualVersion" ] && mkdir "/tmp/$prj-$ActualVersion" ||exit -1
+    git clone "https://github.com/$GithubUserProject" "/tmp/$prj-$ActualVersion"
+    tar -czf "$RpmTree/SOURCES/$prj-$ActualVersion.tar.gz" -C "/tmp" --strip-components=1 "$prj-$ActualVersion"
+    rm -rf "/tmp/$prj-$ActualVersion"
+    [ $Debug ] && echo "TarBall= $RpmTree/SOURCES/$prj-$ActualVersion.tar.gz"
 }
