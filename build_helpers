@@ -180,8 +180,15 @@ update_repo() {
     fi
 
     [ $Debug ] &&  echo "Moving RPM to repo.."
-    rm -fr $RepoPath/python-nova-$SpecVersion-$SpecRelease.*.rpm $RepoPath/openstack-nova-$SpecVersion-$SpecRelease.*.rpm $RepoPath/openstack-nova-{api,compute,doc,instancemonitor,network,noVNC,objectstore,scheduler,volume}-$SpecVersion-$SpecRelease.*.rpm $RepoPath/openstack-nova-node-*-$SpecVersion-$SpecRelease.*.rpm
-    for FILE in $DONERPM; do  mv $FILE "$RepoPath";  done;
+    
+    #rm -fr $RepoPath/python-nova-$SpecVersion-$SpecRelease.*.rpm $RepoPath/openstack-nova-$SpecVersion-$SpecRelease.*.rpm $RepoPath/openstack-nova-{api,compute,doc,instancemonitor,network,noVNC,objectstore,scheduler,volume}-$SpecVersion-$SpecRelease.*.rpm $RepoPath/openstack-nova-node-*-$SpecVersion-$SpecRelease.*.rpm
+    for FILE in $DONERPM; do
+    RMFILE="$(echo $FILE|sed s/$ActualRelease/$SpecRelease/)"
+    [ $Debug ] &&  echo "Removing $RMFILE.."
+	[ -f $RepoPath/$RMFILE ] && rm -rf $RepoPath/$RMFILE
+	mv $FILE "$RepoPath";
+    [ $Debug ] &&  echo "Moving $FILE to repo.."
+    done;
 
 }
 
