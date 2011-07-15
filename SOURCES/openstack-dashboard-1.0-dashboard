@@ -1,0 +1,20 @@
+#!/bin/sh
+SERVER_ADDR=0.0.0.0:8080
+LOGFILE=/var/log/dashboard/dashboard.log
+CONFFILE=/etc/dashboard/dashboard.conf
+
+if [ -r $CONFFILE ]; then
+    source $CONFFILE
+fi
+
+while (( "$#" )); do
+    case "$1" in
+	--log-file)
+	    LOGFILE="$2"
+	    shift
+	    ;;
+    esac
+    shift
+done
+
+exec python -m dashboard.manage runserver "$SERVER_ADDR" --noreload > "$LOGFILE" 2>&1

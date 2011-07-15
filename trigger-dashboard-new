@@ -1,0 +1,59 @@
+#!/bin/bash
+
+abspath="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
+dirname="$(dirname $abspath)"
+cd "$dirname" || exit -1
+
+OurSpec="openstack-dashboard.spec"
+prj=$(grep '^Name:' $OurSpec | sed 's/^Name:\s\+//')
+
+
+
+source trigger.conf
+
+
+GithubUserProject="4P/openstack-dashboard.git"
+ActualVersion="$(grep '^Version:' $OurSpec | sed 's/^Version:\s\+//')"
+ActualRelease="0.`date +%Y%m%d.%H`"
+ActualTarBall=%{name}-%{version}.tar.gz
+
+source build_helpers
+
+
+# If you need to build a specific version - specify it as ./build release_num (digits only).
+# If build # is not specified, latest available tarball will be built
+
+
+
+case "$1" in
+    build)
+	get_git
+#        check_for_update
+#        check_enviroment
+        update_spec
+#
+#	get_tarball
+	create_srpm
+	create_rpm #&& commit_spec || undo_changes
+	sign_rpm
+	update_repo
+#	#do_mock
+        ;;
+    check)
+	check_for_update 
+#	curl -s "http://$jenkins/job/$JobName/build"
+	[ $Debug ] && echo "Fire jenkins to build $JobName"
+	 exit 0
+        ;;
+    release)
+	ActualRelease=$2
+	build
+	;;
+    *)
+        echo $"Usage: $0 {build|check|release}"
+        echo "build - build rpms"
+        echo "check - check for updates and trigger jenkins"
+        echo "release NUM - build specified release"
+        exit 2
+esac
+exit $?
