@@ -7,7 +7,7 @@ diff -Naur keystone-1.0.orig/etc/keystone.conf keystone-1.0/etc/keystone.conf
  # file for both the API and registry servers!
 -#log_file = /var/log/keystone.log
 -log_file = keystone.log
-+log_file = /var/log/keystone.log
++log_file = /var/log/keystone/keystone.log
 +#log_file = keystone.log
  
  #List of backends to be configured
