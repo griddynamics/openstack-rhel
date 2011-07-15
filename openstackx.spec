@@ -58,7 +58,7 @@ package dependancy for openstack-dashboard
 #%patch -p1
 
 %build
-export CFLAGS="%{optflags}"
+#export CFLAGS="%{optflags}"
 python setup.py build
 
 %install
