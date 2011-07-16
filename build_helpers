@@ -1,18 +1,19 @@
 
-
-check_for_update() {
+check_tarball_update() {
     [ $Debug ] && echo "Checking for updates..."
-    [ $Debug ] && echo "CurTarballVer = ${CurTarballVer[@]}"
+#    [ $Debug ] && echo "CurTarballVer = ${CurTarballVer[@]}"
     [ $Debug ] && echo "Version and Release from tarball URL  = $ActualVersion - $ActualRelease"
     [ $Debug ] && echo "Version and Release from SPEC file = $SpecVersion - $SpecRelease"
 
 
     if [[ "$ActualRelease" != "$SpecRelease" ]]; then
-	# We are behind trunk - need to fire a new build
 	[ $Debug ] && echo "TarBall update!"
 	FireNewBuild=1
     fi
 
+}
+
+check_git_update() {
     GitRev="$(curl -s http://github.com/api/v2/json/commits/list/$GithubUserProject/$GitCurBranch/$OurSpec | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
     OurRev=$(git log --pretty=format:"%H" -1 $OurSpec)
 
@@ -24,11 +25,14 @@ check_for_update() {
 	[ $Debug ] && echo "SPEC github update!"
         FireNewBuild=1
     fi
-    
+}
+
+check_for_update() {
+    check_tarball_update
+    check_git_update
     [[ $FireNewBuild == "1" ]] || exit 0
     [ $Debug ] && echo "There is UPDATE"
 }
-
 
 check_enviroment() {
 
@@ -98,7 +102,7 @@ create_rpm() {
         [ $Debug ] &&  echo "Build RPM fail. See logs in $BuildLog"
         exit -1
     else
-        [ $Debug ] && echo "Build success. Commiting new SPEC."
+        [ $Debug ] && echo "Build success."
     fi
     DONERPM="$(cat $BuildLog |grep 'Wrote:' | sed 's/Wrote://')"
     [ $Debug ] &&  echo "RPM Done: $DONERPM"
@@ -127,7 +131,10 @@ get_tarball() {
 
 sign_rpm() {
     [ $Debug ] &&  echo "Signing RPMs.."
-    for fn in $RpmTree/RPMS/noarch/*$ActualRelease*.rpm; do ./sign_rpm $fn; done
+    for FILE in $DONERPM; do
+	[ $Debug ] &&  echo "Signing FILE"
+	./sign_rpm $FILE
+     done
 }
 
 
