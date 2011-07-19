@@ -320,6 +320,7 @@ fi
 %{_bindir}/swift-container-server
 %{_bindir}/swift-container-replicator
 #%{_bindir}/swift-container-stats-logger
+%{_bindir}/swift-container-sync
 %{_bindir}/swift-container-updater
 %{python_sitelib}/swift/container
 
@@ -348,41 +349,9 @@ fi
 %endif
 
 %changelog
-* Wed May 25 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.18.bzr300
-- Update to bzr300
-
-* Tue May 24 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.17.bzr299
-- Update to bzr299
-
-* Tue May 24 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.16.bzr298
-- Update to bzr298
-
-* Fri May 20 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.15.bzr297
-- Update to bzr297
-
-* Thu May 19 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.14.bzr296
-- Update to bzr296
-
-* Thu May 19 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.13.bzr295
-- Update to bzr295
-
-* Wed May 18 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.12.bzr293
-- Update to bzr293
-
-* Tue May 17 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.11.bzr292
-- Update to bzr292
-
-* Tue May 17 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.10.bzr291
-- Update to bzr291
-
-* Fri May 13 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.9.bzr290
-- Update to bzr290
-
-* Thu May 12 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.8.bzr289
-- Update to bzr289
-
-* Sat May 07 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.7.bzr288
-- Update to bzr288
+* Tue Jul 19 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.4.2-0.20110713.325
+- Added /usr/bin/swift-container-sync
+- changelog cleanup
 
 * Fri May 06 2011 Jasper Capel <jasper.capel@spilgames.com> - 1.4.0-6.bzr287
 - Changed init-functions script to accomodate extra init scripts
@@ -398,23 +367,11 @@ fi
 - Removed unnecessary direcories
 - Removed %dir definition for components that are not directories 
 
-* Fri May 06 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.4.bzr287
-- Update to bzr287
-
-* Mon Apr 25 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.3.bzr286
-- Update to bzr286
-
-* Tue Apr 19 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.4-0.2.bzr281
-- Update to bzr281
-
 * Fri Apr 15 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.4-0.1.bzr268
 - Diablo versioning
 
 * Fri Apr 08 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.3-0.3.bzr263
 - Changed name of initscripts
-
-* Fri Apr 08 2011 Mr. Jenkins GD <openstack@griddynamics.net> - 1.3-0.2.bzr263
-- Update to bzr263
 
 * Tue Apr 05 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.3-0.1.bzr262
 - Bumped version to Cactus
