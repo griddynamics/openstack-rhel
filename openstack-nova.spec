@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.20110629.1133.3%{?dist}
+Release:          0.20110629.1133.4%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -663,6 +663,9 @@ fi
 %files node-compute
 
 %changelog
+* Thu Jul 21 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110629.1133.4
+- Backported 882af3e9461b0d38c818adf28b77d13687c2f2ca commit from master
+
 * Wed Jul 06 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110629.1133.3
 - Backported nova-api-graceful-shutdown patch LP#805604
 
