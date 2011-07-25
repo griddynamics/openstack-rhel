@@ -116,6 +116,7 @@ Requires:         %{name}-compute-config = %{version}
 Requires:         %{name}-compute = %{version}-%{release}
 Requires:         %{name}-network = %{version}-%{release}
 Requires:         %{name}-instancemonitor = %{version}-%{release}
+Requires:         MySQL-python
 
 %description      node-compute
 This package installs compute set of OpenStack Nova packages and Compute node
