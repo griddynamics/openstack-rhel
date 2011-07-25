@@ -7,6 +7,7 @@ PROJECT=rhelimg
 NETWORK="10.20.0.0/16"
 ADDR_PER_NETWORK=512
 NETWORKS_NUM=4
+NETLABEL=novanet
 TMPDIR="rhelimg"
 
 
@@ -19,7 +20,7 @@ echo "Setting quotas"
 nova-manage project quota $PROJECT instances 512
 nova-manage project quota $PROJECT cores 1024
 echo "Creating network..."
-nova-manage network create $NETWORK $NETWORKS_NUM $ADDR_PER_NETWORK
+nova-manage network create $NETLABEL $NETWORK $NETWORKS_NUM $ADDR_PER_NETWORK
 
 # Turning on network injection
 #echo "UPDATE networks SET injected = 1" | mysql -uroot -pnova nova
