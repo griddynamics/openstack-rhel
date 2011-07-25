@@ -13,10 +13,8 @@ DB_PASS=nova
 PWD=nova
 
 CC_HOST=$(ip addr show dev eth0 |grep 'inet '|perl -pi -e 's/^.*inet ([\d.]+).*$/$1/')
-#CC_HOST="10.0.0.11" # IPv4 address
-#HOSTS="$CC_HOST localhost" # compute nodes list
 
-HOSTS="$CC_HOST 10.0.0.13 10.0.0.14" # compute nodes list, first MUST be a Cloud Controller address
+HOSTS="$CC_HOST" # compute nodes list, first MUST be a Cloud Controller address
 
 nova_stop "$HOSTS"
 nova_cleanup "$HOSTS"
