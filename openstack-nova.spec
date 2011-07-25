@@ -413,6 +413,12 @@ useradd -r -g nova -G nova,nobody,qemu -d %{_sharedstatedir}/nova -s /sbin/nolog
 exit 0
 
 %post -p /bin/bash
+
+nova_option () {
+	grep "$1" %{_sysconfdir}/nova/nova.conf | cut -d= -f2 | grep "$2" >/dev/null
+	return $?
+}
+
 if ! fgrep '#includedir /etc/sudoers.d' /etc/sudoers 2>&1 >/dev/null; then
         echo '#includedir /etc/sudoers.d' >> /etc/sudoers
 fi
@@ -432,29 +438,24 @@ if rpmquery openstack-nova-cc-config 1>&2 >/dev/null; then
 	# Cloud controller node detected, assuming that is contains database
 	
 	# Database init/migration
-	if [ $1 -gt 1 ]; then
-		db_sync
-	else
+	if [ $1 -lt 2 ]; then
 		echo "New installation"
-		db_sync
 		echo "Please refer http://wiki.openstack.org/NovaInstall/RHEL6Notes for instructions"
 	fi
-fi
 
-db_sync() {
-	upgrade_db = 0
+	upgrade_db=0
 	if   nova_option 'sql_connection' 'mysql://'; then
 		# Assuming that we have MySQL server on the same node with Cloud Controller
 		echo "Nova database: MySQL"
 		service mysqld status 2>&1 >/dev/null
 		if [ "$?" = 0 ]; then
-			upgrade_db = 1
+			upgrade_db=1
 		else
 			echo "mysqld is not running, skipping Nova db sync"
 		fi
 	elif nova_option 'sql_connection' 'sqlite://'; then
 		echo "Nova database: SQLite"
-		upgrage_db = 1
+		upgrage_db=1
 	else
 		echo "Nova database: UNSUPPORTED by this RPM postscript"
 		echo "Please ensure that it's running and migrate db"	
@@ -464,12 +465,7 @@ db_sync() {
 		echo "Performing Nova database upgrade:"
 		%{_bindir}/nova-manage db sync
 	fi
-}
-
-nova_option () {
-	grep "$1" %{_sysconfdir}/nova/nova.conf | cut -d= -f2 | grep "$2" >/dev/null
-	return $?
-}
+fi
 
 # api
 
