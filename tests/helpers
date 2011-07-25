@@ -21,7 +21,7 @@ nova_action () {
 			fi
 		else
 			# It's a Compute node
-			service_list="nova-compute"
+			service_list="nova-compute nova-network"
 		fi
 		for nova_service in $service_list; do
 			ssh_helper "$host" "/sbin/service openstack-$nova_service $action"
