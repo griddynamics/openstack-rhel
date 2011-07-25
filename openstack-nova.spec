@@ -114,6 +114,7 @@ Group:            Applications/System
 Requires:         %{name} = %{version}-%{release}
 Requires:         %{name}-compute-config = %{version}
 Requires:         %{name}-compute = %{version}-%{release}
+Requires:         %{name}-network = %{version}-%{release}
 Requires:         %{name}-instancemonitor = %{version}-%{release}
 
 %description      node-compute
