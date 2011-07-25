@@ -667,6 +667,13 @@ fi
 %files node-compute
 
 %changelog
+* Mon Jul 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110724.1308
+- Added MySQL-python as dep for openstack-nova-node-compute
+- Added nova-network for compute-only nodes due recent changes in network HA code
+  https://code.launchpad.net/~vishvananda/nova/ha-net/+merge/67078
+- Fixed db upgrade in postscript, changed postscript to /bin/bash
+- Removed duplicate entry for /usr/bin/instance-usage-audit
+
 * Tue Jul 12 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110711.1265
 - Removed lots of meaningless changelog entries from Jenkins
 - Added dependency on dmidecode to openstack-nova-compute because it's missing
