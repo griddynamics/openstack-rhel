@@ -412,7 +412,7 @@ useradd -r -g nova -G nova,nobody,qemu -d %{_sharedstatedir}/nova -s /sbin/nolog
 -c "OpenStack Nova Daemons" nova
 exit 0
 
-%post
+%post -p /bin/bash
 if ! fgrep '#includedir /etc/sudoers.d' /etc/sudoers 2>&1 >/dev/null; then
         echo '#includedir /etc/sudoers.d' >> /etc/sudoers
 fi
