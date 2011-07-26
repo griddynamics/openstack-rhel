@@ -5,14 +5,14 @@
 %endif
 
 Name:             openstack-nova
-Version:	2011.3
-Release:	0.20110726.1322%{?dist}
+Version:          2011.3
+Release:          0.20110726.1322%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-2011.3~d3~20110726.1322.tar.gz  
+Source0:          http://nova.openstack.org/tarballs/nova-2011.3~d3~20110726.r1134.tar.gz
 Source1:          %{name}-README.rhel6
 Source2:          %{name}-noVNC-snap2011.03.24.tgz
 Source6:          %{name}.logrotate
@@ -320,7 +320,7 @@ This package contains documentation files for %{name}.
 %setup -q -n nova-%{version}
 
 #patch1 -p1
-#%patch2 -p1
+%patch2 -p1
 %patch3 -p1
 %patch4 -p0
 %patch5 -p0
@@ -667,6 +667,9 @@ fi
 %files node-compute
 
 %changelog
+* Tue Jul 26 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110726.1322
+- Diablo-3 RC
+
 * Mon Jul 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110724.1308
 - Added MySQL-python as dep for openstack-nova-node-compute
 - Added nova-network for compute-only nodes due recent changes in network HA code
