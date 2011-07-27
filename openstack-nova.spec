@@ -5,14 +5,14 @@
 %endif
 
 Name:             openstack-nova
-Version:	2011.3
-Release:	0.20110726.1322%{?dist}
+Version:          2011.3
+Release:          0.20110726.1322.1%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-2011.3~d3~20110726.1322.tar.gz  
+Source0:          http://nova.openstack.org/tarballs/nova-2011.3~d3~20110726.r1134.tar.gz
 Source1:          %{name}-README.rhel6
 Source2:          %{name}-noVNC-snap2011.03.24.tgz
 Source6:          %{name}.logrotate
@@ -40,6 +40,7 @@ Patch5:           %{name}-rhel-ajaxterm-path.patch
 Patch6:           %{name}-s3server-quickfix.patch
 Patch7:           %{name}-scsi-target-utils-support.patch
 Patch8:           %{name}-rpc-improvements.patch
+Patch9:           %{name}-driver-agnostic-restart-instances.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -320,13 +321,14 @@ This package contains documentation files for %{name}.
 %setup -q -n nova-%{version}
 
 #patch1 -p1
-#%patch2 -p1
+%patch2 -p1
 %patch3 -p1
 %patch4 -p0
 %patch5 -p0
 %patch6 -p1
 %patch7 -p1
 #patch8 -p1
+%patch9 -p1
 
 install %{SOURCE1} README.rhel6
 
@@ -667,6 +669,12 @@ fi
 %files node-compute
 
 %changelog
+* Thu Jul 27 2011 Nikolay Sokolov <nsokolov@griddynamics.com> - 2011.3-0.20110726.1322.1
+- Backported driver-agnostic-restart-instances.
+
+* Tue Jul 26 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110726.1322
+- Diablo-3 RC
+
 * Mon Jul 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110724.1308
 - Added MySQL-python as dep for openstack-nova-node-compute
 - Added nova-network for compute-only nodes due recent changes in network HA code

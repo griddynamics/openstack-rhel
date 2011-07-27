@@ -5,14 +5,14 @@
 %endif
 
 Name:             openstack-swift
-Version:	1.4.3
-Release:	0.20110725.332%{?dist}
+Version:	1.4.2
+Release:	0.20110725.331%{?dist}
 Summary:          OpenStack Object Storage (swift)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://launchpad.net/swift
-Source0:          http://swift.openstack.org/tarballs/swift-1.4.3~20110725.332.tar.gz  
+Source0:          http://swift.openstack.org/tarballs/swift-1.4.2~20110726.r306.tar.gz
 Source1:          %{name}-functions
 Source2:          %{name}-account-auditor.init
 Source3:          %{name}-account-reaper.init
@@ -349,6 +349,9 @@ fi
 %endif
 
 %changelog
+* Wed Jul 27 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.4.2-0.20110725.331
+- Diablo-3 versioning
+
 * Tue Jul 19 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 1.4.2-0.20110713.325
 - Added /usr/bin/swift-container-sync
 - changelog cleanup

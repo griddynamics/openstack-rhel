@@ -1,0 +1,126 @@
+=== modified file 'nova/compute/manager.py'
+--- nova/compute/manager.py	2011-07-26 19:42:56 +0000
++++ nova/compute/manager.py	2011-07-27 08:38:22 +0000
+@@ -44,6 +44,7 @@
+ 
+ from eventlet import greenthread
+ 
++import nova.context
+ from nova import exception
+ from nova import flags
+ import nova.image
+@@ -147,6 +148,29 @@
+     def init_host(self):
+         """Initialization for a standalone compute service."""
+         self.driver.init_host(host=self.host)
++        context = nova.context.get_admin_context()
++        instances = self.db.instance_get_all_by_host(context, self.host)
++        for instance in instances:
++            inst_name = instance['name']
++            db_state = instance['state']
++            drv_state = self._update_state(context, instance['id'])
++
++            expect_running = db_state == power_state.RUNNING \
++                             and drv_state != db_state
++
++            LOG.debug(_('Current state of %(inst_name)s is %(drv_state)s, '
++                        'state in DB is %(db_state)s.'), locals())
++
++            if (expect_running and FLAGS.resume_guests_state_on_host_boot)\
++               or FLAGS.start_guests_on_host_boot:
++                LOG.info(_('Rebooting instance %(inst_name)s after '
++                            'nova-compute restart.'), locals())
++                self.reboot_instance(context, instance['id'])
++            elif drv_state == power_state.RUNNING:
++                try: # Hyper-V and VMWareAPI drivers will raise and exception
++                    self.driver.ensure_filtering_rules_for_instance(instance)
++                except NotImplementedError:
++                    LOG.warning(_('Hypervisor driver does not support firewall rules'))
+ 
+     def _update_state(self, context, instance_id, state=None):
+         """Update the state of an instance from the driver info."""
+@@ -154,6 +178,7 @@
+ 
+         if state is None:
+             try:
++                LOG.debug(_('Checking state of %s'), instance_ref['name'])
+                 info = self.driver.get_info(instance_ref['name'])
+             except exception.NotFound:
+                 info = None
+@@ -164,6 +189,7 @@
+                 state = power_state.FAILED
+ 
+         self.db.instance_set_state(context, instance_id, state)
++        return state
+ 
+     def _update_launched_at(self, context, instance_id, launched_at=None):
+         """Update the launched_at parameter of the given instance."""
+
+=== modified file 'nova/flags.py'
+--- nova/flags.py	2011-07-08 22:12:14 +0000
++++ nova/flags.py	2011-07-27 08:39:50 +0000
+@@ -387,3 +387,8 @@
+                  'Key/Multi-value list representng capabilities of this zone')
+ DEFINE_string('build_plan_encryption_key', None,
+         '128bit (hex) encryption key for scheduler build plans.')
++
++DEFINE_bool('start_guests_on_host_boot', False,
++            'Whether to restart guests when the host reboots')
++DEFINE_bool('resume_guests_state_on_host_boot', False,
++            'Whether to start guests, that was running before the host reboot')
+
+=== modified file 'nova/virt/libvirt/connection.py'
+--- nova/virt/libvirt/connection.py	2011-07-26 00:41:55 +0000
++++ nova/virt/libvirt/connection.py	2011-07-27 08:39:33 +0000
+@@ -121,8 +121,6 @@
+                     'Define live migration behavior')
+ flags.DEFINE_string('qemu_img', 'qemu-img',
+                     'binary to use for qemu-img commands')
+-flags.DEFINE_bool('start_guests_on_host_boot', False,
+-                  'Whether to restart guests when the host reboots')
+ flags.DEFINE_string('libvirt_vif_type', 'bridge',
+                     'Type of VIF to create.')
+ flags.DEFINE_string('libvirt_vif_driver',
+@@ -173,27 +171,8 @@
+         self.vif_driver = utils.import_object(FLAGS.libvirt_vif_driver)
+ 
+     def init_host(self, host):
+-        # Adopt existing VM's running here
+-        ctxt = context.get_admin_context()
+-        for instance in db.instance_get_all_by_host(ctxt, host):
+-            try:
+-                LOG.debug(_('Checking state of %s'), instance['name'])
+-                state = self.get_info(instance['name'])['state']
+-            except exception.NotFound:
+-                state = power_state.SHUTOFF
+-
+-            LOG.debug(_('Current state of %(name)s was %(state)s.'),
+-                          {'name': instance['name'], 'state': state})
+-            db.instance_set_state(ctxt, instance['id'], state)
+-
+-            # NOTE(justinsb): We no longer delete SHUTOFF instances,
+-            # the user may want to power them back on
+-
+-            if state != power_state.RUNNING:
+-                continue
+-            self.firewall_driver.setup_basic_filtering(instance)
+-            self.firewall_driver.prepare_instance_filter(instance)
+-            self.firewall_driver.apply_instance_filter(instance)
++        # NOTE(nsokolov): moved instance restarting to ComputeManager
++        pass
+ 
+     def _get_connection(self):
+         if not self._wrapped_conn or not self._test_connection():
+@@ -607,11 +586,6 @@
+         LOG.debug(_("instance %s: is running"), instance['name'])
+         self.firewall_driver.apply_instance_filter(instance)
+ 
+-        if FLAGS.start_guests_on_host_boot:
+-            LOG.debug(_("instance %s: setting autostart ON") %
+-                      instance['name'])
+-            domain.setAutostart(1)
+-
+         def _wait_for_boot():
+             """Called at an interval until the VM is running."""
+             instance_name = instance['name']
+
