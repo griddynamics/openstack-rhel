@@ -1,6 +1,6 @@
 Name:		openstack-repo
 Version:	2011.3
-Release:	0.2
+Release:	0.3
 Summary:	OpenStack repository configuration from Grid Dynamics
 
 Group:		System Environment/Base
@@ -29,6 +29,9 @@ install -p -D -m 644 %{SOURCE1} %{buildroot}%{_sysconfdir}/pki/rpm-gpg/RPM-GPG-K
 %{_sysconfdir}/pki/rpm-gpg/RPM-GPG-KEY-OPENSTACK
 
 %changelog
+* Wed Jul 27 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.3
+- Diablo-3
+
 * Wed Jun 29 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.2
 - Removed nova from repository configuration
 
