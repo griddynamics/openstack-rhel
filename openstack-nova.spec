@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.20110726.1322%{?dist}
+Release:          0.20110726.1322.1%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -40,6 +40,7 @@ Patch5:           %{name}-rhel-ajaxterm-path.patch
 Patch6:           %{name}-s3server-quickfix.patch
 Patch7:           %{name}-scsi-target-utils-support.patch
 Patch8:           %{name}-rpc-improvements.patch
+Patch9:           %{name}-driver-agnostic-restart-instances.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -327,6 +328,7 @@ This package contains documentation files for %{name}.
 %patch6 -p1
 %patch7 -p1
 #patch8 -p1
+%patch9 -p1
 
 install %{SOURCE1} README.rhel6
 
@@ -667,6 +669,9 @@ fi
 %files node-compute
 
 %changelog
+* Thu Jul 27 2011 Nikolay Sokolov <nsokolov@griddynamics.com> - 2011.3-0.20110726.1322.1
+- Backported driver-agnostic-restart-instances.
+
 * Tue Jul 26 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110726.1322
 - Diablo-3 RC
 
