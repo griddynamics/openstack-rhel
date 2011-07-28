@@ -159,9 +159,13 @@ fi
 %doc README
 %{_bindir}/%{prj}
 %{_bindir}/%{prj}-api
+%{_bindir}/%{prj}-cache-prefetcher
+%{_bindir}/%{prj}-cache-pruner
+%{_bindir}/%{prj}-cache-reaper
 %{_bindir}/%{prj}-control
 %{_bindir}/%{prj}-manage
 %{_bindir}/%{prj}-registry
+%{_bindir}/%{prj}-scrubber
 %{_bindir}/%{prj}-upload
 %{_initrddir}/%{name}-api
 %{_initrddir}/%{name}-registry
