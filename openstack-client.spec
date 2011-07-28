@@ -14,7 +14,7 @@ Summary:          Client for OpenStack Nova API
 Group:            Applications/System
 License:          ASL 2.0
 URL:              http://pypi.python.org/pypi/python-novaclient
-Source0:          python-novaclient-%{version}-%{commit_id}.tgz
+Source0:          rackspace-python-novaclient-%{commit_id}.tgz
 
 BuildRoot:        %{_tmppath}/%{prj}-%{version}-%{release}-root-%(%{__id_u} -n)
 
