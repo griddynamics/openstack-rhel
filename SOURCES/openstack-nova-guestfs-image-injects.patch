@@ -41,10 +41,10 @@
 -                     'maximum number of possible nbd devices')
  
 +path_map = {}
-+path_map['ubuntu'] = Template('/etc/networking/interfaces')
-+path_map['rhel'] = Template('/etc/sysconfig/network-scripts/ifcfg-$name')
++path_map['ubuntu'] = '/etc/networking/interfaces'
++path_map['rhel'] = '/etc/sysconfig/network-scripts/ifcfg-$name'
 +# Note (Ivan K.): use RHEL config as default
-+path_map['unknown'] = Template('/etc/sysconfig/network-scripts/ifcfg-$name')
++path_map['unknown'] = '/etc/sysconfig/network-scripts/ifcfg-$name'
  
  def extend(image, size):
      """Increase image to size"""
@@ -273,10 +273,10 @@
 +    """
 +
 +    distro = gfs.inspect_get_distro(device)
-+    path = path_map[distro].substitute(name=net)
++    path = str(Template(path_map[distro], searchList=[{'name': net}]))
 +    if not gfs.is_file(path):
 +        for template in path_map.itervalues():
-+            p = template.substitute(name=net)
++            p = str(Template(template, searchList=[{'name': net}]))
 +            if gfs.is_file(p):
 +                path = p
 +                break
@@ -287,10 +287,10 @@
 +
 +def get_os_name(gfs, device, net):
 +    distro = gfs.inspect_get_distro(device)
-+    path = path_map[distro].substitute(name=net)
++    path = str(Template(path_map[distro], searchList=[{'name': net}]))
 +    if not gfs.is_file(path):
 +        for d, template in path_map.iteritems():
-+            p = template.substitute(name=net)
++            p = str(Template(template, searchList=[{'name': net}]))
 +            if gfs.is_file(p):
 +                distro =  d
 +                break
