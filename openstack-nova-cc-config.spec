@@ -1,6 +1,6 @@
 Name:             openstack-nova-cc-config
 Version:          2011.3
-Release:          3
+Release:          4
 Summary:          OpenStack Compute (nova) - Cloud Controller config
 
 Group:            Development/Languages
@@ -51,6 +51,9 @@ exit 0
 %config(noreplace) %attr(0600, nova, nobody) %{_sysconfdir}/nova/nova.conf
 
 %changelog
+* Fri Jul 29 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-4
+- Changed --injected_network_template to directory
+
 * Wed Jun 29 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-3
 - Release bump for Diablo-2
 - Fixed ownership of /etc/nova/nova.conf

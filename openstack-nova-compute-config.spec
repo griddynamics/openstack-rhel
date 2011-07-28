@@ -1,6 +1,6 @@
 Name:             openstack-nova-compute-config
 Version:          2011.3
-Release:          2
+Release:          3
 Summary:          OpenStack Compute (nova) - Compute node configuration
 
 Group:            Development/Languages
@@ -49,6 +49,9 @@ exit 0
 %config(noreplace) %attr(0600, nova, nobody) %{_sysconfdir}/nova/nova.conf
 
 %changelog
+* Fri Jul 29 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-3
+- Changed --injected_network_template to directory
+
 * Wed Jun 29 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-2
 - Version bump for diablo-2
 
