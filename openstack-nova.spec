@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.20110727.1143.1%{?dist}
+Release:          0.20110727.1143.2%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -672,6 +672,9 @@ fi
 %files node-compute
 
 %changelog
+* Fri Jul 29 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110727.1143.2
+- Updated guestfs patch, network configuration templates moved to /usr/share/nova/interfaces
+
 * Thu Jul 27 2011 Nikolay Sokolov <nsokolov@griddynamics.com> - 2011.3-0.20110726.1322.1
 - Backported driver-agnostic-restart-instances.
 
