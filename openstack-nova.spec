@@ -6,13 +6,13 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.20110727.1143.2%{?dist}
+Release:          0.20110727.1143.3%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-2011.3~d3~20110727.r1143.tar.gz
+Source0:          http://nova.openstack.org/tarballs/nova-2011.3~d3.tar.gz
 Source1:          %{name}-README.rhel6
 Source2:          %{name}-noVNC-snap2011.03.24.tgz
 Source6:          %{name}.logrotate
@@ -672,6 +672,9 @@ fi
 %files node-compute
 
 %changelog
+* Fri Jul 29 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110727.1143.3
+- Nova release tarball
+
 * Fri Jul 29 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110727.1143.2
 - Updated guestfs patch, network configuration templates moved to /usr/share/nova/interfaces
 
