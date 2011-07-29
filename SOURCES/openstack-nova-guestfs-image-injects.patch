@@ -1,6 +1,6 @@
 === modified file 'nova/virt/disk.py'
 --- nova/virt/disk.py	2011-05-12 20:42:04 +0000
-+++ nova/virt/disk.py	2011-07-26 09:11:56 +0000
++++ nova/virt/disk.py	2011-07-29 08:41:12 +0000
 @@ -4,6 +4,8 @@
  # Administrator of the National Aeronautics and Space Administration.
  # All Rights Reserved.
@@ -298,35 +298,17 @@
 +
 
 === modified file 'nova/virt/libvirt/connection.py'
---- nova/virt/libvirt/connection.py	2011-07-26 00:41:55 +0000
-+++ nova/virt/libvirt/connection.py	2011-07-26 09:14:12 +0000
-@@ -31,7 +31,6 @@
- :rescue_image_id:  Rescue ami image (default: ami-rescue).
- :rescue_kernel_id:  Rescue aki image (default: aki-rescue).
- :rescue_ramdisk_id:  Rescue ari image (default: ari-rescue).
--:injected_network_template:  Template file for injected network
- :allow_project_net_traffic:  Whether to allow in project network traffic
+--- nova/virt/libvirt/connection.py	2011-07-27 16:19:45 +0000
++++ nova/virt/libvirt/connection.py	2011-07-29 08:40:14 +0000
+@@ -879,7 +879,6 @@
+         net = None
  
- """
-@@ -896,12 +895,9 @@
-             address = mapping['ips'][0]['ip']
-             netmask = mapping['ips'][0]['netmask']
-             address_v6 = None
--            gateway_v6 = None
--            netmask_v6 = None
-             if FLAGS.use_ipv6:
-                 address_v6 = mapping['ip6s'][0]['ip']
-                 netmask_v6 = mapping['ip6s'][0]['netmask']
--                gateway_v6 = mapping['gateway6']
-             net_info = {'name': 'eth%d' % ifc_num,
-                    'address': address,
-                    'netmask': netmask,
-@@ -909,26 +905,21 @@
-                    'broadcast': mapping['broadcast'],
-                    'dns': mapping['dns'],
-                    'address_v6': address_v6,
--                   'gateway6': gateway_v6,
-+                   'gateway6': mapping['gateway6'],
+         nets = []
+-        ifc_template = open(FLAGS.injected_network_template).read()
+         ifc_num = -1
+         have_injected_networks = False
+         admin_context = context.get_admin_context()
+@@ -910,22 +909,17 @@
                     'netmask_v6': netmask_v6}
              nets.append(net_info)
  
