@@ -7,13 +7,13 @@
 
 Name:             openstack-%{prj}
 Version:	2011.3
-Release:	0.20110728.144%{?dist}
+Release:	0.20110728.144.1%{?dist}
 Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://%{prj}.openstack.org
-Source0:          http://glance.openstack.org/tarballs/glance-2011.3~d3~20110727.r144.tar.gz
+Source0:          http://glance.openstack.org/tarballs/glance-2011.3~d3.tar.gz
 Source1:          %{name}-api.init
 Source2:          %{name}-registry.init
 Source3:          %{name}-logging-api.conf
@@ -190,6 +190,9 @@ fi
 %endif
 
 %changelog
+* Fri Jul 29 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110728.144.1
+- Glance release tarball
+
 * Thu Jul 28 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110728.144
 - Diablo-3 versioning
 - Removed lots of meaningless changelog entries introduced by Jenkins
