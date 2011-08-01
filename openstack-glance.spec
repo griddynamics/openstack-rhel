@@ -7,7 +7,7 @@
 
 Name:             openstack-%{prj}
 Version:	2011.3
-Release:	0.20110728.144.1%{?dist}
+Release:	0.20110728.144.2%{?dist}
 Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages
@@ -191,6 +191,9 @@ fi
 %endif
 
 %changelog
+* Mon Aug 01 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110728.144.2
+- pyxattr added as dependency
+
 * Fri Jul 29 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110728.144.1
 - Glance release tarball
 
