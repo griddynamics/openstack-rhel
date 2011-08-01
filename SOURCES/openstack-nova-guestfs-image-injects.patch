@@ -128,7 +128,7 @@
 +        os_name = get_os_name(g, device, None)
 +
 +        if os_name == "ubuntu":
-+            ifc_template = open(os.path.join(FLAGS.injected_network_template, "interfaces", ".template")).read()
++            ifc_template = open(os.path.join(FLAGS.injected_network_template, "interfaces" + ".template")).read()
 +            net = [
 +                {'name': x['name'],
 +                 'data':
@@ -148,7 +148,7 @@
 +                else:
 +                    raise Exception
 +        if os_name == "rhel":
-+            ifc_template = open(os.path.join(FLAGS.injected_network_template, "interfaces.rhel", ".template")).read()
++            ifc_template = open(os.path.join(FLAGS.injected_network_template, "interfaces.rhel" + ".template")).read()
 +            net = [
 +                {'name': x['name'],
 +                 'data':
