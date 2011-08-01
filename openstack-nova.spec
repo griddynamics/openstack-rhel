@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.20110727.1143.3%{?dist}
+Release:          0.20110727.1143.4%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -672,6 +672,9 @@ fi
 %files node-compute
 
 %changelog
+* Mon Aug 01 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110727.1143.4
+- Updated guestfs patch once again
+
 * Fri Jul 29 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110727.1143.3
 - Nova release tarball
 
