@@ -55,6 +55,7 @@ Requires:         python-mox >= 0.5.0
 Requires:         python-routes
 Requires:         python-sqlalchemy >= 0.6.3
 Requires:         python-webob >= 1.0.8
+Requires:         pyxattr >= 0.6.0
 
 %description -n   python-%{prj}
 The Glance project provides services for discovering, registering, and
