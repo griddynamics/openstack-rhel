@@ -1,6 +1,6 @@
 === modified file 'nova/virt/disk.py'
 --- nova/virt/disk.py	2011-05-12 20:42:04 +0000
-+++ nova/virt/disk.py	2011-07-26 09:11:56 +0000
++++ nova/virt/disk.py	2011-08-02 13:48:33 +0000
 @@ -4,6 +4,8 @@
  # Administrator of the National Aeronautics and Space Administration.
  # All Rights Reserved.
@@ -125,10 +125,10 @@
 +            g.chmod(0600, path)
 +
 +        net = []
-+        os_name = get_os_name(g, device, None)
++        os_name = g.inspect_get_distro(device)
 +
 +        if os_name == "ubuntu":
-+            ifc_template = open(os.path.join(FLAGS.injected_network_template, "interfaces", ".template")).read()
++            ifc_template = open(os.path.join(FLAGS.injected_network_template, "interfaces.template")).read()
 +            net = [
 +                {'name': x['name'],
 +                 'data':
@@ -148,20 +148,20 @@
 +                else:
 +                    raise Exception
 +        if os_name == "rhel":
-+            ifc_template = open(os.path.join(FLAGS.injected_network_template, "interfaces.rhel", ".template")).read()
++            ifc_template = open(os.path.join(FLAGS.injected_network_template, "interfaces.rhel.template")).read()
 +            net = [
 +                {'name': x['name'],
 +                 'data':
-+                     str
-+                         (Template(ifc_template,
-+                                  searchList=[x, {'use_ipv6': FLAGS.use_ipv6}]))}
-+                    for x in nets]
++                      str
++                       (Template(ifc_template,
++                             searchList=[x, {'use_ipv6': FLAGS.use_ipv6}]))}
++                     for x in nets]
 +            if len(net):
-+                for net in net:
-+                    LOG.debug(_("Injecting network for interface %(name)s..."
-+                                                                            % net))
-+                    path = get_network_interface_config_path(g, device, net)
-+                    g.write(path, net['data'])
++                for n in net:
++                     LOG.debug(_("Injecting network for interface %(name)s..."
++                                                                         % n))
++                     path = get_network_interface_config_path(g, device, n)
++                     g.write(path, n['data'])
 +    except Exception as e:
 +        LOG.exception(e)
 +        raise
@@ -173,7 +173,7 @@
  
  
  def setup_container(image, container_dir=None, nbd=False):
-@@ -153,89 +173,36 @@
+@@ -153,89 +173,24 @@
                  _unlink_device(device, nbd)
  
  
@@ -273,10 +273,10 @@
 +    """
 +
 +    distro = gfs.inspect_get_distro(device)
-+    path = path_map[distro].substitute(name=net)
++    path = str(Template(path_map[distro], searchList=[{'name': net['name']}]))
 +    if not gfs.is_file(path):
 +        for template in path_map.itervalues():
-+            p = template.substitute(name=net)
++            p = str(Template(template, searchList=[{'name': net['name']}]))
 +            if gfs.is_file(p):
 +                path = p
 +                break
@@ -284,49 +284,19 @@
 +        return path
 +    raise IOError('Can not get path to network interfaces config.')
 +
-+
-+def get_os_name(gfs, device, net):
-+    distro = gfs.inspect_get_distro(device)
-+    path = path_map[distro].substitute(name=net)
-+    if not gfs.is_file(path):
-+        for d, template in path_map.iteritems():
-+            p = template.substitute(name=net)
-+            if gfs.is_file(p):
-+                distro =  d
-+                break
-+    return distro
-+
 
 === modified file 'nova/virt/libvirt/connection.py'
---- nova/virt/libvirt/connection.py	2011-07-26 00:41:55 +0000
-+++ nova/virt/libvirt/connection.py	2011-07-26 09:14:12 +0000
-@@ -31,7 +31,6 @@
- :rescue_image_id:  Rescue ami image (default: ami-rescue).
- :rescue_kernel_id:  Rescue aki image (default: aki-rescue).
- :rescue_ramdisk_id:  Rescue ari image (default: ari-rescue).
--:injected_network_template:  Template file for injected network
- :allow_project_net_traffic:  Whether to allow in project network traffic
+--- nova/virt/libvirt/connection.py	2011-07-27 16:19:45 +0000
++++ nova/virt/libvirt/connection.py	2011-07-29 08:40:14 +0000
+@@ -879,7 +879,6 @@
+         net = None
  
- """
-@@ -896,12 +895,9 @@
-             address = mapping['ips'][0]['ip']
-             netmask = mapping['ips'][0]['netmask']
-             address_v6 = None
--            gateway_v6 = None
--            netmask_v6 = None
-             if FLAGS.use_ipv6:
-                 address_v6 = mapping['ip6s'][0]['ip']
-                 netmask_v6 = mapping['ip6s'][0]['netmask']
--                gateway_v6 = mapping['gateway6']
-             net_info = {'name': 'eth%d' % ifc_num,
-                    'address': address,
-                    'netmask': netmask,
-@@ -909,26 +905,21 @@
-                    'broadcast': mapping['broadcast'],
-                    'dns': mapping['dns'],
-                    'address_v6': address_v6,
--                   'gateway6': gateway_v6,
-+                   'gateway6': mapping['gateway6'],
+         nets = []
+-        ifc_template = open(FLAGS.injected_network_template).read()
+         ifc_num = -1
+         have_injected_networks = False
+         admin_context = context.get_admin_context()
+@@ -910,22 +909,17 @@
                     'netmask_v6': netmask_v6}
              nets.append(net_info)
  
