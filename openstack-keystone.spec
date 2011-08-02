@@ -25,11 +25,12 @@
 Name:           openstack-keystone
 Release:	0.20110715.17%{?dist}
 Version:	1.0
-Url:            http://www.openstack.org
+# Upstream repo: https://github.com/openstack/keystone
+Url:            http://keystone.openstack.org
 Summary:        Python bindings to the OS API
 License:        Apache 2.0
 Group:          Development/Languages/Python
-Source0:          http://openstack-keystone.openstack.org/tarballs/%{name}-%{version}.tar.gz  
+Source0:        %{name}-%{version}.tar.gz  
 Source1:        %{name}.init
 Patch:          %{name}-%{version}-conf.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
