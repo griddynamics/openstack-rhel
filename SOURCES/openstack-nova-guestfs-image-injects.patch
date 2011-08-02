@@ -1,6 +1,6 @@
 === modified file 'nova/virt/disk.py'
 --- nova/virt/disk.py	2011-05-12 20:42:04 +0000
-+++ nova/virt/disk.py	2011-07-29 08:41:12 +0000
++++ nova/virt/disk.py	2011-08-02 13:48:33 +0000
 @@ -4,6 +4,8 @@
  # Administrator of the National Aeronautics and Space Administration.
  # All Rights Reserved.
@@ -41,10 +41,10 @@
 -                     'maximum number of possible nbd devices')
  
 +path_map = {}
-+path_map['ubuntu'] = '/etc/networking/interfaces'
-+path_map['rhel'] = '/etc/sysconfig/network-scripts/ifcfg-$name'
++path_map['ubuntu'] = Template('/etc/networking/interfaces')
++path_map['rhel'] = Template('/etc/sysconfig/network-scripts/ifcfg-$name')
 +# Note (Ivan K.): use RHEL config as default
-+path_map['unknown'] = '/etc/sysconfig/network-scripts/ifcfg-$name'
++path_map['unknown'] = Template('/etc/sysconfig/network-scripts/ifcfg-$name')
  
  def extend(image, size):
      """Increase image to size"""
@@ -125,10 +125,10 @@
 +            g.chmod(0600, path)
 +
 +        net = []
-+        os_name = get_os_name(g, device, None)
++        os_name = g.inspect_get_distro(device)
 +
 +        if os_name == "ubuntu":
-+            ifc_template = open(os.path.join(FLAGS.injected_network_template, "interfaces" + ".template")).read()
++            ifc_template = open(os.path.join(FLAGS.injected_network_template, "interfaces.template")).read()
 +            net = [
 +                {'name': x['name'],
 +                 'data':
@@ -148,20 +148,20 @@
 +                else:
 +                    raise Exception
 +        if os_name == "rhel":
-+            ifc_template = open(os.path.join(FLAGS.injected_network_template, "interfaces.rhel" + ".template")).read()
++            ifc_template = open(os.path.join(FLAGS.injected_network_template, "interfaces.rhel.template")).read()
 +            net = [
 +                {'name': x['name'],
 +                 'data':
-+                     str
-+                         (Template(ifc_template,
-+                                  searchList=[x, {'use_ipv6': FLAGS.use_ipv6}]))}
-+                    for x in nets]
++                      str
++                       (Template(ifc_template,
++                             searchList=[x, {'use_ipv6': FLAGS.use_ipv6}]))}
++                     for x in nets]
 +            if len(net):
-+                for net in net:
-+                    LOG.debug(_("Injecting network for interface %(name)s..."
-+                                                                            % net))
-+                    path = get_network_interface_config_path(g, device, net)
-+                    g.write(path, net['data'])
++                for n in net:
++                     LOG.debug(_("Injecting network for interface %(name)s..."
++                                                                         % n))
++                     path = get_network_interface_config_path(g, device, n)
++                     g.write(path, n['data'])
 +    except Exception as e:
 +        LOG.exception(e)
 +        raise
@@ -173,7 +173,7 @@
  
  
  def setup_container(image, container_dir=None, nbd=False):
-@@ -153,89 +173,36 @@
+@@ -153,89 +173,24 @@
                  _unlink_device(device, nbd)
  
  
@@ -273,28 +273,16 @@
 +    """
 +
 +    distro = gfs.inspect_get_distro(device)
-+    path = str(Template(path_map[distro], searchList=[{'name': net}]))
++    path = str(Template(path_map[distro], searchList=[{'name': net['name']}]))
 +    if not gfs.is_file(path):
 +        for template in path_map.itervalues():
-+            p = str(Template(template, searchList=[{'name': net}]))
++            p = str(Template(template, searchList=[{'name': net['name']}]))
 +            if gfs.is_file(p):
 +                path = p
 +                break
 +    if path != 'unknown':
 +        return path
 +    raise IOError('Can not get path to network interfaces config.')
-+
-+
-+def get_os_name(gfs, device, net):
-+    distro = gfs.inspect_get_distro(device)
-+    path = str(Template(path_map[distro], searchList=[{'name': net}]))
-+    if not gfs.is_file(path):
-+        for d, template in path_map.iteritems():
-+            p = str(Template(template, searchList=[{'name': net}]))
-+            if gfs.is_file(p):
-+                distro =  d
-+                break
-+    return distro
 +
 
 === modified file 'nova/virt/libvirt/connection.py'
