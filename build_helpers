@@ -103,7 +103,7 @@ create_rpm() {
         exit -1
     else
         [ $Debug ] && echo "Build success. Removing logs"
-        rf -f $BuildLog
+        rm -f $BuildLog
     fi
     DONERPM="$(cat $BuildLog |grep 'Wrote:' | sed 's/Wrote://')"
     [ $Debug ] &&  echo "RPM Done: $DONERPM"
