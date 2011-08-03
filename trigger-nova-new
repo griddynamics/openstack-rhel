@@ -8,7 +8,7 @@ prj="nova"
 DevMileStone="d4"
 TarballsHome="http://nova.openstack.org/tarballs"
 
-CurTarballVer=(`curl -s $TarballsHome/?C=M\;O=D| grep $DevMileStone | grep -m 1 $prj-[0-9] | perl -p -e 's!^.*$prj-(\d+\.\d+)~(\w\d)~(\d+.\d+)\.tar\.gz.*$!\n$1 $2 $3 $4 $5\n!i'`)
+CurTarballVer=(`curl -s $TarballsHome/?C=M\;O=D| grep $DevMileStone | grep -m 1 $prj-[0-9] | perl -p -e 's!^.*$prj-(\d+\.\d+)~(\w\d)~(\d+.r*\d+)\.tar\.gz.*$!\n$1 $2 $3 $4 $5\n!i'`)
 source trigger.conf
 source build_helpers
 
@@ -20,15 +20,14 @@ source build_helpers
 
 case "$1" in
     build)
-        #check_for_update
-#        check_enviroment
-#        update_spec
+        check_enviroment
+        update_spec
 
 	get_tarball
-#	create_srpm
-#	create_rpm && commit_spec || undo_changes
-#	sign_rpm
-#	update_repo
+	create_srpm
+	create_rpm && commit_spec || undo_changes
+	sign_rpm
+	update_repo
 	#do_mock
         ;;
     check)
