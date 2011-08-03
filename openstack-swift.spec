@@ -6,13 +6,13 @@
 
 Name:             openstack-swift
 Version:	1.4.3
-Release:	0.20110725.332%{?dist}
+Release:	0.20110802.335%{?dist}
 Summary:          OpenStack Object Storage (swift)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://launchpad.net/swift
-Source0:          http://swift.openstack.org/tarballs/swift-1.4.3~20110725.332.tar.gz  
+Source0:          http://swift.openstack.org/tarballs/swift-1.4.3~20110802.335.tar.gz  
 Source1:          %{name}-functions
 Source2:          %{name}-account-auditor.init
 Source3:          %{name}-account-reaper.init
