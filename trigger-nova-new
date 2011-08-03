@@ -44,7 +44,7 @@ case "$1" in
         ;;
     release_check)
 	check_git_update
-	[[ $FireNewBuild == "0" ]] || exit 0
+	[[ $FireNewBuild == "1" ]] || exit 0
 	curl -s "http://$jenkins/job/$JobName/build"
 	[ $Debug ] && echo "Fire jenkins to build  $JobName"
 	 exit 0
