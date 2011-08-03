@@ -4,12 +4,11 @@ abspath="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
 dirname="$(dirname $abspath)"
 cd "$dirname" || exit -1
 
-
 prj="nova"
-DevMileStone="d3"
-ReleaseBranch="diablo-3"
+DevMileStone="d4"
+TarballsHome="http://nova.openstack.org/tarballs"
 
-CurTarballVer=(`curl -s $TarballsHome/?C=M\;O=D| grep $DevMileStone | grep -m 1 $prj-[0-9] | perl -p -e 's!^.*$prj-(\d+\.\d+)~(\w\d)~(\d+.\d+)\.tar\.gz.*$!\n$1 $2 $3 $4 $5\n!i'`)
+CurTarballVer=(`curl -s $TarballsHome/?C=M\;O=D| grep $DevMileStone | grep -m 1 $prj-[0-9] | perl -p -e 's!^.*$prj-(\d+\.\d+)~(\w\d)~(\d+.r*\d+)\.tar\.gz.*$!\n$1 $2 $3 $4 $5\n!i'`)
 source trigger.conf
 source build_helpers
 
@@ -21,7 +20,6 @@ source build_helpers
 
 case "$1" in
     build)
-        #check_for_update
         check_enviroment
         update_spec
 

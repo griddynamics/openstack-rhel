@@ -7,14 +7,16 @@ cd "$dirname" || exit -1
 
 
 prj="swift"
-source trigger.conf
+DevMileStone="d4"
+TarballsHome="http://swift.openstack.org/tarballs"
 
-CurTarballVer=(`curl -s $TarballsHome/?C=M\;O=D| grep -m 1 swift-[0-9] | perl -p -e 's!^.*swift-(\d+\.\d+\.\d+)~(\d+\.\d+)\.tar\.gz.*$!\n$1 $2 $3 $4 $5\n!i'`)
+CurTarballVer=(`curl -s $TarballsHome/?C=M\;O=D | grep -m 1 swift-[0-9] | perl -p -e 's!^.*swift-(\d+\.\d+\.\d+)~(\d+\.r*\d+)\.tar\.gz.*$!\n$1 $2 $3 $4 $5\n!i'`)
 
 ActualVersion=${CurTarballVer[0]}
 ActualRelease=$ReleasePreSymbol${CurTarballVer[1]}
 ActualTarBall="$prj-$ActualVersion~${CurTarballVer[1]}.tar.gz"
 
+source trigger.conf
 source build_helpers
 
 
@@ -23,34 +25,51 @@ source build_helpers
 
 
 
+
+
 case "$1" in
     build)
-        check_for_update
-        check_enviroment
-        update_spec
-
+	check_enviroment
+	update_spec
 	get_tarball
 	create_srpm
 	create_rpm && commit_spec || undo_changes
 	sign_rpm
 	update_repo
-	#do_mock
+        #do_mock
         ;;
     check)
-	check_for_update 
-	curl -s "http://$jenkins/job/$JobName/build"
-	[ $Debug ] && echo "Fire jenkins to build $JobName"
-	 exit 0
+        check_for_update
+        curl -s "http://$jenkins/job/$JobName/build"
+        [ $Debug ] && echo "Fire jenkins to build  $JobName"
+         exit 0
         ;;
-    release)
-	ActualRelease=$2
-	build
-	;;
+    build_ver)
+        ActualRelease=$2
+        build
+        ;;
+    release_check)
+        check_git_update
+        [[ $FireNewBuild == "1" ]] || exit 0
+        curl -s "http://$jenkins/job/$JobName/build"
+        [ $Debug ] && echo "Fire jenkins to build  $JobName"
+         exit 0
+        ;;
+    release_build)
+        create_rpm # && commit_spec || undo_changes
+        sign_rpm
+        update_repo
+        ;;
+
     *)
-        echo $"Usage: $0 {build|check|release}"
+        echo $"Usage: $0 {build|check|build_ver|release}"
         echo "build - build rpms"
         echo "check - check for updates and trigger jenkins"
-        echo "release NUM - build specified release"
+        echo "build_ver NUM - build specified release"
+        echo "release_check - check release if spec update"
+        echo "release_build - build release"
         exit 2
+
 esac
 exit $?
+
