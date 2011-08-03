@@ -90,7 +90,7 @@ Requires:         %{name} = %{version}-%{release}
 Requires:         %{name}-cc-config = %{version}
 Requires:         %{name}-api = %{version}-%{release}
 Requires:         %{name}-compute = %{version}-%{release}
-Requires:         %{name}-instancemonitor = %{version}-%{release}
+#Requires:         %{name}-instancemonitor = %{version}-%{release}
 Requires:         %{name}-network = %{version}-%{release}
 Requires:         %{name}-noVNC = %{version}-%{release}
 Requires:         %{name}-objectstore = %{version}-%{release}
@@ -115,7 +115,7 @@ Requires:         %{name} = %{version}-%{release}
 Requires:         %{name}-compute-config = %{version}
 Requires:         %{name}-compute = %{version}-%{release}
 Requires:         %{name}-network = %{version}-%{release}
-Requires:         %{name}-instancemonitor = %{version}-%{release}
+#Requires:         %{name}-instancemonitor = %{version}-%{release}
 Requires:         MySQL-python
 
 %description      node-compute
@@ -147,8 +147,8 @@ Requires:         python-routes >= 1.12.3
 Requires:         python-sqlalchemy >= 0.6
 Requires:         python-suds >= 0.4.0
 Requires:         python-tornado
-Requires:         python-twisted-core >= 10.1.0
-Requires:         python-twisted-web >= 10.1.0
+#Requires:         python-twisted-core >= 10.1.0
+#Requires:         python-twisted-web >= 10.1.0
 Requires:         python-webob
 Requires:         python-netaddr
 Requires:         python-glance
@@ -207,20 +207,20 @@ protocol, and the Redis KVS.
 
 This package contains the %{name} Compute Worker.
 
-%package          instancemonitor
-Summary:          A nova instancemonitor server
-Group:            Applications/System
+#%package          instancemonitor
+#Summary:          A nova instancemonitor server
+#Group:            Applications/System
+#
+#Requires:         %{name} = %{version}-%{release}
+#Requires:         start-stop-daemon
 
-Requires:         %{name} = %{version}-%{release}
-Requires:         start-stop-daemon
+#%description      instancemonitor
+#Nova is a cloud computing fabric controller (the main part of an IaaS system)
+#built to match the popular AWS EC2 and S3 APIs. It is written in Python, using
+#the Tornado and Twisted frameworks, and relies on the standard AMQP messaging
+#protocol, and the Redis KVS.
 
-%description      instancemonitor
-Nova is a cloud computing fabric controller (the main part of an IaaS system)
-built to match the popular AWS EC2 and S3 APIs. It is written in Python, using
-the Tornado and Twisted frameworks, and relies on the standard AMQP messaging
-protocol, and the Redis KVS.
-
-This package contains the %{name} instance monitor.
+#This package contains the %{name} instance monitor.
 
 %package          network
 Summary:          A nova network server
@@ -301,8 +301,8 @@ BuildRequires:    python-gflags
 BuildRequires:    python-routes >= 1.12.3
 BuildRequires:    python-sqlalchemy
 BuildRequires:    python-tornado
-BuildRequires:    python-twisted-core
-BuildRequires:    python-twisted-web
+#BuildRequires:    python-twisted-core
+#BuildRequires:    python-twisted-web
 BuildRequires:    python-webob
 BuildRequires:    python-lockfile
 BuildRequires:    intltool
@@ -629,10 +629,10 @@ fi
 %{_initrddir}/%{name}-ajax-console-proxy
 %{_datarootdir}/nova/ajaxterm
 
-%files instancemonitor
-%defattr(-,root,root,-)
-%{_bindir}/nova-instancemonitor
-#{_initrddir}/%{name}-instancemonitor
+#%files instancemonitor
+#%defattr(-,root,root,-)
+#%{_bindir}/nova-instancemonitor
+##{_initrddir}/%{name}-instancemonitor
 
 %files network
 %defattr(-,root,root,-)
