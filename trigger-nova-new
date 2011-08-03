@@ -4,10 +4,9 @@ abspath="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
 dirname="$(dirname $abspath)"
 cd "$dirname" || exit -1
 
-
 prj="nova"
-DevMileStone="d3"
-ReleaseBranch="diablo-3"
+DevMileStone="d4"
+TarballsHome="http://nova.openstack.org/tarballs"
 
 CurTarballVer=(`curl -s $TarballsHome/?C=M\;O=D| grep $DevMileStone | grep -m 1 $prj-[0-9] | perl -p -e 's!^.*$prj-(\d+\.\d+)~(\w\d)~(\d+.\d+)\.tar\.gz.*$!\n$1 $2 $3 $4 $5\n!i'`)
 source trigger.conf
@@ -22,14 +21,14 @@ source build_helpers
 case "$1" in
     build)
         #check_for_update
-        check_enviroment
-        update_spec
+#        check_enviroment
+#        update_spec
 
 	get_tarball
-	create_srpm
-	create_rpm && commit_spec || undo_changes
-	sign_rpm
-	update_repo
+#	create_srpm
+#	create_rpm && commit_spec || undo_changes
+#	sign_rpm
+#	update_repo
 	#do_mock
         ;;
     check)
@@ -44,7 +43,7 @@ case "$1" in
         ;;
     release_check)
 	check_git_update
-	[[ $FireNewBuild == "0" ]] || exit 0
+	[[ $FireNewBuild == "1" ]] || exit 0
 	curl -s "http://$jenkins/job/$JobName/build"
 	[ $Debug ] && echo "Fire jenkins to build  $JobName"
 	 exit 0
