@@ -21,8 +21,10 @@ source build_helpers
 # If build # is not specified, latest available tarball will be built
 
 
+cp SOURCES/* ~build/rpmbuild/SOURCES
 
 get_tarball
+update_spec
 create_srpm
 create_rpm
 sign_rpm
