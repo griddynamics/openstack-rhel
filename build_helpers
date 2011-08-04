@@ -77,16 +77,14 @@ update_spec() {
 }
 
 create_srpm() {
-    [ $Debug ] &&  echo "Creating Repo.."
-
     # Remove RPM of this build  if exist
     rm -f "$RepoPath/RPMS/$GitCurBranch/*$ActualRelease*.src.rpm"
     
-    [ $Debug ] &&  echo "Building SRPMs.. Logging to $BuildLog"
+    [ $Debug ] &&  echo "Building SRPMs.."
     rpmbuild -bs $OurSpec
 
     if [ "$?" != "0" ]; then
-        [ $Debug ] &&  echo "Build SRPM fail. See logs in $BuildLog"
+        [ $Debug ] &&  echo "Build SRPM fail."
         exit -1
     fi
 
@@ -103,10 +101,10 @@ create_rpm() {
         exit -1
     else
         [ $Debug ] && echo "Build success. Removing logs"
+        DONERPM="$(cat $BuildLog |grep 'Wrote:' | sed 's/Wrote://')"
+        [ $Debug ] &&  echo "RPM Done: $DONERPM"
         rm -f $BuildLog
     fi
-    DONERPM="$(cat $BuildLog |grep 'Wrote:' | sed 's/Wrote://')"
-    [ $Debug ] &&  echo "RPM Done: $DONERPM"
 }
 
 commit_spec() {
