@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.20110727.1143.5%{?dist}
+Release:          0.20110727.1143.6%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -672,7 +672,11 @@ fi
 %files node-compute
 
 %changelog
-* Mon Aug 03 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110727.1143.5
+* Thu Aug 04 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110727.1143.6
+- Fixed guestfs patch
+- Changed filename of Ubuntu networking configuration template
+
+* Wed Aug 03 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110727.1143.5
 - Updated guestfs patch once again^2
 
 * Mon Aug 01 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110727.1143.4
