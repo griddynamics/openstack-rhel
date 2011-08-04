@@ -92,7 +92,7 @@ create_srpm() {
 }
 
 create_rpm() {
-
+    BuildLog=`mktemp`
     [ $Debug ] &&  echo "Building RPMs..Logging to $BuildLog"
     rpmbuild -bb $OurSpec > $BuildLog 2>&1
 
