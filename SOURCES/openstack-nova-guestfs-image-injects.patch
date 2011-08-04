@@ -16,7 +16,7 @@
  
 +**Related Flags**
 +
-+:injected_network_template:  Template file for injected network
++:injected_network_template:  Template directory for injected network
 +
  """
  
