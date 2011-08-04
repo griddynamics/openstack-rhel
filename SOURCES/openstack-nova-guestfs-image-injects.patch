@@ -128,7 +128,7 @@
 +        os_name = g.inspect_get_distro(device)
 +
 +        if os_name == "ubuntu":
-+            ifc_template = open(os.path.join(FLAGS.injected_network_template, "interfaces.template")).read()
++            ifc_template = open(os.path.join(FLAGS.injected_network_template, "interfaces.ubuntu.template")).read()
 +            net = [
 +                {'name': x['name'],
 +                 'data':

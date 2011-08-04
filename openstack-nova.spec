@@ -386,7 +386,7 @@ install -p -D -m 644 nova/virt/libvirt.xml.template %{buildroot}%{_datarootdir}/
 
 # Network configuration templates for injection engine
 install -d -m 755 %{buildroot}%{_datarootdir}/nova/interfaces
-install -p -D -m 644 nova/virt/interfaces.template %{buildroot}%{_datarootdir}/nova/interfaces/interfaces.template
+install -p -D -m 644 nova/virt/interfaces.template %{buildroot}%{_datarootdir}/nova/interfaces/interfaces.ubuntu.template
 install -p -D -m 644 %{SOURCE22} %{buildroot}%{_datarootdir}/nova/interfaces/interfaces.rhel.template
 
 # Clean CA directory
