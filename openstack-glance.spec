@@ -167,6 +167,10 @@ fi
 %{_bindir}/%{prj}-manage
 %{_bindir}/%{prj}-registry
 %{_bindir}/%{prj}-upload
+%{_bindir}/%{prj}-cache-prefetcher
+%{_bindir}/%{prj}-cache-pruner
+%{_bindir}/%{prj}-cache-reaper
+%{_bindir}/%{prj}-scrubber
 %{_initrddir}/%{name}-api
 %{_initrddir}/%{name}-registry
 %defattr(-,%{prj},nobody,-)
