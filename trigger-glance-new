@@ -5,6 +5,7 @@ dirname="$(dirname $abspath)"
 cd "$dirname" || exit -1
 
 prj="glance"
+ OurSpec="openstack-$prj.spec"
 DevMileStone="d3"
 TarballsHome="http://glance.openstack.org/tarballs"
 

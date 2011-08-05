@@ -5,6 +5,8 @@ dirname="$(dirname $abspath)"
 cd "$dirname" || exit -1
 
 prj="nova"
+OurSpec="openstack-$prj.spec"
+
 DevMileStone="d4"
 TarballsHome="http://nova.openstack.org/tarballs"
 
