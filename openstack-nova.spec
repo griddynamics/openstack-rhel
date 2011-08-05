@@ -6,13 +6,13 @@
 
 Name:             openstack-nova
 Version:	2011.3
-Release:	0.20110805.1378%{?dist}
+Release:	0.20110805.1380%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-2011.3~d4~20110805.1378.tar.gz  
+Source0:          http://nova.openstack.org/tarballs/nova-2011.3~d4~20110805.1380.tar.gz  
 Source1:          %{name}-README.rhel6
 Source2:          %{name}-noVNC-snap2011.03.24.tgz
 Source6:          %{name}.logrotate
