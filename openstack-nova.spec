@@ -59,6 +59,8 @@ Requires(postun): initscripts
 Requires(preun):  chkconfig
 Requires(pre):    shadow-utils qemu-kvm
 
+Obsoletes:        %{name}-instancemonitor
+
 %description
 Nova is a cloud computing fabric controller (the main part of an IaaS system)
 built to match the popular AWS EC2 and S3 APIs. It is written in Python, using
@@ -90,7 +92,6 @@ Requires:         %{name} = %{version}-%{release}
 Requires:         %{name}-cc-config = %{version}
 Requires:         %{name}-api = %{version}-%{release}
 Requires:         %{name}-compute = %{version}-%{release}
-#Requires:         %{name}-instancemonitor = %{version}-%{release}
 Requires:         %{name}-network = %{version}-%{release}
 Requires:         %{name}-noVNC = %{version}-%{release}
 Requires:         %{name}-objectstore = %{version}-%{release}
@@ -115,7 +116,6 @@ Requires:         %{name} = %{version}-%{release}
 Requires:         %{name}-compute-config = %{version}
 Requires:         %{name}-compute = %{version}-%{release}
 Requires:         %{name}-network = %{version}-%{release}
-#Requires:         %{name}-instancemonitor = %{version}-%{release}
 Requires:         MySQL-python
 
 %description      node-compute
@@ -206,21 +206,6 @@ the Tornado and Twisted frameworks, and relies on the standard AMQP messaging
 protocol, and the Redis KVS.
 
 This package contains the %{name} Compute Worker.
-
-#%package          instancemonitor
-#Summary:          A nova instancemonitor server
-#Group:            Applications/System
-#
-#Requires:         %{name} = %{version}-%{release}
-#Requires:         start-stop-daemon
-
-#%description      instancemonitor
-#Nova is a cloud computing fabric controller (the main part of an IaaS system)
-#built to match the popular AWS EC2 and S3 APIs. It is written in Python, using
-#the Tornado and Twisted frameworks, and relies on the standard AMQP messaging
-#protocol, and the Redis KVS.
-
-#This package contains the %{name} instance monitor.
 
 %package          network
 Summary:          A nova network server
@@ -632,11 +617,6 @@ fi
 %{_initrddir}/%{name}-ajax-console-proxy
 %{_datarootdir}/nova/ajaxterm
 
-#%files instancemonitor
-#%defattr(-,root,root,-)
-#%{_bindir}/nova-instancemonitor
-##{_initrddir}/%{name}-instancemonitor
-
 %files network
 %defattr(-,root,root,-)
 %{_bindir}/nova-network
@@ -670,6 +650,9 @@ fi
 %files node-compute
 
 %changelog
+* Fri Aug 05 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110804.1364
+- Removed openstack-nova-instancemonitor
+
 * Mon Jul 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110724.1308
 - Added MySQL-python as dep for openstack-nova-node-compute
 - Added nova-network for compute-only nodes due recent changes in network HA code
