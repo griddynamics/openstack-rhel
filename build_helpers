@@ -108,6 +108,7 @@ create_rpm() {
 }
 
 commit_spec() {
+        [ $Debug ] &&  echo "Commiting update to $ActualRelease"
         git add "$OurSpec"
 	git commit -m "Update to $ActualRelease"
         if [ "$?" != "1" ]; then 

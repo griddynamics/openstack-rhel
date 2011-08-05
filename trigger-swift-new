@@ -29,6 +29,7 @@ source build_helpers
 
 case "$1" in
     build)
+        check_for_update
 	check_enviroment
 	update_spec
 	get_tarball
