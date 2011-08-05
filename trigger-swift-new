@@ -7,6 +7,8 @@ cd "$dirname" || exit -1
 
 
 prj="swift"
+OurSpec="openstack-$prj.spec"
+
 DevMileStone="d4"
 TarballsHome="http://swift.openstack.org/tarballs"
 
