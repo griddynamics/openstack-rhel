@@ -23,16 +23,16 @@
 %define py_puresitedir  /usr/lib/python2.6/site-packages
 
 Name:           openstack-keystone
-Release:	0.20110715.17%{?dist}
+Release:	0.20110805.19%{?dist}
 Version:	1.0
 # Upstream repo: https://github.com/openstack/keystone
 Url:            http://keystone.openstack.org
 Summary:        Python bindings to the OS API
 License:        Apache 2.0
 Group:          Development/Languages/Python
-Source0:        %{name}-%{version}.tar.gz  
+Source0:          http://openstack-keystone.openstack.org/tarballs/%{name}-%{version}.tar.gz  
 Source1:        %{name}.init
-Patch:          %{name}-%{version}-conf.patch
+#Patch:          %{name}-%{version}-conf.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  python-devel python-setuptools python-sphinx >= 0.6.0
 BuildArch:      noarch
@@ -43,7 +43,7 @@ Authentication service - proposed for OpenStack
 
 %prep
 %setup -q -n %{name}-%{version}
-%patch -p1
+#%patch -p1
 
 %build
 python setup.py build

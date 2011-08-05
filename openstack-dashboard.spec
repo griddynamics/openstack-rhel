@@ -23,7 +23,7 @@
 %define py_puresitedir  /usr/lib/python2.6/site-packages
 
 Name:           openstack-dashboard
-Release:	0.20110715.18%{?dist}
+Release:	0.20110805.20%{?dist}
 Version:	1.0
 Url:            http://www.openstack.org
 Summary:        Django based reference implementation of a web based management interface for OpenStack.
@@ -33,7 +33,7 @@ Source0:          http://openstack-dashboard.openstack.org/tarballs/%{name}-%{ve
 Source1:        %{name}.init
 Source2:        %{name}-%{version}-setup.py
 Source3:        %{name}-%{version}-dashboard
-Patch:          %{name}-%{version}-conf.patch
+#Patch:          %{name}-%{version}-conf.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  python-devel python-setuptools
 BuildArch:      noarch
@@ -46,7 +46,7 @@ OpenStack Nova cloud controller.
 
 %prep
 %setup -q -n %{name}-%{version}/openstack-dashboard/
-%patch -p1
+#%patch -p1
 
 %build
 cp %{SOURCE2} setup.py
