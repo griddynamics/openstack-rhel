@@ -20,6 +20,7 @@ source build_helpers
 
 case "$1" in
     build)
+	check_for_update 
         check_enviroment
         update_spec
 
@@ -41,7 +42,7 @@ case "$1" in
         build
         ;;
     release_check)
-	check_git_update
+	check_spec_update
 	[[ $FireNewBuild == "1" ]] || exit 0
 	curl -s "http://$jenkins/job/$JobName/build"
 	[ $Debug ] && echo "Fire jenkins to build  $JobName"
