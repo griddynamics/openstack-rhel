@@ -1,7 +1,27 @@
+debug_info() {
+    echo "Current variable state:"
+    echo "prj: $prj"
+    echo "GithubUserProject: $GithubUserProject"
+    echo "GithubSource: $GithubSource"
+    echo "TarballsHome: $TarballsHome"
+    echo "OurSpec: $OurSpec"
+    echo "CurTarballVer: $CurTarballVer"
+    echo "ActualTarBall: $ActualTarBall"
+    echo "ActualVersion: $ActualVersion"
+    echo "ActualRelease: $ActualRelease"
+    echo "SpecVersion: $SpecVersion"
+    echo "SpecRelease: $SpecRelease"
+    echo "DevMileStone: $DevMileStone"
+    echo "GitCurBranch: $GitCurBranch"
+    echo "RpmTree: $RpmTree"
+    echo "RepoPath: $RepoPath"
+    echo "LocalSourcePath: $LocalSourcePath"
+    echo "JobName: $JobName"
+}
+
 
 check_tarball_update() {
     [ $Debug ] && echo "Checking for updates..."
-#    [ $Debug ] && echo "CurTarballVer = ${CurTarballVer[@]}"
     [ $Debug ] && echo "Version and Release from tarball URL  = $ActualVersion - $ActualRelease"
     [ $Debug ] && echo "Version and Release from SPEC file = $SpecVersion - $SpecRelease"
 
@@ -46,8 +66,7 @@ check_git_update() {
 check_for_update() {
     check_tarball_update
     check_spec_update
-    [[ $FireNewBuild == "1" ]] || exit 0
-    [ $Debug ] && echo "There is UPDATE"
+    [[ $FireNewBuild == "1" ]] && [ $Debug ] && echo "There is UPDATE"
 }
 
 check_enviroment() {
@@ -118,6 +137,7 @@ create_rpm() {
 
     if [ "$?" != "0" ]; then
         [ $Debug ] &&  echo "Build RPM fail. See logs in $BuildLog"
+        dubug_info
         exit -1
     else
         [ $Debug ] && echo "Build success. Removing logs"

@@ -36,6 +36,7 @@ case "$1" in
         ;;
     check)
 	check_for_update 
+	[[ $FireNewBuild == "1" ]] || exit 0
 	curl -s "http://$jenkins/job/$JobName/build"
 	[ $Debug ] && echo "Fire jenkins to build  $JobName"
 	 exit 0
