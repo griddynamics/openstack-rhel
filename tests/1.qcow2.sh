@@ -20,7 +20,7 @@ echo "Setting quotas"
 nova-manage project quota $PROJECT instances 512
 nova-manage project quota $PROJECT cores 1024
 echo "Creating network..."
-nova-manage network create $NETLABEL $NETWORK $NETWORKS_NUM $ADDR_PER_NETWORK --bridge_interface br100
+nova-manage network create $NETLABEL $NETWORK $NETWORKS_NUM $ADDR_PER_NETWORK --bridge_interface eth0
 
 # Turning on network injection
 #echo "UPDATE networks SET injected = 1" | mysql -uroot -pnova nova
