@@ -7,7 +7,7 @@ cd "$dirname" || exit -1
 OurSpec="openstack-keystone.spec"
 prj=$(grep '^Name:' $OurSpec | sed 's/^Name:\s\+//')
 
-GithubSource="rackspace/keystone"
+GithubSource="aababilov/keystone"
 ActualVersion="$(grep '^Version:' $OurSpec | sed 's/^Version:\s\+//')"
 ActualRelease="0.`date +%Y%m%d.%H%M`"
 ActualTarBall=%{name}-%{version}.tar.gz
