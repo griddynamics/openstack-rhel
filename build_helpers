@@ -89,6 +89,10 @@ update_spec() {
     perl -pi -e "s,^Source0:.*$,Source0:          $TarballsHome/$ActualTarBall  ," $OurSpec
     perl -pi -e 's,^(Version:).*$,${1}\t'$ActualVersion',' $OurSpec
     perl -pi -e 's,^(Release:).*%{\?dist}$,${1}\t'$ActualRelease'%{\?dist},' $OurSpec
+    [ $Debug ] && echo "Updating SPEC source to $TarballsHome/$ActualTarBall"
+    [ $Debug ] && echo "Updating SPEC Version to $ActualVersion"
+    [ $Debug ] && echo "Updating SPEC Release to $ActualRelease"
+    
 #	rpmdev-bumpspec --comment="- Update to $ActualRelease" $OurSpec
 }
 

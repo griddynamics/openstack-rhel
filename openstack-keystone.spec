@@ -23,16 +23,14 @@
 %define py_puresitedir  /usr/lib/python2.6/site-packages
 
 Name:           openstack-keystone
-Release:	0.20110805.19%{?dist}
+Release:	0.20110804.17%{?dist}
 Version:	1.0
-# Upstream repo: https://github.com/openstack/keystone
-Url:            http://keystone.openstack.org
+Url:            http://www.openstack.org
 Summary:        Python bindings to the OS API
 License:        Apache 2.0
 Group:          Development/Languages/Python
-Source0:          http://openstack-keystone.openstack.org/tarballs/%{name}-%{version}.tar.gz  
+Source0:        http://openstack-keystone.openstack.org/tarballs/%{name}-%{version}.tar.gz  
 Source1:        %{name}.init
-#Patch:          %{name}-%{version}-conf.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  python-devel python-setuptools python-sphinx >= 0.6.0
 BuildArch:      noarch
@@ -43,7 +41,8 @@ Authentication service - proposed for OpenStack
 
 %prep
 %setup -q -n %{name}-%{version}
-#%patch -p1
+sed -i 's|sqlite:///keystone|sqlite:////var/lib/keystone/keystone|' etc/keystone.conf
+sed -i 's|log_file = keystone.log|log_file = /var/log/keystone/keystone.log|' etc/keystone.conf
 
 %build
 python setup.py build
@@ -53,15 +52,21 @@ python setup.py build
 
 %__make -C doc/ html PYTHONPATH=%{_builddir}/%{name}-%{version}
 python setup.py install --prefix=%{_prefix} --root=%{buildroot}
+
 install -d -m 755 %{buildroot}%{_sysconfdir}/%{mod_name}
-cp -a etc/* %{buildroot}%{_sysconfdir}/%{mod_name}
-%__rm -rf %{buildroot}%{py_puresitedir}/{doc,examples}
-%__rm %{buildroot}%{py_puresitedir}/tools/pip-requires*
+install -m 644 etc/* %{buildroot}%{_sysconfdir}/%{mod_name}
+install -d -m 755 %{buildroot}%{_sysconfdir}/nova
+install -m 644 examples/paste/auth_*ini %{buildroot}%{_sysconfdir}/nova
+install -m 644 examples/paste/nova-api-paste.ini %{buildroot}%{_sysconfdir}/nova/api-paste.ini.keystone.example
 
 install -d -m 755 %{buildroot}%{_sharedstatedir}/keystone
-install -p -D -m 755 %{SOURCE1} %{buildroot}%{_initrddir}/%{name}
 install -d -m 755 %{buildroot}%{_localstatedir}/log/%{mod_name}
 install -d -m 755 %{buildroot}%{_localstatedir}/run/%{mod_name}
+
+install -p -D -m 755 %{SOURCE1} %{buildroot}%{_initrddir}/%{name}
+
+%__rm -rf %{buildroot}%{py_puresitedir}/{doc,examples}
+%__rm %{buildroot}%{py_puresitedir}/tools/pip-requires*
 
 %clean
 %__rm -rf %{buildroot}
@@ -71,6 +76,12 @@ getent passwd keystone >/dev/null || \
 useradd -r -g nobody -G nobody -d %{_sharedstatedir}/keystone -s /sbin/nologin \
 -c "OpenStack Keystone Daemon" keystone
 exit 0
+
+%preun
+if [ $1 = 0 ] ; then
+    /sbin/service %{name} stop
+    /sbin/chkconfig --del %{name}
+fi
 
 %files
 %defattr(-,root,root,-)

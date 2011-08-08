@@ -9,7 +9,7 @@ prj=$(grep '^Name:' $OurSpec | sed 's/^Name:\s\+//')
 
 GithubSource="rackspace/keystone"
 ActualVersion="$(grep '^Version:' $OurSpec | sed 's/^Version:\s\+//')"
-ActualRelease="0.`date +%Y%m%d.%H`"
+ActualRelease="0.`date +%Y%m%d.%H%M`"
 ActualTarBall=%{name}-%{version}.tar.gz
 
 source trigger.conf

@@ -32,6 +32,7 @@ case "$1" in
 	sign_rpm
 	update_repo
 	#do_mock
+	exit 0
         ;;
     check)
 	check_for_update 
