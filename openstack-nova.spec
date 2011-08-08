@@ -6,13 +6,14 @@
 
 Name:             openstack-nova
 Version:	2011.3
-Release:	0.20110804.1364%{?dist}
+Release:	0.20110808.1392%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
+Vendor:           Grid Dynamics Consulting Services, Inc.
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-2011.3~d4~20110804.1364.tar.gz  
+Source0:          http://nova.openstack.org/tarballs/nova-2011.3~d4~20110808.1392.tar.gz  
 Source1:          %{name}-README.rhel6
 Source2:          %{name}-noVNC-snap2011.03.24.tgz
 Source6:          %{name}.logrotate
@@ -40,6 +41,7 @@ Patch5:           %{name}-rhel-ajaxterm-path.patch
 Patch6:           %{name}-s3server-quickfix.patch
 Patch7:           %{name}-scsi-target-utils-support.patch
 Patch8:           %{name}-rpc-improvements.patch
+Patch9:           %{name}-floating-ip-fix.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -58,6 +60,8 @@ Requires(post):   chkconfig grep sudo libselinux-utils
 Requires(postun): initscripts
 Requires(preun):  chkconfig
 Requires(pre):    shadow-utils qemu-kvm
+
+Obsoletes:        %{name}-instancemonitor
 
 %description
 Nova is a cloud computing fabric controller (the main part of an IaaS system)
@@ -90,7 +94,6 @@ Requires:         %{name} = %{version}-%{release}
 Requires:         %{name}-cc-config = %{version}
 Requires:         %{name}-api = %{version}-%{release}
 Requires:         %{name}-compute = %{version}-%{release}
-#Requires:         %{name}-instancemonitor = %{version}-%{release}
 Requires:         %{name}-network = %{version}-%{release}
 Requires:         %{name}-noVNC = %{version}-%{release}
 Requires:         %{name}-objectstore = %{version}-%{release}
@@ -115,7 +118,6 @@ Requires:         %{name} = %{version}-%{release}
 Requires:         %{name}-compute-config = %{version}
 Requires:         %{name}-compute = %{version}-%{release}
 Requires:         %{name}-network = %{version}-%{release}
-#Requires:         %{name}-instancemonitor = %{version}-%{release}
 Requires:         MySQL-python
 
 %description      node-compute
@@ -206,21 +208,6 @@ the Tornado and Twisted frameworks, and relies on the standard AMQP messaging
 protocol, and the Redis KVS.
 
 This package contains the %{name} Compute Worker.
-
-#%package          instancemonitor
-#Summary:          A nova instancemonitor server
-#Group:            Applications/System
-#
-#Requires:         %{name} = %{version}-%{release}
-#Requires:         start-stop-daemon
-
-#%description      instancemonitor
-#Nova is a cloud computing fabric controller (the main part of an IaaS system)
-#built to match the popular AWS EC2 and S3 APIs. It is written in Python, using
-#the Tornado and Twisted frameworks, and relies on the standard AMQP messaging
-#protocol, and the Redis KVS.
-
-#This package contains the %{name} instance monitor.
 
 %package          network
 Summary:          A nova network server
@@ -327,6 +314,7 @@ This package contains documentation files for %{name}.
 %patch6 -p1
 %patch7 -p1
 #patch8 -p1
+%patch9 -p0
 
 install %{SOURCE1} README.rhel6
 
@@ -381,8 +369,11 @@ install -d -m 755 %{buildroot}%{_localstatedir}/run/nova
 install -p -D -m 644 nova/auth/novarc.template %{buildroot}%{_datarootdir}/nova/novarc.template
 install -p -D -m 644 nova/cloudpipe/client.ovpn.template %{buildroot}%{_datarootdir}/nova/client.ovpn.template
 install -p -D -m 644 nova/virt/libvirt.xml.template %{buildroot}%{_datarootdir}/nova/libvirt.xml.template
-install -p -D -m 644 nova/virt/interfaces.template %{buildroot}%{_datarootdir}/nova/interfaces.template
-install -p -D -m 644 %{SOURCE22} %{buildroot}%{_datarootdir}/nova/interfaces.rhel.template
+
+# Network configuration templates for injection engine
+install -d -m 755 %{buildroot}%{_datarootdir}/nova/interfaces
+install -p -D -m 644 nova/virt/interfaces.template %{buildroot}%{_datarootdir}/nova/interfaces/interfaces.ubuntu.template
+install -p -D -m 644 %{SOURCE22}                   %{buildroot}%{_datarootdir}/nova/interfaces/interfaces.rhel.template
 
 # Clean CA directory
 find %{buildroot}%{_sharedstatedir}/nova/CA -name .gitignore -delete
@@ -629,11 +620,6 @@ fi
 %{_initrddir}/%{name}-ajax-console-proxy
 %{_datarootdir}/nova/ajaxterm
 
-#%files instancemonitor
-#%defattr(-,root,root,-)
-#%{_bindir}/nova-instancemonitor
-##{_initrddir}/%{name}-instancemonitor
-
 %files network
 %defattr(-,root,root,-)
 %{_bindir}/nova-network
@@ -667,6 +653,9 @@ fi
 %files node-compute
 
 %changelog
+* Fri Aug 05 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110804.1364
+- Removed openstack-nova-instancemonitor
+
 * Mon Jul 25 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110724.1308
 - Added MySQL-python as dep for openstack-nova-node-compute
 - Added nova-network for compute-only nodes due recent changes in network HA code
