@@ -11,6 +11,7 @@ Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
+Vendor:           Grid Dynamics Consulting Services, Inc.
 URL:              http://openstack.org/projects/compute/
 Source0:          http://nova.openstack.org/tarballs/nova-2011.3~d4~20110808.1392.tar.gz  
 Source1:          %{name}-README.rhel6

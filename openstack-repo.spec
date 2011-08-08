@@ -4,7 +4,8 @@ Release:	0.2
 Summary:	OpenStack repository configuration from Grid Dynamics
 
 Group:		System Environment/Base
-License:	GPL
+License:	APL 2.0
+Vendor:         Grid Dynamics Consulting Services, Inc.
 Source0:	%{name}.repo
 Source1:        %{name}.key
 BuildRoot:	%(mktemp -ud %{_tmppath}/%{name}-%{version}-%{release}-XXXXXX)

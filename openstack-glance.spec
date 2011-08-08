@@ -12,6 +12,7 @@ Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages
 License:          ASL 2.0
+Vendor:           Grid Dynamics Consulting Services, Inc.
 URL:              http://%{prj}.openstack.org
 Source0:          http://glance.openstack.org/tarballs/glance-2011.3~d3~20110728.r145.tar.gz  
 Source1:          %{name}-api.init

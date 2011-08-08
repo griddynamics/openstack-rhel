@@ -13,6 +13,7 @@ Summary:          Client for OpenStack Nova API
 
 Group:            Applications/System
 License:          ASL 2.0
+Vendor:           Grid Dynamics Consulting Services, Inc.
 URL:              http://pypi.python.org/pypi/python-novaclient
 Source0:          python-novaclient-%{version}-%{commit_id}.tgz
 

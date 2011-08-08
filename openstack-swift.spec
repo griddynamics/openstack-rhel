@@ -11,6 +11,7 @@ Summary:          OpenStack Object Storage (swift)
 
 Group:            Development/Languages
 License:          ASL 2.0
+Vendor:           Grid Dynamics Consulting Services, Inc.
 URL:              http://launchpad.net/swift
 Source0:          http://swift.openstack.org/tarballs/swift-1.4.3~20110804.338.tar.gz  
 Source1:          %{name}-functions

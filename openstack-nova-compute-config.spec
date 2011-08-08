@@ -5,6 +5,7 @@ Summary:          OpenStack Compute (nova) - Compute node configuration
 
 Group:            Development/Languages
 License:          ASL 2.0
+Vendor:           Grid Dynamics Consulting Services, Inc.
 URL:              http://openstack.org/projects/compute/
 Source0:          %{name}.conf
 BuildRoot:        %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
