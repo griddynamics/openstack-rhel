@@ -46,8 +46,7 @@ check_git_update() {
 check_for_update() {
     check_tarball_update
     check_spec_update
-    [[ $FireNewBuild == "1" ]] || exit 0
-    [ $Debug ] && echo "There is UPDATE"
+    [[ $FireNewBuild == "1" ]] && [ $Debug ] && echo "There is UPDATE"
 }
 
 check_enviroment() {

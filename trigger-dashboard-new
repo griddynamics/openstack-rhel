@@ -23,22 +23,21 @@ case "$1" in
         check_enviroment
 	check_spec_update
 	check_git_update
-#	[[ $FireNewBuild == "1" ]] && {
-	    get_git
-	    update_spec
-	    create_srpm
-	    create_rpm # && commit_spec || undo_changes
-	    sign_rpm
-	    update_repo
-#	}
+        get_git
+        update_spec
+        create_srpm
+        create_rpm # && commit_spec || undo_changes
+        sign_rpm
+        update_repo
 	exit 0
 	#do_mock
         ;;
     check)
 	check_git_update
 	check_spec_update
-	curl -s "http://$jenkins/job/$JobName/build"
-	[ $Debug ] && echo "Fire jenkins to build  $JobName"
+	[[ $FireNewBuild == "1" ]] || exit 0
+	    curl -s "http://$jenkins/job/$JobName/build"
+	    [ $Debug ] && echo "Fire jenkins to build  $JobName"
 	 exit 0
         ;;
     build_ver)
@@ -48,9 +47,9 @@ case "$1" in
     release_check)
 	check_spec_update
 	[[ $FireNewBuild == "1" ]] || exit 0
-	curl -s "http://$jenkins/job/$JobName/build"
-	[ $Debug ] && echo "Fire jenkins to build  $JobName"
-	 exit 0
+	    curl -s "http://$jenkins/job/$JobName/build"
+	    [ $Debug ] && echo "Fire jenkins to build  $JobName"
+	    exit 0
         ;;
     release_build)
 	create_rpm # && commit_spec || undo_changes
