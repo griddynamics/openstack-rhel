@@ -23,14 +23,14 @@ case "$1" in
         check_enviroment
 	check_spec_update
 	check_git_update
-	[[ $FireNewBuild == "1" ]] && {
+#	[[ $FireNewBuild == "1" ]] && {
 	    get_git
 	    update_spec
 	    create_srpm
 	    create_rpm # && commit_spec || undo_changes
 	    sign_rpm
 	    update_repo
-	}
+#	}
 	exit 0
 	#do_mock
         ;;
