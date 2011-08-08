@@ -28,7 +28,6 @@ Url:            http://www.openstack.org
 License:        Apache 2.0
 Group:          Development/Languages/Python
 Source0:        http://openstack-dashboard.openstack.org/tarballs/%{name}-%{version}.tar.gz
-Patch:          %{name}-%{version}-conf.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  python-devel python-setuptools
 BuildArch:      noarch
@@ -44,7 +43,6 @@ OpenStack Nova cloud controller.
 
 %prep
 %setup -q -n %{name}-%{version}
-%patch -p1
 
 %build
 cd django-openstack
