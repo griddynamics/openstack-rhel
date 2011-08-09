@@ -58,6 +58,7 @@ nova_cleanup () {
 		fi
 		ssh_helper "$host" "rm -fr /var/lib/nova/instances/* /var/lib/nova/images/* /var/lib/nova/buckets/* /var/log/nova/*.log* /var/lib/nova/tmp/nova-ensure_bridge.lock.lock /var/lib/nova/tmp/nova-iptables.lock.lock"
 		ssh_helper "$host" "rm -fr /tmp/tmp*"
+		ssh_helper "$host" "rm -fr /etc/libvirt/nwfilter/nova-*.xml"
 	done
 }
 
