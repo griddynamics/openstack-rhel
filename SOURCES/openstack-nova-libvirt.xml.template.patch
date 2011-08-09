@@ -1,0 +1,12 @@
+diff -Naur nova-2011.3/nova/virt/libvirt.xml.template nova-2011.3.new/nova/virt/libvirt.xml.template
+--- nova-2011.3/nova/virt/libvirt.xml.template	2011-08-09 14:06:30.000000000 +0400
++++ nova-2011.3.new/nova/virt/libvirt.xml.template	2011-08-09 14:40:28.832733313 +0400
+@@ -32,7 +32,7 @@
+                 <cmdline>ro</cmdline>
+             #else
+                 #set $root_device_name = $getVar('root_device_name', '/dev/vda')
+-                <cmdline>root=${root_device_name} console=ttyS0</cmdline>
++                <cmdline>root=${root_device_name} console=ttyS0 selinux=0</cmdline>
+             #end if
+             #if $getVar('ramdisk', None)
+                 <initrd>${ramdisk}</initrd>

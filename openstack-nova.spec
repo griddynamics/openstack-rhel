@@ -35,7 +35,7 @@ Source22:         %{name}-rhel-ifc-template
 
 #Patch1:           %{name}-rhel-config-paths.patch
 Patch2:           %{name}-guestfs-image-injects.patch
-Patch3:           %{name}-bexar-libvirt.xml.template.patch
+Patch3:           %{name}-libvirt.xml.template.patch
 Patch4:           %{name}-rhel-netcat.patch
 Patch5:           %{name}-rhel-ajaxterm-path.patch
 Patch6:           %{name}-s3server-quickfix.patch
