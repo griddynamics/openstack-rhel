@@ -6,14 +6,14 @@
 
 Name:             openstack-nova
 Version:	2011.3
-Release:	0.20110808.1397%{?dist}
+Release:	0.20110809.1398%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 Vendor:           Grid Dynamics Consulting Services, Inc.
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-2011.3~d4~20110808.1397.tar.gz  
+Source0:          http://nova.openstack.org/tarballs/nova-2011.3~d4~20110809.1398.tar.gz  
 Source1:          %{name}-README.rhel6
 Source2:          %{name}-noVNC-snap2011.03.24.tgz
 Source6:          %{name}.logrotate
