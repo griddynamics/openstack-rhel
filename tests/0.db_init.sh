@@ -14,7 +14,7 @@ DB_USER=nova
 DB_PASS=nova
 PWD=nova
 
-CC_HOST=$(ip addr show dev eth0 |grep 'inet '|perl -pi -e 's/^.*inet ([\d.]+).*$/$1/')
+CC_HOST=$(ip addr show dev eth0 | grep 'inet '| perl -pi -e 's/^.*inet ([\d.]+).*$/$1/')
 #CC_HOST="10.0.0.11" # IPv4 address
 #HOSTS="$CC_HOST localhost" # compute nodes list
 
