@@ -5,6 +5,8 @@
 # ASSUMPTION: a password for root user in MySQL server is same as for nova
 ##########################################################################
 
+export LC_ALL=C
+
 source ./helpers
 
 DB_NAME=nova

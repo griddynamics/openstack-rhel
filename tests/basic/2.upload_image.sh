@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export LC_ALL=C
+
 KERNEL="vmlinuz-2.6.18-238.el5"
 INITRD="initrd-2.6.18-238.el5-virtio.img"
 ROOTFS="rootfs.qcow2"

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export LC_ALL=C
+
 USER=abr
 PROJECT=rhelimg
 #NETWORK="192.168.99.0/24"
