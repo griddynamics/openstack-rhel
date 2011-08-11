@@ -41,6 +41,7 @@ Patch6:           %{name}-s3server-quickfix.patch
 Patch7:           %{name}-scsi-target-utils-support.patch
 Patch8:           %{name}-rpc-improvements.patch
 Patch9:           %{name}-driver-agnostic-restart-instances.patch
+Patch10:           %{name}-novnc-auto.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -408,6 +409,7 @@ rm -f %{buildroot}/usr/share/doc/nova/README*
 # Add noVNC console
 install -d -m 755 %{buildroot}%{_sharedstatedir}/nova/noVNC
 tar zxf %{SOURCE2} -C %{buildroot}%{_sharedstatedir}/nova/noVNC
+cat %{buildroot}/%Patch10 | patch -p0  -d %{buildroot}%{_sharedstatedir}/nova/noVNC
 
 %clean
 rm -rf %{buildroot}
