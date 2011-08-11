@@ -1,0 +1,10 @@
+--- nova/noVNC/vnc_auto.html      2011-04-08 06:45:27.000000000 -0700
++++ nova/noVNC/vnc_auto.html   2011-08-11 00:06:41.564963141 -0700
+@@ -89,7 +89,7 @@
+         }
+
+         window.onload = function () {
+-            var host, port, password;
++            var host, port, password, token;
+
+             $D('sendCtrlAltDelButton').onclick = sendCtrlAltDel;

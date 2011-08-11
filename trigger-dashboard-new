@@ -26,7 +26,7 @@ case "$1" in
         get_git
         update_spec
         create_srpm
-        create_rpm # && commit_spec || undo_changes
+        create_rpm && commit_spec || undo_changes
         sign_rpm
         update_repo
 	exit 0

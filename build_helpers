@@ -1,5 +1,5 @@
 debug_info() {
-    echo "Current variable state:"
+    echo "-=============  Current variable state:  ==================-"
     echo "prj: $prj"
     echo "GithubUserProject: $GithubUserProject"
     echo "GithubSource: $GithubSource"
