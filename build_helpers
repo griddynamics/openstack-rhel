@@ -137,7 +137,7 @@ create_rpm() {
 
     if [ "$?" != "0" ]; then
         [ $Debug ] &&  echo "Build RPM fail. See logs in $BuildLog"
-        dubug_info
+        debug_info
         exit -1
     else
         [ $Debug ] && echo "Build success. Removing logs"
