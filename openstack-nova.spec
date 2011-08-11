@@ -628,7 +628,6 @@ fi
 
 %files objectstore
 %defattr(-,root,root,-)
-%{_bindir}/nova-import-canonical-imagestore
 %{_bindir}/nova-objectstore
 %{_initrddir}/%{name}-objectstore
 
@@ -653,6 +652,10 @@ fi
 %files node-compute
 
 %changelog
+* Thu Aug 11 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.4-0.20110810.1412
+- Removed /usr/bin/nova-import-canonical-imagestore
+  https://bugs.launchpad.net/nova/+bug/820062
+
 * Fri Aug 05 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110804.1364
 - Removed openstack-nova-instancemonitor
 
