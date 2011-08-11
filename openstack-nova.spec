@@ -6,14 +6,14 @@
 
 Name:             openstack-nova
 Version:	2011.3
-Release:	0.20110810.1412%{?dist}
+Release:	0.20110810.1415%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 Vendor:           Grid Dynamics Consulting Services, Inc.
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-2011.3~d4~20110810.1412.tar.gz  
+Source0:          http://nova.openstack.org/tarballs/nova-2011.3~d4~20110810.1415.tar.gz  
 Source1:          %{name}-README.rhel6
 Source2:          %{name}-noVNC-snap2011.03.24.tgz
 Source6:          %{name}.logrotate
@@ -42,6 +42,7 @@ Patch6:           %{name}-s3server-quickfix.patch
 Patch7:           %{name}-scsi-target-utils-support.patch
 Patch8:           %{name}-rpc-improvements.patch
 Patch9:           %{name}-floating-ip-fix.patch
+Patch10:           %{name}-novnc-auto.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -315,6 +316,8 @@ This package contains documentation files for %{name}.
 %patch7 -p1
 #patch8 -p1
 %patch9 -p0
+#%patch10 -p0 -d %{buildroot}%{_sharedstatedir}/nova/noVNC
+
 
 install %{SOURCE1} README.rhel6
 
@@ -394,6 +397,8 @@ rm -f %{buildroot}/usr/share/doc/nova/README*
 # Add noVNC console
 install -d -m 755 %{buildroot}%{_sharedstatedir}/nova/noVNC
 tar zxf %{SOURCE2} -C %{buildroot}%{_sharedstatedir}/nova/noVNC
+cat %{buildroot}/%Patch10 | patch -p0  -d %{buildroot}%{_sharedstatedir}/nova/noVNC
+
 
 %clean
 rm -rf %{buildroot}
@@ -628,7 +633,7 @@ fi
 
 %files objectstore
 %defattr(-,root,root,-)
-%{_bindir}/nova-import-canonical-imagestore
+#%{_bindir}/nova-import-canonical-imagestore
 %{_bindir}/nova-objectstore
 %{_initrddir}/%{name}-objectstore
 
