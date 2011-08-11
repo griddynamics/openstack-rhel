@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.20110727.1143.7%{?dist}
+Release:          0.20110727.1143.8%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -674,6 +674,9 @@ fi
 %files node-compute
 
 %changelog
+* Thu Aug 11 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110727.1143.8
+- Added novnc-auto patch
+
 * Thu Aug 04 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110727.1143.7
 - Removed DNS1= setting from injected network template for RHEL
 
