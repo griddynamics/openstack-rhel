@@ -41,9 +41,9 @@ source build_helpers
 
 case "$1" in
     build)
-#        check_enviroment
-#	check_spec_update
-#	check_git_update
+        check_enviroment
+	check_spec_update
+	check_git_update
 	get_git
 	update_spec
 	create_srpm
