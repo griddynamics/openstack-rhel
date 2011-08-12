@@ -1,7 +1,27 @@
+debug_info() {
+    echo "-=============  Current variable state:  ==================-"
+    echo "prj: $prj"
+    echo "GithubUserProject: $GithubUserProject"
+    echo "GithubSource: $GithubSource"
+    echo "TarballsHome: $TarballsHome"
+    echo "OurSpec: $OurSpec"
+    echo "CurTarballVer: $CurTarballVer"
+    echo "ActualTarBall: $ActualTarBall"
+    echo "ActualVersion: $ActualVersion"
+    echo "ActualRelease: $ActualRelease"
+    echo "SpecVersion: $SpecVersion"
+    echo "SpecRelease: $SpecRelease"
+    echo "DevMileStone: $DevMileStone"
+    echo "GitCurBranch: $GitCurBranch"
+    echo "RpmTree: $RpmTree"
+    echo "RepoPath: $RepoPath"
+    echo "LocalSourcePath: $LocalSourcePath"
+    echo "JobName: $JobName"
+}
+
 
 check_tarball_update() {
     [ $Debug ] && echo "Checking for updates..."
-#    [ $Debug ] && echo "CurTarballVer = ${CurTarballVer[@]}"
     [ $Debug ] && echo "Version and Release from tarball URL  = $ActualVersion - $ActualRelease"
     [ $Debug ] && echo "Version and Release from SPEC file = $SpecVersion - $SpecRelease"
 
@@ -13,25 +33,40 @@ check_tarball_update() {
 
 }
 
-check_git_update() {
-    GitRev="$(curl -s http://github.com/api/v2/json/commits/list/$GithubUserProject/$GitCurBranch/$OurSpec | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
-    OurRev=$(git log --pretty=format:"%H" -1 $OurSpec)
+check_spec_update() {
+    SpecGitRev="$(curl -s http://github.com/api/v2/json/commits/list/$GithubUserProject/$GitCurBranch/$OurSpec | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
+    SpecOurRev="$(git log --pretty=format:"%H" -1 $OurSpec)"
 
-    [ $Debug ] && echo "SPEC Github Revision  = $GitRev"
-    [ $Debug ] && echo "SPEC Local Revision  = $OurRev"
+    [ $Debug ] && echo "SPEC Github Revision = $SpecGitRev"
+    [ $Debug ] && echo "SPEC Local Revision  = $SpecOurRev"
 
-    if [[ "$GitRev" != "$OurRev" ]]; then
-	# Git revision was updated in upstream repository, need to build it
+    if [[ "$SpecGitRev" != "$SpecOurRev" ]]; then
+	# Git SPEC revision was updated in upstream repository, need to build it
 	[ $Debug ] && echo "SPEC github update!"
         FireNewBuild=1
     fi
 }
 
+
+check_git_update() {
+# NOT TESTED YET 
+    SourceGitRev="$(curl -s http://github.com/api/v2/json/commits/list/$GithubSource/$GitCurBranch | perl -MJSON::XS -e "\$a='';while(<>){\$a.=\$_} \$d=decode_json(\$a);print \$d->{'commits'}[0]->{'id'}")"
+    [ ! -f "$LocalSourcePath/$prj-$ActualVersion" ] && SourceOurRev="$(git --git-dir="$LocalSourcePath/$prj-$ActualVersion/.git" log --pretty=format:"%H" -1)"
+    [ $Debug ] && echo "Github SOURCE Revision  = $SourceGitRev"
+    [ $Debug ] && echo "Local SOURCE Revision  = $SourceOurRev"
+
+    if [[ "$SourceGitRev" != "$SourceOurRev" ]]; then
+	# Git SOURCECODE revision was updated in upstream repository, need to build it
+	[ $Debug ] && echo "SOURCE github update!"
+        FireNewBuild=1
+    fi
+
+}
+
 check_for_update() {
     check_tarball_update
-    check_git_update
-    [[ $FireNewBuild == "1" ]] || exit 0
-    [ $Debug ] && echo "There is UPDATE"
+    check_spec_update
+    [[ $FireNewBuild == "1" ]] && [ $Debug ] && echo "There is UPDATE"
 }
 
 check_enviroment() {
@@ -73,20 +108,22 @@ update_spec() {
     perl -pi -e "s,^Source0:.*$,Source0:          $TarballsHome/$ActualTarBall  ," $OurSpec
     perl -pi -e 's,^(Version:).*$,${1}\t'$ActualVersion',' $OurSpec
     perl -pi -e 's,^(Release:).*%{\?dist}$,${1}\t'$ActualRelease'%{\?dist},' $OurSpec
+    [ $Debug ] && echo "Updating SPEC source to $TarballsHome/$ActualTarBall"
+    [ $Debug ] && echo "Updating SPEC Version to $ActualVersion"
+    [ $Debug ] && echo "Updating SPEC Release to $ActualRelease"
+    
 #	rpmdev-bumpspec --comment="- Update to $ActualRelease" $OurSpec
 }
 
 create_srpm() {
-    [ $Debug ] &&  echo "Creating Repo.."
-
     # Remove RPM of this build  if exist
     rm -f "$RepoPath/RPMS/$GitCurBranch/*$ActualRelease*.src.rpm"
     
-    [ $Debug ] &&  echo "Building SRPMs.. Logging to $BuildLog"
+    [ $Debug ] &&  echo "Building SRPMs.."
     rpmbuild -bs $OurSpec
 
     if [ "$?" != "0" ]; then
-        [ $Debug ] &&  echo "Build SRPM fail. See logs in $BuildLog"
+        [ $Debug ] &&  echo "Build SRPM fail."
         exit -1
     fi
 
@@ -94,22 +131,24 @@ create_srpm() {
 }
 
 create_rpm() {
-
+    BuildLog=`mktemp`
     [ $Debug ] &&  echo "Building RPMs..Logging to $BuildLog"
     rpmbuild -bb $OurSpec > $BuildLog 2>&1
 
     if [ "$?" != "0" ]; then
         [ $Debug ] &&  echo "Build RPM fail. See logs in $BuildLog"
+        debug_info
         exit -1
     else
         [ $Debug ] && echo "Build success. Removing logs"
-        rf -f $BuildLog
+        DONERPM="$(cat $BuildLog |grep 'Wrote:' | sed 's/Wrote://')"
+        [ $Debug ] &&  echo "RPM Done: $DONERPM"
+        rm -f $BuildLog
     fi
-    DONERPM="$(cat $BuildLog |grep 'Wrote:' | sed 's/Wrote://')"
-    [ $Debug ] &&  echo "RPM Done: $DONERPM"
 }
 
 commit_spec() {
+        [ $Debug ] &&  echo "Commiting update to $ActualRelease"
         git add "$OurSpec"
 	git commit -m "Update to $ActualRelease"
         if [ "$?" != "1" ]; then 
@@ -193,18 +232,28 @@ update_repo() {
     for FILE in $DONERPM; do
         RMFILE="$(echo "$FILE" | sed -e 's!.*/!!' | sed 's/'$ActualRelease'/'$SpecRelease'/' )"
 	[ $Debug ] &&  echo "Removing $RepoPath/$RMFILE.."
+	 [ -f  $RepoPath/$RMFILE ] && rm -f $RepoPath/$RMFILE
+
+	
+	RMFILE="$(echo "$FILE" | sed -e 's!.*/!!' | sed 's/'$SpecRelease'/'*'/' )"
+	
+	[ $Debug ] &&  echo "Removing old builds $RepoPath/$RMFILE"
 	[ -f  $RepoPath/$RMFILE ] && rm -f $RepoPath/$RMFILE
+	
+	[ $Debug ] &&  echo "Moving $FILE to repo.."
 	mv $FILE "$RepoPath";
-    [ $Debug ] &&  echo "Moving $FILE to repo.."
     done;
+    
 
 }
 
 get_git() {
-    [ $Debug ] &&  echo "Getting repo http://github.com/$GithubUserProject"
-    [ ! -f "/tmp/$prj-$ActualVersion" ] && mkdir "/tmp/$prj-$ActualVersion" ||exit -1
-    git clone "https://github.com/$GithubUserProject" "/tmp/$prj-$ActualVersion"
-    tar -czf "$RpmTree/SOURCES/$prj-$ActualVersion.tar.gz" -C "/tmp" --strip-components=1 "$prj-$ActualVersion"
-    rm -rf "/tmp/$prj-$ActualVersion"
-    [ $Debug ] && echo "TarBall= $RpmTree/SOURCES/$prj-$ActualVersion.tar.gz"
+    [ $Debug ] &&  echo "Getting repo http://github.com/$GithubSource"
+    [ ! -f "$LocalSourcePath/$prj-$ActualVersion" ] && rm -rf "$LocalSourcePath/$prj-$ActualVersion"
+    mkdir -p "$LocalSourcePath/$prj-$ActualVersion" ||exit -1
+    git clone "https://github.com/$GithubSource" "$LocalSourcePath/$prj-$ActualVersion"
+    cd $LocalSourcePath
+    tar -czf "$RpmTree/SOURCES/$prj-$ActualVersion.tar.gz" "$prj-$ActualVersion"
+    cd $dirname
+    [ $Debug ] && echo "Writing TarBall $RpmTree/SOURCES/$prj-$ActualVersion.tar.gz"
 }
