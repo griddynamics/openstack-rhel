@@ -297,6 +297,8 @@ fi
 %{_bindir}/swift-stats-report
 %{_bindir}/swift-dispersion-populate
 %{_bindir}/swift-dispersion-report
+%{_bindir}/swift-recon
+%{_bindir}/swift-recon-cron
 %{python_sitelib}/swift/*.py*
 %{python_sitelib}/swift/common
 #%{python_sitelib}/swift/stats
