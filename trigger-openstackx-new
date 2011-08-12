@@ -6,54 +6,86 @@ cd "$dirname" || exit -1
 
 OurSpec="openstackx.spec"
 prj=$(grep '^Name:' $OurSpec | sed 's/^Name:\s\+//')
-echo "prj = $prj"
 
-
+GithubSource="griddynamics/openstackx"
+ActualVersion="$(grep '^Version:' $OurSpec | sed 's/^Version:\s\+//')"
+ActualRelease="0.`date +%Y%m%d.%H%M`"
+ActualTarBall=%{name}-%{version}.tar.gz
 
 source trigger.conf
-
-
-GithubUserProject="cloudbuilders/openstackx.git"
-ActualVersion="$(grep '^Version:' $OurSpec | sed 's/^Version:\s\+//')"
-ActualRelease="0.`date +%Y%m%d.%H`"
-
 source build_helpers
 
 
 # If you need to build a specific version - specify it as ./build release_num (digits only).
 # If build # is not specified, latest available tarball will be built
 
+#
+#	Project details:
+#	To build we need take rackspace sources from their tree, generate tar.gz, take OUR spec file and patches from openstack-rhel and build it all together
+#	To auto-build we are checking if OUR spec updated. If yes - get new sources and run build. We DO NOT run build after update of sources.
+#	Usual usage:
+#	    get new version to local pc
+#	    test and fix
+#	    generate patches for release
+#	    update spec (insert patches, update version)
+#	    push spec and patches to github
+#	Commands to run:
+#	build - get new sources and build project
+#	check - check for sources update
+#	build_ver - build specified release
+#	release_check - check for speck update
+#	release_build - build without downloading sources (if spec update)
+#
+
 
 
 case "$1" in
     build)
+        check_enviroment
+	check_spec_update
+	check_git_update
 	get_git
-#        check_for_update
-#        check_enviroment
-        update_spec
-#
-#	get_tarball
+	update_spec
 	create_srpm
-	create_rpm #&& commit_spec || undo_changes
+	create_rpm && commit_spec || undo_changes
 	sign_rpm
 	update_repo
-#	#do_mock
+	#do_mock
+	exit 0
         ;;
     check)
-	check_for_update 
-#	curl -s "http://$jenkins/job/$JobName/build"
-	[ $Debug ] && echo "Fire jenkins to build $JobName"
+	check_git_update
+	check_spec_update
+	[[ $FireNewBuild == "1" ]] || exit 0
+	curl -s "http://$jenkins/job/$JobName/build"
+	[ $Debug ] && echo "Fire jenkins to build  $JobName"
 	 exit 0
         ;;
-    release)
-	ActualRelease=$2
-	build
-	;;
+    build_ver)
+        ActualRelease=$2
+        build
+        ;;
+    release_check)
+	check_spec_update
+	[[ $FireNewBuild == "1" ]] || exit 0
+	curl -s "http://$jenkins/job/$JobName/build"
+	[ $Debug ] && echo "Fire jenkins to build  $JobName"
+	 exit 0
+        ;;
+    release_build)
+	create_rpm # && commit_spec || undo_changes
+	sign_rpm
+	update_repo
+        ;;
+
     *)
-        echo $"Usage: $0 {build|check|release}"
+        echo $"Usage: $0 {build|check|build_ver|release}"
         echo "build - build rpms"
         echo "check - check for updates and trigger jenkins"
-        echo "release NUM - build specified release"
+        echo "build_ver NUM - build specified release"
+        echo "release_check - check release if spec update"
+        echo "release_build - build release"
         exit 2
+
 esac
 exit $?
