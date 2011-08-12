@@ -5,14 +5,14 @@
 %define py_puresitedir  /usr/lib/python2.6/site-packages
 
 Name:           openstack-keystone
-Release:	0.20110804.17%{?dist}
+Release:	0.20110812.1530%{?dist}
 Version:	1.0
 Url:            http://www.openstack.org
 Summary:        Python bindings to the OS API
 License:        Apache 2.0
 Vendor:         Grid Dynamics Consulting Services, Inc.
 Group:          Development/Languages/Python
-Source0:        http://openstack-keystone.openstack.org/tarballs/%{name}-%{version}.tar.gz  
+Source0:          http://openstack-keystone.openstack.org/tarballs/%{name}-%{version}.tar.gz  
 Source1:        %{name}.init
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  python-devel python-setuptools python-sphinx >= 0.6.0
