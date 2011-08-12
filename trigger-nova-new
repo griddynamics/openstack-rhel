@@ -20,8 +20,8 @@ source build_helpers
 
 case "$1" in
     build)
-        check_enviroment
-        update_spec
+#        check_enviroment
+#        update_spec
 
 	get_tarball
 	create_srpm
@@ -48,9 +48,8 @@ case "$1" in
 	 exit 0
         ;;
     release_build)
-	create_rpm # && commit_spec || undo_changes
-	sign_rpm
-	update_repo
+	[ $Debug ] && debug_info
+	create_rpm && sign_rpm && update_repo
         ;;
 
     *)
@@ -61,6 +60,5 @@ case "$1" in
         echo "release_check - check release if spec update"
         echo "release_build - build release"
         exit 2
-
 esac
 exit $?

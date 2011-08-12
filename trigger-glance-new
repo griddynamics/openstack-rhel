@@ -51,9 +51,7 @@ case "$1" in
          exit 0
         ;;
     release_build)
-        create_rpm # && commit_spec || undo_changes
-        sign_rpm
-        update_repo
+        create_rpm && sign_rpm && update_repo
         ;;
 
     *)
