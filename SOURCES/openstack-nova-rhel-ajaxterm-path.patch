@@ -1,15 +1,19 @@
-=== modified file 'nova/virt/libvirt/connection.py'
---- nova/virt/libvirt/connection.py	2011-05-19 20:25:57 +0000
-+++ nova/virt/libvirt/connection.py	2011-05-27 14:59:20 +0000
-@@ -669,8 +669,8 @@
-         ajaxterm_cmd = 'sudo socat - %s' \
-                        % get_pty_for_instance(instance['name'])
- 
--        cmd = '%s/tools/ajaxterm/ajaxterm.py --command "%s" -t %s -p %s' \
--              % (utils.novadir(), ajaxterm_cmd, token, port)
-+        cmd = '/usr/share/nova/ajaxterm/ajaxterm.py --command "%s" -t %s -p %s' \
-+              % (ajaxterm_cmd, token, port)
- 
-         subprocess.Popen(cmd, shell=True)
-         return {'token': token, 'host': host, 'port': port}
-
+*** nova/virt/libvirt/connection.py.orig	2011-08-12 21:46:19.000000000 +0300
+--- nova/virt/libvirt/connection.py	2011-08-12 22:00:40.870712653 +0300
+***************
+*** 685,691 ****
+          ajaxterm_cmd = 'sudo socat - %s' \
+                         % get_pty_for_instance(instance['name'])
+  
+!         cmd = ['%s/tools/ajaxterm/ajaxterm.py' % utils.novadir(),
+                 '--command', ajaxterm_cmd, '-t', token, '-p', port]
+  
+          utils.execute(cmd)
+--- 685,691 ----
+          ajaxterm_cmd = 'sudo socat - %s' \
+                         % get_pty_for_instance(instance['name'])
+  
+!         cmd = ['/usr/share/nova/ajaxterm/ajaxterm.py',
+                 '--command', ajaxterm_cmd, '-t', token, '-p', port]
+  
+          utils.execute(cmd)
