@@ -6,14 +6,14 @@
 
 Name:             openstack-nova
 Version:	2011.3
-Release:	0.20110814.1433%{?dist}
+Release:	0.20110815.1439%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
 License:          ASL 2.0
 Vendor:           Grid Dynamics Consulting Services, Inc.
 URL:              http://openstack.org/projects/compute/
-Source0:          http://nova.openstack.org/tarballs/nova-2011.3~d4~20110814.1433.tar.gz  
+Source0:          http://nova.openstack.org/tarballs/nova-2011.3~d4~20110815.1439.tar.gz  
 Source1:          %{name}-README.rhel6
 Source2:          %{name}-noVNC-snap2011.03.24.tgz
 Source6:          %{name}.logrotate
@@ -398,7 +398,7 @@ rm -f %{buildroot}/usr/share/doc/nova/README*
 # Add noVNC console
 install -d -m 755 %{buildroot}%{_sharedstatedir}/nova/noVNC
 tar zxf %{SOURCE2} -C %{buildroot}%{_sharedstatedir}/nova/noVNC
-cat %{buildroot}/%Patch10 | patch -p0  -d %{buildroot}%{_sharedstatedir}/nova/noVNC
+cat %{_sourcedir}/openstack-nova-novnc-auto.patch | patch -p0  -d %{buildroot}%{_sharedstatedir}
 
 
 %clean
@@ -583,6 +583,7 @@ fi
 %{_bindir}/nova-logspool
 %{_bindir}/nova-manage
 %{_bindir}/nova-spoolsentry
+%{_bindir}/clear_rabbit_queues
 %{_bindir}/stack
 %{_datarootdir}/nova
 %defattr(-,nova,nobody,-)
