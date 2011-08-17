@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.20110727.1143.8%{?dist}
+Release:          0.20110727.1143.9%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -674,6 +674,9 @@ fi
 %files node-compute
 
 %changelog
+* Wed Aug 17 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110727.1143.9
+- novnc-auto patch applying fix
+
 * Thu Aug 11 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110727.1143.8
 - Added novnc-auto patch
 
