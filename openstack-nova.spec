@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:	2011.3
-Release:	0.20110818.1721%{?dist}
+Release:	0.20110818.1452%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
