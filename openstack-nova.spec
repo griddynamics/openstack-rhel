@@ -676,6 +676,9 @@ fi
 %files node-compute
 
 %changelog
+* Wed Aug 18 2011 Alessio Ababilov <aababilov@griddynamics.com> - 2011.3-0.20110727.1143.10
+- Return type of server's IP patch
+
 * Wed Aug 17 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110727.1143.9
 - novnc-auto patch applying fix
 
