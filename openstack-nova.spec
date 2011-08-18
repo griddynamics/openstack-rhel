@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:	2011.3
-Release:	0.20110818.1452%{?dist}
+Release:	0.20110818.1721%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -43,7 +43,8 @@ Patch6:           %{name}-s3server-quickfix.patch
 #Patch7:           %{name}-scsi-target-utils-support.patch
 Patch8:           %{name}-rpc-improvements.patch
 Patch9:           %{name}-floating-ip-fix.patch
-Patch10:           %{name}-novnc-auto.patch
+Patch10:          %{name}-novnc-auto.patch
+Patch11:          %{name}-ip-type.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -318,6 +319,7 @@ This package contains documentation files for %{name}.
 #patch8 -p1
 %patch9 -p0
 #%patch10 -p0 -d %{buildroot}%{_sharedstatedir}/nova/noVNC
+%patch11 -p1
 
 
 install %{SOURCE1} README.rhel6
@@ -659,6 +661,9 @@ fi
 %files node-compute
 
 %changelog
+* Thu Aug 18 2011 Alessio Ababilov <aababilov@griddynamics.com> - 2011.4-0.20110818.1721
+- Return type of server's IP patch
+
 * Thu Aug 11 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.4-0.20110810.1412
 - Removed /usr/bin/nova-import-canonical-imagestore
   https://bugs.launchpad.net/nova/+bug/820062
