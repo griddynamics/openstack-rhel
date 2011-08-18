@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.20110727.1143.9%{?dist}
+Release:          0.20110727.1143.10%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -42,6 +42,7 @@ Patch7:           %{name}-scsi-target-utils-support.patch
 Patch8:           %{name}-rpc-improvements.patch
 Patch9:           %{name}-driver-agnostic-restart-instances.patch
 Patch10:          %{name}-novnc-auto.patch
+Patch11:          %{name}-ip-type.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -330,6 +331,7 @@ This package contains documentation files for %{name}.
 %patch7 -p1
 #patch8 -p1
 %patch9 -p0
+%patch11 -p1
 
 install %{SOURCE1} README.rhel6
 
