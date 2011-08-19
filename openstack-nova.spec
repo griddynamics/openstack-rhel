@@ -43,6 +43,7 @@ Patch8:           %{name}-rpc-improvements.patch
 Patch9:           %{name}-driver-agnostic-restart-instances.patch
 Patch10:          %{name}-novnc-auto.patch
 Patch11:          %{name}-ip-type.patch
+Patch12:          %{name}-floating-ip-fix.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -332,6 +333,7 @@ This package contains documentation files for %{name}.
 #patch8 -p1
 %patch9 -p0
 %patch11 -p1
+%patch12 -p0
 
 install %{SOURCE1} README.rhel6
 

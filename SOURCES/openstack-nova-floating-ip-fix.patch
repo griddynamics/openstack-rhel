@@ -1,0 +1,32 @@
+--- nova/network/manager.py.orig	2011-07-28 03:42:52.000000000 +0400
++++ nova/network/manager.py	2011-08-05 19:00:26.318911646 +0400
+@@ -205,21 +205,21 @@
+         ips = super(FloatingIP, self).allocate_for_instance(context, **kwargs)
+         if FLAGS.auto_assign_floating_ip:
+             # allocate a floating ip (public_ip is just the address string)
+-            public_ip = self.allocate_floating_ip(context, project_id)
++            address = self.allocate_floating_ip(context, project_id)
+             # set auto_assigned column to true for the floating ip
+-            self.db.floating_ip_set_auto_assigned(context, public_ip)
+-            # get the floating ip object from public_ip string
+-            floating_ip = self.db.floating_ip_get_by_address(context,
+-                                                             public_ip)
+-
++            self.db.floating_ip_set_auto_assigned(context, address)
++            # get the floating ip object from address string
++            floating_ip_ref = self.db.floating_ip_get_by_address(context,
++                                                             address)
++            
+             # get the first fixed_ip belonging to the instance
+             fixed_ips = self.db.fixed_ip_get_by_instance(context, instance_id)
+             fixed_ip = fixed_ips[0] if fixed_ips else None
+ 
+             # call to correct network host to associate the floating ip
+             self.network_api.associate_floating_ip(context,
+-                                              floating_ip,
+-                                              fixed_ip,
++                                              floating_ip_ref['address'],
++                                              fixed_ip['address'],
+                                               affect_auto_assigned=True)
+         return ips
+ 
