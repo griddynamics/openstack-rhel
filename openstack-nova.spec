@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.20110727.1143.10%{?dist}
+Release:          0.20110727.1143.11%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -332,6 +332,7 @@ This package contains documentation files for %{name}.
 %patch7 -p1
 #patch8 -p1
 %patch9 -p0
+#patch10 -p0 # don't need to apply here since noVNC tarball is not extracted yet
 %patch11 -p1
 %patch12 -p0
 
@@ -678,7 +679,10 @@ fi
 %files node-compute
 
 %changelog
-* Wed Aug 18 2011 Alessio Ababilov <aababilov@griddynamics.com> - 2011.3-0.20110727.1143.10
+* Fri Aug 19 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110727.1143.11
+- Backported floating IP fix from trunk
+
+* Thu Aug 18 2011 Alessio Ababilov <aababilov@griddynamics.com> - 2011.3-0.20110727.1143.10
 - Return type of server's IP patch
 
 * Wed Aug 17 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110727.1143.9
