@@ -613,10 +613,10 @@ fi
 %files api
 %defattr(-,root,root,-)
 %{_initrddir}/%{name}-api
-%{_initrddir}/%{name}-api-ec2
-%{_initrddir}/%{name}-api-os
 %{_initrddir}/%{name}-direct-api
 %{_bindir}/nova-api
+%{_bindir}/nova-api-ec2
+%{_bindir}/nova-api-os
 %{_bindir}/nova-direct-api
 %defattr(-,nova,nobody,-)
 %config(noreplace) %{_sysconfdir}/nova/api-paste.ini
