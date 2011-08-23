@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:	2011.3
-Release:	0.20110818.1461%{?dist}
+Release:	0.20110822.1819%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -613,6 +613,8 @@ fi
 %files api
 %defattr(-,root,root,-)
 %{_initrddir}/%{name}-api
+%{_initrddir}/%{name}-api-ec2
+%{_initrddir}/%{name}-api-os
 %{_initrddir}/%{name}-direct-api
 %{_bindir}/nova-api
 %{_bindir}/nova-direct-api
@@ -661,6 +663,9 @@ fi
 %files node-compute
 
 %changelog
+* Mon Aug 22 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110822.1819
+- Added nova-api-{ec2,os}
+
 * Thu Aug 18 2011 Alessio Ababilov <aababilov@griddynamics.com> - 2011.4-0.20110818.1721
 - Return type of server's IP patch
 
