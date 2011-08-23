@@ -19,6 +19,7 @@ mysqladmin -uroot -p$PWD create nova
 nova-manage db sync
 rm -f /var/log/nova/nova*log*
 rm -fr /var/lib/nova/instances/* /var/lib/nova/images/*
+rm -rf /var/lib/libvirt/qemu/save/*
 
 for h in $HOSTS localhost; do
 	echo "GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER'@'$h' IDENTIFIED BY '$DB_PASS';" | mysql -uroot -p$DB_PASS mysql
