@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:          2011.3
-Release:          0.20110727.1143.11%{?dist}
+Release:          0.20110727.1143.12%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -44,6 +44,7 @@ Patch9:           %{name}-driver-agnostic-restart-instances.patch
 Patch10:          %{name}-novnc-auto.patch
 Patch11:          %{name}-ip-type.patch
 Patch12:          %{name}-floating-ip-fix.patch
+Patch13:          %{name}-network-lazy.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -335,6 +336,7 @@ This package contains documentation files for %{name}.
 #patch10 -p0 # don't need to apply here since noVNC tarball is not extracted yet
 %patch11 -p1
 %patch12 -p0
+%patch13 -p0
 
 install %{SOURCE1} README.rhel6
 
@@ -679,6 +681,10 @@ fi
 %files node-compute
 
 %changelog
+* Tue Aug 23 2011 Alessio Ababilov <aababilov@griddynamics.com> - 2011.3-0.20110727.1143.12
+- Fixed bug "lazy load operation of attribute 'network' cannot proceed"
+  (https://bugs.launchpad.net/nova/+bug/815957) especially for diablo-3
+
 * Fri Aug 19 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110727.1143.11
 - Backported floating IP fix from trunk
 
