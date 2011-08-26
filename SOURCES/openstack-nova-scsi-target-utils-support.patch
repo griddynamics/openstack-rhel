@@ -1,86 +1,103 @@
 diff -Naur nova-2011.3/nova/volume/driver.py nova-2011.3.new/nova/volume/driver.py
---- nova-2011.3/nova/volume/driver.py	2011-05-03 11:28:02.000000000 -0700
-+++ nova-2011.3.new/nova/volume/driver.py	2011-05-03 12:05:45.000000000 -0700
-@@ -293,16 +293,20 @@
+--- nova-2011.3/nova/volume/driver.py   2011-08-26 11:28:02.000000000 -0700
++++ nova-2011.3.new/nova/volume/driver.py       2011-08-26 12:05:45.000000000 -0700
+@@ -334,7 +334,7 @@
+     We make use of model provider properties as follows:
+ 
+     :provider_location:    if present, contains the iSCSI target information
+-                           in the same format as an ietadm discovery
++                           in the same format as an tgtadm discovery
+                            i.e. '<ip>:<port>,<portal> <target IQN>'
+ 
+     :provider_auth:    if present, contains a space-separated triple:
+@@ -354,17 +354,22 @@
  
          iscsi_name = "%s%s" % (FLAGS.iscsi_target_prefix, volume['name'])
          volume_path = "/dev/%s/%s" % (FLAGS.volume_group, volume['name'])
--        self._sync_exec('sudo', 'ietadm', '--op', 'new',
-+        self._sync_exec('sudo', 'tgtadm', '--op', 'new',
+-        self._sync_exec('ietadm', '--op', 'new',
++        self._sync_exec('tgtadm', '--op', 'new',
 +                        '--lld=iscsi', '--mode=target',
                          "--tid=%s" % iscsi_target,
 -                        '--params',
 -                        "Name=%s" % iscsi_name,
 +                        "--targetname=%s" % iscsi_name,
+                         run_as_root=True,
                          check_exit_code=False)
--        self._sync_exec('sudo', 'ietadm', '--op', 'new',
-+        self._sync_exec('sudo', 'tgtadm', '--op', 'bind',
+-        self._sync_exec('ietadm', '--op', 'new',
++        self._sync_exec('tgtadm', '--op', 'bind',
 +                        '--lld=iscsi', '--mode=target', '--initiator-address=ALL',
++                        "--tid=%s" % iscsi_target,
++                        run_as_root=True,
++                        check_exit_code=False)
++        self._sync_exec('tgtadm', '--op', 'new',
++                        '--lld=iscsi', '--mode=logicalunit',
                          "--tid=%s" % iscsi_target,
 -                        '--lun=0',
 -                        '--params',
 -                        "Path=%s,Type=fileio" % volume_path,
-+                        check_exit_code=False)
-+        self._sync_exec('sudo', 'tgtadm', '--op', 'new',
-+                        '--lld=iscsi', '--mode=logicalunit',
-+                        "--tid=%s" % iscsi_target,
 +                        '--lun=1',
 +                        "--backing-store=%s,Type=fileio" % volume_path,
+                         run_as_root=True,
                          check_exit_code=False)
  
-     def _ensure_iscsi_targets(self, context, host):
-@@ -323,13 +327,18 @@
+@@ -386,13 +391,21 @@
                                                        volume['host'])
          iscsi_name = "%s%s" % (FLAGS.iscsi_target_prefix, volume['name'])
          volume_path = "/dev/%s/%s" % (FLAGS.volume_group, volume['name'])
--        self._execute('sudo', 'ietadm', '--op', 'new',
+-        self._execute('ietadm', '--op', 'new',
 -                      '--tid=%s' % iscsi_target,
--                      '--params', 'Name=%s' % iscsi_name)
--        self._execute('sudo', 'ietadm', '--op', 'new',
+-                      '--params', 'Name=%s' % iscsi_name, run_as_root=True)
+-        self._execute('ietadm', '--op', 'new',
 -                      '--tid=%s' % iscsi_target,
 -                      '--lun=0', '--params',
--                      'Path=%s,Type=fileio' % volume_path)
-+        self._execute('sudo', 'tgtadm', '--op', 'new',
+-                      'Path=%s,Type=fileio' % volume_path, run_as_root=True)
++        self._execute('tgtadm', '--op', 'new',
 +                      '--lld=iscsi', '--mode=target',
 +                      "--tid=%s" % iscsi_target,
-+                      "--targetname=%s" % iscsi_name)
-+        self._execute('sudo', 'tgtadm', '--op', 'bind',
++                      "--targetname=%s" % iscsi_name,
++                      run_as_root=True)
++        self._execute('tgtadm', '--op', 'bind',
 +                      '--lld=iscsi', '--mode=target', '--initiator-address=ALL',
-+                      "--tid=%s" % iscsi_target)
-+        self._execute('sudo', 'tgtadm', '--op', 'new',
++                      "--tid=%s" % iscsi_targe,
++                      run_as_root=True)
++        self._execute('tgtadm', '--op', 'new',
 +                      '--lld=iscsi', '--mode=logicalunit',
 +                      "--tid=%s" % iscsi_target,
 +                      '--lun=1',
-+                      "--backing-store=%s,Type=fileio" % volume_path)
++                      "--backing-store=%s,Type=fileio" % volume_path,
++                      run_as_root=True)
  
      def remove_export(self, context, volume):
          """Removes an export for a logical volume."""
-@@ -344,17 +353,20 @@
+@@ -405,19 +418,22 @@
+             return
+ 
          try:
-             # ietadm show will exit with an error
+-            # ietadm show will exit with an error
++            # tgtadm show will exit with an error
              # this export has already been removed
--            self._execute('sudo', 'ietadm', '--op', 'show',
-+            self._execute('sudo', 'tgtadm', '--op', 'show',
+-            self._execute('ietadm', '--op', 'show',
++            self._execute('tgtadm', '--op', 'show',
 +                          '--lld=iscsi', '--mode=target',
-                           '--tid=%s' % iscsi_target)
+                           '--tid=%s' % iscsi_target, run_as_root=True)
          except Exception as e:
              LOG.info(_("Skipping remove_export. No iscsi_target " +
                         "is presently exported for volume: %d"), volume['id'])
              return
  
--        self._execute('sudo', 'ietadm', '--op', 'delete',
-+        self._execute('sudo', 'tgtadm', '--op', 'delete',
-+                          '--lld=iscsi', '--mode=logicalunit',
+-        self._execute('ietadm', '--op', 'delete',
++        self._execute('tgtadm', '--op', 'delete',
++                      '--lld=iscsi', '--mode=logicalunit',
                        '--tid=%s' % iscsi_target,
--                      '--lun=0')
--        self._execute('sudo', 'ietadm', '--op', 'delete',
-+                      '--lun=1')
-+        self._execute('sudo', 'tgtadm', '--op', 'delete',
+-                      '--lun=0', run_as_root=True)
+-        self._execute('ietadm', '--op', 'delete',
++                      '--lun=1', run_as_root=True)
++        self._execute('tgtadm', '--op', 'delete',
 +                      '--lld=iscsi', '--mode=target',
-                       '--tid=%s' % iscsi_target)
+                       '--tid=%s' % iscsi_target, run_as_root=True)
  
      def _do_iscsi_discovery(self, volume):
-@@ -463,7 +475,7 @@
+@@ -527,7 +543,7 @@
  
          self._iscsiadm_update(iscsi_properties, "node.startup", "automatic")
  
@@ -89,13 +106,13 @@ diff -Naur nova-2011.3/nova/volume/driver.py nova-2011.3.new/nova/volume/driver.
                          (iscsi_properties['target_portal'],
                           iscsi_properties['target_iqn']))
  
-@@ -505,7 +517,8 @@
+@@ -569,7 +585,8 @@
  
          tid = self.db.volume_get_iscsi_target_num(context, volume_id)
          try:
--            self._execute('sudo', 'ietadm', '--op', 'show',
-+            self._execute('sudo', 'tgtadm', '--op', 'show',
+-            self._execute('ietadm', '--op', 'show',
++            self._execute('tgtadm', '--op', 'show',
 +                          '--lld=iscsi', '--mode=target',
-                           '--tid=%(tid)d' % locals())
+                           '--tid=%(tid)d' % locals(), run_as_root=True)
          except exception.ProcessExecutionError, e:
              # Instances remount read-only in this case.

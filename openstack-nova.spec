@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:	2011.3
-Release:	0.20110825.r1153%{?dist}
+Release:	0.20110826.1448%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -39,8 +39,7 @@ Patch3:           %{name}-libvirt.xml.template.patch
 Patch4:           %{name}-rhel-netcat.patch
 Patch5:           %{name}-rhel-ajaxterm-path.patch
 Patch6:           %{name}-s3server-quickfix.patch
-# Fix it !
-#Patch7:           %{name}-scsi-target-utils-support.patch
+Patch7:           %{name}-scsi-target-utils-support.patch
 Patch8:           %{name}-rpc-improvements.patch
 Patch9:           %{name}-floating-ip-fix.patch
 Patch10:          %{name}-novnc-auto.patch
@@ -315,7 +314,7 @@ This package contains documentation files for %{name}.
 %patch4 -p0
 %patch5 -p0
 %patch6 -p1
-#%patch7 -p1
+%patch7 -p1
 #patch8 -p1
 %patch9 -p0
 #%patch10 -p0 -d %{buildroot}%{_sharedstatedir}/nova/noVNC
@@ -663,6 +662,9 @@ fi
 %files node-compute
 
 %changelog
+* Fri Aug 26 2011 Alessio Ababilov <aababilov@griddynamics.com> - 2011.3-0.20110826.1448
+- Fixed openstack-nova-scsi-target-utils-support.patch
+
 * Mon Aug 22 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110822.1819
 - Added nova-api-{ec2,os}
 
