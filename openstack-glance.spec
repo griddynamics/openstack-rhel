@@ -7,7 +7,7 @@
 
 Name:             openstack-%{prj}
 Version:	2011.3
-Release:	0.20110728.r145%{?dist}
+Release:	0.20110825.996.1%{?dist}
 Summary:          OpenStack Image Registry and Delivery Service
 
 Group:            Development/Languages

@@ -1,6 +1,6 @@
 Name:		openstack-repo
 Version:	2011.3
-Release:	0.2
+Release:	0.4
 Summary:	OpenStack repository configuration from Grid Dynamics
 
 Group:		System Environment/Base
