@@ -1,6 +1,6 @@
 Name:             openstack-nova-cc-config
 Version:          2011.3
-Release:          4
+Release:          4.1
 Summary:          OpenStack Compute (nova) - Cloud Controller config
 
 Group:            Development/Languages

@@ -1,6 +1,6 @@
 Name:             openstack-nova-compute-config
 Version:          2011.3
-Release:          4
+Release:          4.1
 Summary:          OpenStack Compute (nova) - Compute node configuration
 
 Group:            Development/Languages
