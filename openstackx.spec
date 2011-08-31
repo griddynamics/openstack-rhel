@@ -4,7 +4,7 @@
 #%define mod_name openstack-openstackx
 
 Name:           openstackx
-Release:	0.20110812.1256%{?dist}
+Release:	0.20110831.1836%{?dist}
 Version:	0.01
 Url:            http://github.com/cloudbuilders/openstackx/
 Summary:        Python bindings to the OS API
