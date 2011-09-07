@@ -1,10 +1,9 @@
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 %{!?python_sitearch: %global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 
-#%define mod_name openstack-openstackx
 
 Name:           openstackx
-Release:	0.20110831.1837%{?dist}
+Release:	0.20110907.1602%{?dist}
 Version:	0.01
 Url:            http://github.com/cloudbuilders/openstackx/
 Summary:        Python bindings to the OS API
@@ -12,7 +11,7 @@ License:        Apache 2.0
 Vendor:         Grid Dynamics Consulting Services, Inc.
 Group:          Development/Languages/Python
 Source:         %{name}-%{version}.tar.gz
-#Patch:          %{mod_name}-%{version}-nova-api-diablo.patch
+Patch1:         %{name}-%{version}-project-zipfile.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  python-devel python-setuptools
 BuildArch:      noarch
@@ -38,15 +37,18 @@ package dependancy for openstack-dashboard
 
 %prep
 %setup -q -n %{name}-%{version}
-#%patch -p1
+%patch1 -p1
 
 %build
-#export CFLAGS="%{optflags}"
 python setup.py build
 
 %install
 python setup.py install --prefix=%{_prefix} --root=%{buildroot} --record %{name}.files
 
+%post
+if ! grep -q -e '--osapi_extensions_path' /etc/nova/nova.conf; then
+    echo '--osapi_extensions_path=/usr/lib/python2.6/site-packages/extensions' >> /etc/nova/nova.conf
+fi
 
 %clean
 rm -rf %{buildroot}
@@ -55,5 +57,6 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 
 %changelog
-
-
+* Wed Sep 07 2011 Alessio Ababilov <aababilov@griddynamics.com> - 0.01-0.20110907.1602
+- Added project.zipfile operation
+- Add openstackx as nova extension after installation
