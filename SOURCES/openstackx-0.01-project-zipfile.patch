@@ -1,0 +1,67 @@
+diff -Naur openstackx.orig/extensions/admin.py openstackx/extensions/admin.py
+--- openstackx.orig/extensions/admin.py	2011-08-31 17:32:46.000000000 +0300
++++ openstackx/extensions/admin.py	2011-09-07 15:46:38.952506656 +0300
+@@ -19,6 +19,7 @@
+ import netaddr
+ import urllib
+ import urlparse
++import base64
+ 
+ from datetime import datetime
+ from webob import exc
+@@ -812,6 +813,14 @@
+         return {'keypairs': result}
+ 
+ 
++class ExtrasProjectController(object):
++    def zipfile(self, req, id):
++        context = req.environ['nova.context']
++        zip_file = auth_manager.AuthManager().get_credentials(
++            context.user_id, id)
++        return {"zipfile": base64.b64encode(zip_file)}
++
++
+ class AdminProjectController(object):
+ 
+     def show(self, req, id):
+@@ -1117,6 +1126,9 @@
+                                              ExtrasConsoleController()))
+         resources.append(extensions.ResourceExtension('admin/flavors',
+                                              AdminFlavorController()))
++        resources.append(extensions.ResourceExtension('extras/projects',
++                                             ExtrasProjectController(),
++                                             member_actions={'zipfile': 'GET'}))
+         resources.append(extensions.ResourceExtension('extras/usage',
+                                              UsageController()))
+         resources.append(extensions.ResourceExtension('extras/flavors',
+diff -Naur openstackx.orig/openstackx/extras/__init__.py openstackx/openstackx/extras/__init__.py
+--- openstackx.orig/openstackx/extras/__init__.py	2011-08-31 17:32:46.000000000 +0300
++++ openstackx/openstackx/extras/__init__.py	2011-09-07 15:24:32.000000000 +0300
+@@ -13,6 +13,7 @@
+ from openstackx.extras.security_groups import SecurityGroupManager
+ from openstackx.extras.security_group_rules import SecurityGroupRuleManager
+ from openstackx.extras.virtual_interfaces import VirtualInterfacesManager
++from openstackx.extras.projects import ProjectManager
+ from openstackx.api.config import Config
+ 
+ 
+@@ -46,6 +47,7 @@
+         self.security_groups = SecurityGroupManager(self)
+         self.security_group_rules = SecurityGroupRuleManager(self)
+         self.virtual_interfaces = VirtualInterfacesManager(self)
++        self.projects = ProjectManager(self)
+ 
+     def authenticate(self):
+         """
+diff -Naur openstackx.orig/openstackx/extras/projects.py openstackx/openstackx/extras/projects.py
+--- openstackx.orig/openstackx/extras/projects.py	1970-01-01 03:00:00.000000000 +0300
++++ openstackx/openstackx/extras/projects.py	2011-09-07 15:45:09.000000000 +0300
+@@ -0,0 +1,8 @@
++import base64
++from openstackx.api import base
++
++
++class ProjectManager(base.Manager):
++    def zipfile(self, project_id):
++        resp, body = self.api.connection.get("/extras/projects/%s/zipfile" % project_id)
++        return base64.b64decode(body["zipfile"])
