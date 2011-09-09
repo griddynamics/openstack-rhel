@@ -157,6 +157,7 @@ Requires:         python-webob
 Requires:         python-netaddr
 Requires:         python-glance
 Requires:         python-novaclient
+Requires:         python-lxml
 Requires:         python-sqlalchemy-migrate
 Requires:         radvd
 Requires:         iptables iptables-ipv6
