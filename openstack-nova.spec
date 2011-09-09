@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:	2011.3
-Release:	0.20110825.1153.1%{?dist}
+Release:	0.20110825.1153.2%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -309,7 +309,7 @@ This package contains documentation files for %{name}.
 %setup -q -n nova-%{version}
 
 #patch1 -p1
-#%patch2 -p1
+%patch2 -p1
 %patch3 -p1
 %patch4 -p0
 %patch5 -p0
