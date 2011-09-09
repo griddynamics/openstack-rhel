@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:	2011.3
-Release:	0.20110825.1153.2%{?dist}
+Release:	0.20110825.1153.3%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -157,6 +157,7 @@ Requires:         python-webob
 Requires:         python-netaddr
 Requires:         python-glance
 Requires:         python-novaclient
+Requires:         python-lxml
 Requires:         python-sqlalchemy-migrate
 Requires:         radvd
 Requires:         iptables iptables-ipv6
