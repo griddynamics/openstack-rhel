@@ -1,6 +1,6 @@
 diff -Naur nova-2011.3/nova/virt/disk.py nova-2011.3.new/nova/virt/disk.py
 --- nova-2011.3/nova/virt/disk.py	2011-08-23 05:17:51 +0000
-+++ nova-2001.3.new/nova/virt/disk.py	2011-09-06 15:59:29 +0000
++++ nova-2001.3.new/nova/virt/disk.py	2011-09-09 10:03:28 +0000
 @@ -5,6 +5,8 @@
  #
  # Copyright 2011, Piston Cloud Computing, Inc.
@@ -345,7 +345,7 @@ diff -Naur nova-2011.3/nova/virt/disk.py nova-2011.3.new/nova/virt/disk.py
 
 diff -Naur nova-2011.3/nova/virt/libvirt/connection.py nova-2011.3.new/nova/virt/libvirt/connection.py
 --- nova-2011.3/nova/virt/libvirt/connection.py	2011-08-26 01:38:35 +0000
-+++ nova-2011.3.new/nova/virt/libvirt/connection.py	2011-09-06 16:01:43 +0000
++++ nova-2011.3.new/nova/virt/libvirt/connection.py	2011-09-09 10:03:37 +0000
 @@ -921,7 +921,6 @@
          net = None
  
@@ -369,13 +369,17 @@ diff -Naur nova-2011.3/nova/virt/libvirt/connection.py nova-2011.3.new/nova/virt
              inst_name = inst['name']
  
              if config_drive:  # Should be True or None by now.
-@@ -976,7 +970,7 @@
+@@ -976,10 +970,9 @@
                                 '%(injection)s into image %(img_id)s'
                                 % locals()))
              try:
 -                disk.inject_data(injection_path, key, net, metadata,
 +                disk.inject_data(injection_path, key, nets, metadata,
                                   partition=target_partition,
-                                  nbd=FLAGS.use_cow_images,
-                                  tune2fs=tune2fs)
+-                                 nbd=FLAGS.use_cow_images,
+-                                 tune2fs=tune2fs)
++                                 nbd=FLAGS.use_cow_imagess)
+ 
+                 if FLAGS.libvirt_type == 'lxc':
+                     disk.setup_container(basepath('disk'),
 
