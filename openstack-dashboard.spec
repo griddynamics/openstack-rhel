@@ -23,12 +23,12 @@
 %define httpd_conf /etc/httpd/conf/httpd.conf
 
 Name:           openstack-dashboard
-Version:        1.0
-Release:        0.20110916.18%{?dist}
+Version:	1.0
+Release:	0.20110916.1720%{?dist}
 Url:            http://www.openstack.org
 License:        Apache 2.0
 Group:          Development/Languages/Python
-Source0:        http://openstack-dashboard.openstack.org/tarballs/%{name}-%{version}.tar.gz
+Source0:          http://openstack-dashboard.openstack.org/tarballs/%{name}-%{version}.tar.gz  
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  python-devel python-setuptools
 BuildArch:      noarch
