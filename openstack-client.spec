@@ -1,13 +1,13 @@
 %global with_doc 1
 %global prj client
-%global commit_id 20251cc
+%global commit_id 1ed1f5e
 
 %if ! (0%{?fedora} > 12 || 0%{?rhel} > 5)
 %{!?python_sitelib: %global python_sitelib %(%{__python} -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())")}
 %endif
 
 Name:             openstack-%{prj}
-Version:          2.5.8
+Version:          2.6.4
 Release:          1.%{commit_id}
 Summary:          Client for OpenStack Nova API
 
@@ -15,7 +15,7 @@ Group:            Applications/System
 License:          ASL 2.0
 Vendor:           Grid Dynamics Consulting Services, Inc.
 URL:              http://pypi.python.org/pypi/python-novaclient
-Source0:          python-novaclient-%{version}-%{commit_id}.tgz
+Source0:          rackspace-python-novaclient-%{commit_id}.tar.gz
 
 BuildRoot:        %{_tmppath}/%{prj}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -106,6 +106,9 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Fri Sep 16 2011 Alessio Ababilov <aababilov@griddynamics.com> - 2.6.4-1.1ed1f5e
+- 2.6.4 snapshot
+
 * Tue Jul 19 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2.5.8-1.20251cc
 - 2.5.8 snapshot
 
