@@ -34,7 +34,11 @@ BuildRequires:  python-devel python-setuptools
 BuildArch:      noarch
 Summary:        A Django interface for OpenStack
 
-Requires:       django-nose httpd mod_wsgi
+Requires:       httpd mod_wsgi 
+Requires:       openstack-keystone openstack-compute openstackx 
+Requires:       python-dateutil python-eventlet >= 0.9.12 python-greenlet python-sqlalchemy >= 0.6.3 
+Requires:       python-sqlalchemy-migrate >= 0.6 python-webob >= 1 python-cloudfiles python-boto = 1.9b python-httplib2 
+Requires:       Django = 1.3 django-mailer django-nose
 Summary:        Django based reference implementation of a web based management interface for OpenStack.
 
 %description
