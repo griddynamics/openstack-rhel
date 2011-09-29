@@ -58,7 +58,7 @@ diff -Naur nova-2011.3/nova/volume/driver.py nova-2011.3.new/nova/volume/driver.
 +                      run_as_root=True)
 +        self._execute('tgtadm', '--op', 'bind',
 +                      '--lld=iscsi', '--mode=target', '--initiator-address=ALL',
-+                      "--tid=%s" % iscsi_targe,
++                      "--tid=%s" % iscsi_target,
 +                      run_as_root=True)
 +        self._execute('tgtadm', '--op', 'new',
 +                      '--lld=iscsi', '--mode=logicalunit',
