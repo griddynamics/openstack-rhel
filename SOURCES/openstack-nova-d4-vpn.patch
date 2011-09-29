@@ -1,0 +1,74 @@
+diff -Naur nova.old/api/ec2/cloud.py nova/api/ec2/cloud.py
+--- nova.old/api/ec2/cloud.py	2011-09-15 13:32:20.139185527 -0700
++++ nova/api/ec2/cloud.py	2011-09-16 03:42:57.000000000 -0700
+@@ -1187,9 +1187,6 @@
+             except exception.NotFound:
+                 instances = []
+         for instance in instances:
+-            if not context.is_admin:
+-                if instance['image_ref'] == str(FLAGS.vpn_image_id):
+-                    continue
+             i = {}
+             instance_id = instance['id']
+             ec2_id = ec2utils.id_to_ec2_id(instance_id)
+diff -Naur nova.old/db/api.py nova/db/api.py
+--- nova.old/db/api.py	2011-09-15 13:32:20.148183681 -0700
++++ nova/db/api.py	2011-09-16 03:45:41.000000000 -0700
+@@ -323,13 +323,16 @@
+ ####################
+ 
+ 
+-def fixed_ip_associate(context, address, instance_id, network_id=None):
++def fixed_ip_associate(context, address, instance_id, network_id=None,
++                       reserved=False):
+     """Associate fixed ip to instance.
+ 
+     Raises if fixed ip is not available.
+ 
+     """
+-    return IMPL.fixed_ip_associate(context, address, instance_id, network_id)
++    return IMPL.fixed_ip_associate(context, address, instance_id, network_id,
++                                   reserved)
++
+ 
+ 
+ def fixed_ip_associate_pool(context, network_id, instance_id=None, host=None):
+diff -Naur nova.old/db/sqlalchemy/api.py nova/db/sqlalchemy/api.py
+--- nova.old/db/sqlalchemy/api.py	2011-09-15 13:32:20.145180996 -0700
++++ nova/db/sqlalchemy/api.py	2011-09-16 04:05:19.000000000 -0700
+@@ -653,14 +653,19 @@
+ 
+ 
+ @require_admin_context
+-def fixed_ip_associate(context, address, instance_id, network_id=None):
++def fixed_ip_associate(context, address, instance_id, network_id=None,
++                       reserved=False):
++    """Keyword arguments:
++    reserved -- should be a boolean value(True or False), exact value will be
++    used to filter on the fixed ip address
++    """
+     session = get_session()
+     with session.begin():
+         network_or_none = or_(models.FixedIp.network_id == network_id,
+                               models.FixedIp.network_id == None)
+         fixed_ip_ref = session.query(models.FixedIp).\
+                                filter(network_or_none).\
+-                               filter_by(reserved=False).\
++                               filter_by(reserved=reserved).\
+                                filter_by(deleted=False).\
+                                filter_by(address=address).\
+                                with_lockmode('update').\
+diff -Naur nova.old/network/manager.py nova/network/manager.py
+--- nova.old/network/manager.py	2011-09-15 13:32:20.138182110 -0700
++++ nova/network/manager.py	2011-09-16 04:08:38.000000000 -0700
+@@ -984,7 +984,9 @@
+             address = network['vpn_private_address']
+             self.db.fixed_ip_associate(context,
+                                        address,
+-                                       instance_id)
++                                       instance_id,
++                                       network['id'],
++                                       reserved=True)
+         else:
+             address = kwargs.get('address', None)
+             if address:
