@@ -1,0 +1,21 @@
+--- nova/bin/nova-manage.old	2011-09-29 12:33:12.000000000 -0700
++++ nova/bin/nova-manage	2011-09-28 15:50:33.614283466 -0700
+@@ -86,6 +86,7 @@
+ from nova import utils
+ from nova import version
+ from nova.api.ec2 import ec2utils
++from nova.api.ec2.admin import AdminController
+ from nova.auth import manager
+ from nova.cloudpipe import pipelib
+ from nova.compute import instance_types
+@@ -168,6 +169,10 @@
+             else:
+                 print None
+ 
++    def _vpn_for(self, project_id):
++        return AdminController()._vpn_for(context.get_admin_context(), 
++                                          project_id)
++
+     def spawn(self):
+         """Run all VPNs."""
+         print "WARNING: This method only works with deprecated auth"

@@ -6,7 +6,7 @@
 
 Name:             openstack-nova
 Version:	2011.3
-Release:	0.20110922.1520.4%{?dist}
+Release:	0.20110922.1520.5%{?dist}
 Summary:          OpenStack Compute (nova)
 
 Group:            Development/Languages
@@ -46,6 +46,7 @@ Patch10:          %{name}-novnc-auto.patch
 Patch11:          %{name}-ip-type.patch
 Patch12:          %{name}-api-floating-ip.patch
 Patch13:          %{name}-d4-vpn.patch
+Patch14:          %{name}-vpn-spawn.patch
 
 BuildRoot:        %{_tmppath}/nova-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -324,6 +325,7 @@ This package contains documentation files for %{name}.
 %patch11 -p1
 %patch12 -p1
 %patch13 -p0
+%patch14 -p1
 
 
 install %{SOURCE1} README.rhel6
@@ -667,8 +669,8 @@ fi
 %files node-compute
 
 %changelog
-* Thu Sep 29 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110922.1520.4
-- Fixed server-side implementation of floating ip (correct release and instance id retrieving)
+* Thu Sep 29 2011 Andrey Brindeyev <abrindeyev@griddynamics.com> - 2011.3-0.20110922.1520.5
+- Added patch13,patch14 for cloudpipe quickfix
 
 * Thu Sep 22 2011 Alessio Ababilov <aababilov@griddynamics.com> - 2011.3-0.20110922.1520
 - Fixed server-side implementation of floating ip (correct release and instance id retrieving)
