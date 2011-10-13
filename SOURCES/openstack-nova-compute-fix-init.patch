@@ -1,0 +1,39 @@
+diff --git a/nova/compute/manager.py b/nova/compute/manager.py
+index 25d44e5..0bda01d 100644
+--- a/nova/compute/manager.py
++++ b/nova/compute/manager.py
+@@ -152,12 +152,8 @@ class ComputeManager(manager.SchedulerDependentManager):
+         """Update an instance in the database using kwargs as value."""
+         return self.db.instance_update(context, instance_id, kwargs)
+ 
+-    def init_host(self):
+-        """Initialization for a standalone compute service."""
+-        self.driver.init_host(host=self.host)
+-        context = nova.context.get_admin_context()
+-        instances = self.db.instance_get_all_by_host(context, self.host)
+-        for instance in instances:
++    def _restore_state_if_needed(self, context, instance):
++        try:
+             inst_name = instance['name']
+             db_state = instance['power_state']
+             drv_state = self._get_power_state(context, instance)
+@@ -182,6 +178,19 @@ class ComputeManager(manager.SchedulerDependentManager):
+                 except NotImplementedError:
+                     LOG.warning(_('Hypervisor driver does not '
+                             'support firewall rules'))
++        except Exception:
++            LOG.exception('Can not restore state of instance %s ',
++                          instance['name'], exc_info=sys.exc_info())
++            instance['power_state'] = power_state.CRASHED
++
++    def init_host(self):
++        """Initialization for a standalone compute service."""
++        self.driver.init_host(host=self.host)
++        context = nova.context.get_admin_context()
++        instances = self.db.instance_get_all_by_host(context, self.host)
++        for instance in instances:
++            self._restore_state_if_needed(context, instance)
++
+ 
+     def _get_power_state(self, context, instance):
+         """Retrieve the power state for the given instance."""
