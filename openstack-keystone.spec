@@ -17,7 +17,7 @@ Source1:        %{name}.init
 BuildRoot:      %{_tmppath}/%{name}-%{version}-build
 BuildRequires:  python-devel python-setuptools python-sphinx >= 0.6.0
 BuildArch:      noarch
-Requires:       python-eventlet python-lxml python-paste python-sqlalchemy python-routes python-httplib2
+Requires:       python-eventlet python-lxml python-paste python-sqlalchemy python-routes python-httplib2 python-paste-deploy start-stop-daemon python-webob python-setuptools
 
 %description
 Authentication service - proposed for OpenStack
