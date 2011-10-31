@@ -24,7 +24,7 @@
 
 Name:           openstack-dashboard
 Version:	1.0
-Release:	0.20111025.1115%{?dist}
+Release:	0.20111031.2019%{?dist}
 Url:            http://www.openstack.org
 License:        Apache 2.0
 Group:          Development/Languages/Python
